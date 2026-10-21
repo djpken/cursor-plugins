@@ -1,16 +1,18 @@
 # Google Cloud BigQuery
 
-Cursor plugin that connects agents to [Google Cloud BigQuery](https://docs.cloud.google.com/bigquery/docs/use-bigquery-mcp) through Google Cloud BigQuery's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Google Cloud BigQuery 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Google Cloud BigQuery](https://docs.cloud.google.com/bigquery/docs/use-bigquery-mcp)。
 
-Explore datasets and tables and run SQL queries.
+探索資料集和資料表，並執行 SQL 查詢。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Google Cloud BigQuery**.
-3. Click **Install**, then complete the Google Cloud BigQuery sign-in prompt.
+## 安裝
 
-Or run `/add-plugin google-cloud-bigquery` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Google Cloud BigQuery**。
+3. 點選 **安裝**，然後完成 Google Cloud BigQuery 登入提示。
+
+或在聊天中執行 `/add-plugin google-cloud-bigquery`。
 
 ## MCP
 
@@ -25,37 +27,47 @@ Or run `/add-plugin google-cloud-bigquery` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for Google Cloud BigQuery sign-in when the plugin connects — there is no client ID or personal access token to configure.
+驗證方式為 OAuth。當外掛連線時，Cursor 會提示 Google Cloud BigQuery 登入，不需要設定客戶端 ID 或個人存取令牌。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need a Google Cloud project with the BigQuery API enabled, and your Google account needs the MCP Tool User role (`roles/mcp.toolUser`) plus BigQuery Job User and Data Viewer on that project.
+## 連線前
 
-## What agents can do
+您需要一個已啟用 BigQuery API 的 Google Cloud 專案，且您的 Google 帳號需要該專案的 MCP 工具使用者角色 (`roles/mcp.toolUser`)，以及 BigQuery 作業使用者與資料檢視者角色。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Explore | List datasets and tables and read their metadata and schemas |
-| Query | Run read-only SQL, including BigQuery ML functions |
-| Write | Run DML and DDL when the account allows it |
-| Jobs | Poll results and cancel running query jobs |
+| 探索 | 列出資料集和資料表，並讀取其元資料與結構 |
+| 查詢 | 執行僅讀 SQL，包括 BigQuery ML 函式 |
+| 寫入 | 當帳號允許時執行 DML 和 DDL |
+| 作業 | 取得結果並取消正在執行的查詢作業 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱與結構的來源基準。
 
-## Notes
+<a id="notes"></a>
 
-- Queries are billed to the project id passed to the tool.
-- Admins can block the write-capable `execute_sql` tool with an IAM deny policy while leaving read-only queries available.
-- Grok also offers this connector with service-identity auth; this plugin configures only the user OAuth flow.
+## 注意事項
 
-## Docs
+- 查詢費用會計入傳遞給工具的專案 ID。
+- 管理員可以使用 IAM 拒絕政策來阻止具寫入能力的 `execute_sql` 工具，同時保留僅讀查詢可用。
+- Grok 也提供此連線器，使用服務身份驗證；此外掛僅設定使用者 OAuth 流程。
 
-- Use the BigQuery MCP server: https://docs.cloud.google.com/bigquery/docs/use-bigquery-mcp
-- Tools reference: https://docs.cloud.google.com/bigquery/docs/reference/mcp
-- Server URL: https://bigquery.googleapis.com/mcp
+<a id="docs"></a>
 
-Logo is the official BigQuery product icon from Google Cloud's architecture icon set, on a padded white tile.
+## 文件
 
-## License
+- 使用 BigQuery MCP 伺服器：https://docs.cloud.google.com/bigquery/docs/use-bigquery-mcp
+- 工具參考：https://docs.cloud.google.com/bigquery/docs/reference/mcp
+- 伺服器 URL：https://bigquery.googleapis.com/mcp
+
+標誌為 Google Cloud 架構圖示集中的官方 BigQuery 產品圖示，位於帶有白色邊距的白色方塊上。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

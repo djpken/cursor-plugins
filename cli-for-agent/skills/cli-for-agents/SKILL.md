@@ -1,34 +1,42 @@
 ---
 name: cli-for-agents
 description: >-
-  Designs or reviews CLIs so coding agents can run them reliably: non-interactive
-  flags, layered --help with examples, stdin/pipelines, fast actionable errors,
-  idempotency, dry-run, and predictable structure. Use when building a CLI,
-  adding commands, writing --help, or when the user mentions agents, terminals,
-  or automation-friendly CLIs.
+  設計或審查 CLI，讓程式碼代理能可靠地執行：非互動式
+  旗標、分層的 --help 並附範例、stdin/管線、快速且可採取行動的錯誤訊息、
+  冪等性、dry-run，以及可預測的結構。在建立 CLI、
+  新增指令、撰寫 --help，或當使用者提到代理、終端機、
+  或適合自動化的 CLI 時使用。
 ---
 
-# CLI for agents
+<a id="cli-for-agents"></a>
 
-Human-oriented CLIs often block agents: interactive prompts, huge upfront docs, and help text without copy-pasteable examples. Prefer patterns that work headlessly and compose in pipelines.
+# 供代理使用的 CLI
 
-## Non-interactive first
+以人類為導向的 CLI 常會阻礙代理：互動式提示、龐大的前置檔案，以及沒有可複製貼上範例的說明文字。請優先選擇能無頭執行並在管線中組合的樣式。
 
-- Every input should be expressible as a flag or flag value. Do not require arrow keys, menus, or timed prompts.
-- If flags are missing, **then** fall back to interactive mode—not the other way around.
+<a id="non-interactive-first"></a>
 
-**Bad:** `mycli deploy` → `? Which environment? (use arrow keys)`  
-**Good:** `mycli deploy --env staging`
+## 非互動式優先
 
-## Discoverability without dumping context
+- 每個輸入都應能表達為旗標或旗標值。不要要求方向鍵、選單或限時提示。
+- 如果缺少旗標，**再**退回互動模式，而不是相反。
 
-- Agents discover subcommands incrementally: `mycli`, then `mycli deploy --help`. Do not print the entire manual on every run.
-- Let each subcommand own its documentation so unused commands stay out of context.
+**錯誤：** `mycli deploy` → `? Which environment? (use arrow keys)`<br>
+**正確：** `mycli deploy --env staging`
 
-## `--help` that works
+<a id="discoverability-without-dumping-context"></a>
 
-- Every subcommand has `--help`.
-- Every `--help` includes **Examples** with real invocations. Examples do more than prose for pattern-matching.
+## 可發現性，但不傾倒上下文
+
+- 代理會逐步發現子指令：`mycli`，然後 `mycli deploy --help`。不要在每次執行時列印整本手冊。
+- 讓每個子指令擁有自己的檔案，以便未使用的指令不會佔用上下文。
+
+<a id="--help-that-works"></a>
+
+## 有效的 `--help`
+
+- 每個子指令都有 `--help`。
+- 每個 `--help` 都包含 **範例**，並附上實際的呼叫方式。對於模式匹配而言，範例比純文字說明更有用。
 
 ```text
 Options:
@@ -42,15 +50,19 @@ Examples:
   mycli deploy --env staging --force
 ```
 
-## stdin, flags, and pipelines
+<a id="stdin-flags-and-pipelines"></a>
 
-- Accept stdin where it makes sense (e.g. `cat config.json | mycli config import --stdin`).
-- Avoid odd positional ordering and avoid falling back to interactive prompts for missing values.
-- Support chaining: `mycli deploy --env staging --tag $(mycli build --output tag-only)`.
+## stdin、旗標與管線
 
-## Fail fast with actionable errors
+- 在合理的情況下接受 stdin（例如 `cat config.json | mycli config import --stdin`）。
+- 避免奇怪的引數順序，並避免在缺少值時退回互動式提示。
+- 支援連結：`mycli deploy --env staging --tag $(mycli build --output tag-only)`。
 
-- On missing required flags: exit immediately with a clear message and a **correct example invocation**, not a hang.
+<a id="fail-fast-with-actionable-errors"></a>
+
+## 快速失敗並提供可採取行動的錯誤
+
+- 當缺少必要的旗標時：立即結束並顯示清晰的訊息以及**正確的範例呼叫**，而不是掛起。
 
 ```text
 Error: No image tag specified.
@@ -58,22 +70,30 @@ Error: No image tag specified.
   Available tags: mycli build list --output tags
 ```
 
-## Idempotency
+<a id="idempotency"></a>
 
-- Agents retry often. The same successful command run twice should be safe (no-op or explicit "already done"), not duplicate side effects.
+## 冪等性
 
-## Destructive actions
+- 代理經常重試。同一個成功的指令執行兩次應該是安全的（無操作或明確的「已完成」），而不是產生重複的副作用。
 
-- Add `--dry-run` (or equivalent) so agents can preview plans before committing.
-- Offer `--yes` / `--force` to skip confirmations while keeping the safe default for humans.
+<a id="destructive-actions"></a>
 
-## Predictable structure
+## 破壞性操作
 
-- Use a consistent pattern everywhere, e.g. `resource` + `verb`: if `mycli service list` exists, `mycli deploy list` and `mycli config list` should follow the same shape.
+- 新增 `--dry-run`（或等效功能），讓代理可以在提交前預覽計畫。
+- 提供 `--yes` / `--force` 以跳過確認，同時為人類保留安全的預設值。
 
-## Success output
+<a id="predictable-structure"></a>
 
-- On success, return machine-useful data: IDs, URLs, durations. Plain text is fine; avoid relying on decorative output alone.
+## 可預測的結構
+
+- 在所有地方使用一致的樣式，例如 `resource` + `verb`：如果 `mycli service list` 存在，`mycli deploy list` 和 `mycli config list` 應遵循相同的結構。
+
+<a id="success-output"></a>
+
+## 成功輸出
+
+- 成功時，回傳對機器有用的資料：ID、URL、持續時間。純文字即可；避免僅依賴裝飾性輸出。
 
 ```text
 deployed v1.2.3 to staging
@@ -82,6 +102,8 @@ deploy_id: dep_abc123
 duration: 34s
 ```
 
-## When reviewing an existing CLI
+<a id="when-reviewing-an-existing-cli"></a>
 
-- Check: non-interactive path, layered help, examples on `--help`, stdin/pipeline story, error messages with invocations, idempotency, dry-run, confirmation bypass flags, consistent command structure, structured success output.
+## 審查現有 CLI 時
+
+- 檢查專案：非互動式路徑、分層說明、`--help` 上的範例、stdin/管線支援、包含呼叫方式的錯誤訊息、冪等性、dry-run、跳過確認的旗標、一致的指令結構、結構化的成功輸出。

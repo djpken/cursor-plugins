@@ -1,43 +1,49 @@
 ---
 name: ketchup
-description: "Catch the user up on what changed in this chat since their last message, in plain words and small visuals. List every item waiting on them with what they need to decide it from the reply alone. Use for /ketchup."
+description: "用簡單的文字和小圖示，讓使用者瞭解從他們上次訊息以來，這個對話中發生了什麼變化。列出每個等待使用者處理的專案，以及他們需要從回覆中決定什麼。適用於 /ketchup."
 disable-model-invocation: true
 ---
 
 # Ketchup
 
-Catch the user up on what changed in this chat since the last message they wrote before `/ketchup`, and help them understand each change, not only where it stands. Then lay out every call waiting on them so they can make it from your reply alone. Notifications and subagent results are not their messages. Assume the user remembers their last message and nothing after it.
+讓使用者瞭解從他們在 `/ketchup` 之前寫的訊息以來，這個對話中發生了什麼變化，並幫助他們理解每個變化，不只是目前的狀態。然後列出每個等待他們決定的事項，讓他們可以從你的回覆中做出決定。通知和子代理結果不是他們的訊息。假定使用者記得他們最後的訊息，而不記得之後的任何內容。
 
-Use [`/bro`](../bro/SKILL.md)'s voice, not its task: plain words, short sentences, no jargon, like one person catching up another. Say what changed for the user, not how you did it. Say "the tests pass", not "CI is green". Leave out hashes, file paths, commands, build numbers, and test counts unless the user needs one to act. Call each PR, branch, or agent by a name the user would know, not by a label you invented. If a fact needs context to make sense, give the context or leave the fact out.
+使用 `/bro`](../bro/SKILL.md) 的語氣，而不是它的任務：簡單的詞、短句、沒有專業術語，就像一個人向另一個人補述。說明對使用者來說改變了什麼，而不是你如何完成。說「測試透過」，而不是「CI 是綠的」。除非使用者需要一個來行動，否則省略雜湊、檔案路徑、命令、構建號和測試數量。用使用者會知道的名字來稱呼每個 PR、分支或代理，而不是你自己創造的標籤。如果一個事實需要背景才能理解，提供背景或省略該事實。
 
-## Gather what changed
+<a id="gather-what-changed"></a>
 
-Keep this turn read-only. Make visuals only from what you already have: do not change code, start an app or a job, or post anything. Collect your own work since that message, reports from subagents, and messages from anyone else in this chat. Check the current state of each PR, CI run, or agent this chat touched. Check each number you will show against the facts it comes from, and say so when you correct one.
+## 收集變更內容
 
-An action item is a call or step only the user can take, such as a product choice, an approval, an irreversible action, or access you lack. Include any still waiting on the user, even one raised before their last message. Work you can still do yourself is not an action item. Never make up a call to fill the reply. A step the user did not ask for and the work does not need is not an action item, unless it is irreversible and waiting on the user: give it one line and no visual.
+保持這個回合僅讀取。僅從你已有的內容製作圖示：不要更改程式碼、啟動應用或工作，或發布任何內容。收集你從該訊息以來的工作、子代理的報告，以及這個對話中其他人的訊息。檢查這個對話涉及的每個 PR、CI 執行或代理的當前狀態。檢查每個你將顯示的數字與其來源事實，並在修正時說明。
 
-One call can cover many items, such as each PR in a set awaiting merge. For each item, collect its link, what it changes for users, the evidence behind your pick, its risk, and your pick. Write "unknown" for a fact the call needs that you do not know. Leave out a link you do not have.
+行動專案是隻有使用者可以採取的決定或步驟，例如產品選擇、批准、不可逆的動作，或你缺乏的存取權。包括任何仍在等待使用者的事項，即使是在他們上次訊息之前提出的。你自己仍可以完成的工作不是行動專案。絕不要為了填滿回覆而製造一個決定。使用者未要求且工作不需要的步驟不是行動專案，除非它是不可逆且等待使用者：給它一行且無圖示。
 
-## Write the reply
+一個決定可以涵蓋多個專案，例如一個集合中的每個 PR 等待合併。對於每個專案，收集其連結、對使用者改變的內容、你的選擇背後的證據、風險，以及你的選擇。對於一個決定需要的但你不知道的事實，寫「未知」。省略你沒有擁有的連結。
 
-Spend words on the calls, not on the story. Keep what happened under 100 words, not counting pictures, and shorter when less happened. Leave out work that changed nothing for the user. Give each item about 30 words. The reply grows with the number of items: two items need well under 150 words in all, not counting pictures, and thirty need far more. Never cut items or shrink them to stay under a word count: no count in place of a list, and no link in place of an item. A link can add depth, but the reply alone must be enough to decide.
+<a id="write-the-reply"></a>
 
-Open with one short sentence that names what waits on the user, or says nothing does. The action items give the detail. If nothing happened and nothing waits on the user, say so and stop.
+## 寫回覆
 
-Then show what happened, pictures first. Embed inline the screenshots and videos the work produced, then any diagram that explains a change. Then sum up in one short bullet per thing the user asked for: what came of it, and whether it is done, still running, failed, or not checked. Write each line the way you would say it out loud: "Search was slow from a missing index", not "Search review: done" or "Slow search: missing index". Name any bug found and fixed on the way. Each line must stay true when read alone. Never mark something done that still waits on the user, and leave out anything the action items say. Under the summary, give at most three short lines that change what the user knows or must do. Then name in one line any work left that you can do yourself.
+把字數花在決策上，而不是故事上。發生的事情控制在 100 字以內，不計圖片，若事情較少則更短。省略對使用者沒有影響的工作。每個專案約 30 字。回覆長度隨專案數量增加：兩個專案總字數應遠低於 150 字，不計圖片，三十個專案則需要多得多。切勿為了符合字數限制而刪減專案或縮短內容：不要用計數取代清單，也不要用連結取代專案。連結可以增加深度，但僅憑回覆本身必須足以做出決定。
 
-Then list the action items. Ask the call the user owns, such as merge, approve, or pick, and give your pick. A step you would take first goes in your pick. So does anything that must happen first, and anything that cannot be undone. Give the number or link of each PR, issue, or agent a call is about, also in a call between options.
+以一句短話開頭，指出等待使用者處理的事項，或說明沒有待辦事項。行動專案提供詳細資訊。若沒有發生任何事，也沒有等待使用者的事項，請如此說明並結束。
 
-Fit the shape to the call. A call about one item is one bullet: the call, your pick, what it changes for users, the evidence behind your pick, and its risk, with the item named once. When items share a call, write the call and your pick once, then give each item its own bullet, riskiest first: its link and name, what it changes for users, the evidence behind your pick, and its risk. Name an item's pick only where it differs from the call's. Give each item's risk even when it is low, such as "Low risk: only the colors change." Say what waiting costs only when it is more than a delay, such as a deadline or lost data.
+接著展示發生的事情，圖片優先。內嵌工作產生的截圖和影片，然後是解釋變更的圖表。接著針對使用者要求的每件事，用一個短專案符號總結：結果如何，以及狀態是完成、仍在執行、失敗或未檢查。每行寫法要像口語表達：「搜尋因缺少索引而變慢」，而非「搜尋審查：完成」或「搜尋變慢：缺少索引」。指出途中發現並修復的任何錯誤。每行單獨閱讀時必須保持真實。切勿將仍等待使用者的事項標記為完成，並省略行動專案中已提及的內容。在總結下方，提供最多三行短文字，說明改變使用者認知或必須採取行動的內容。然後用一行說明你可以自行處理的剩餘工作。
 
-For a call between options, give every option the work weighed, each with what it gets the user and what it costs, and the current state when there is one. Those costs are the call's risk, so add no separate risk line. When the screenshots above show the options, write each option's gain and cost under its screenshot.
+接著列出行動專案。提出使用者負責的決策，例如合併、核准或選擇，並給出你的建議。你會優先採取的步驟應包含在你的建議中。任何必須先發生的事項，以及任何無法撤銷的事項，也應包含在內。提供每個決策相關的 PR、issue 或 agent 的編號或連結，在選項之間的決策中也同樣如此。
 
-## Visuals
+讓格式符合決策型別。關於單一專案的決策是一個專案符號：決策、你的建議、對使用者的影響、支援你建議的證據，以及風險，專案名稱只提及一次。當多個專案共享同一決策時，決策和你的建議只寫一次，然後為每個專案提供獨立的專案符號，風險最高的優先：其連結和名稱、對使用者的影響、支援你建議的證據，以及風險。僅當專案的建議與決策的建議不同時，才標明專案的建議。即使風險低，也要說明每個專案的風險，例如「風險低：只有顏色改變」。僅當等待的代價超過延遲時，才說明等待的代價，例如截止日期或資料遺失。
 
-A visual is a picture: a screenshot, a video, a Mermaid diagram, a chart or diagram from `/visualize`, or a generated image. A Markdown table is not a visual, even with before and after columns.
+對於選項之間的決策，列出所有選項的權衡，每個選項說明使用者獲得什麼、付出什麼代價，以及目前的狀態（如果有的話）。這些代價就是決策的風險，因此不要另外新增風險行。當上方的截圖顯示選項時，將每個選項的獲益和代價寫在其截圖下方。
 
-When something is easier to grasp as a picture than as sentences, draw it: how a design or system works, a PR stack or dependency chain with each PR's state, a before and after of a fix, or options side by side. Never draw a status list, a list of action items, or boxes with nothing connecting them. Never give a fact twice, in text or across visuals.
+<a id="visuals"></a>
 
-Keep each visual small enough to read at a glance: at most six boxes, with at most eight words in each. Write labels as plain words a person would say, not tags like "Tests: pass". A fact that needs a sentence belongs in the text, or nowhere.
+## 視覺內容
 
-Embed screenshots and videos inline when the change is visible, not only as links. If a visible change has none, mark its summary line "No screenshot yet," and say there what changed on screen. Draw diagrams and charts from facts you have: a Mermaid diagram for how things connect and a `/visualize` chart for numbers. Never invent a number, and never draw or generate a picture of a screen you did not capture. Link only artifacts that exist.
+視覺內容是指圖片：截圖、影片、Mermaid 圖表、來自 `/visualize` 的圖表或圖形，或生成的圖片。Markdown 表格不是視覺內容，即使有前後對比欄位也是如此。
+
+當某事物用圖片比用句子更容易理解時，請繪製它：設計或系統的運作方式、每個 PR 狀態的 PR 堆疊或依賴鏈、修復的前後對比，或並排的選項。切勿繪製狀態清單、行動專案清單，或沒有連線的方框。切勿重複提供事實，無論是在文字中還是跨視覺內容。
+
+保持每個視覺內容小到可以一眼讀懂：最多六個方框，每個方框最多八個字。標籤寫成普通人會說的自然語言，而非像「測試：透過」這樣的標籤。需要一句話才能說清的事實應放在文字中，或完全不提。
+
+當變更可見時，內嵌截圖和影片，而不僅是連結。如果可見變更沒有截圖，在其總結行標記「尚無截圖」，並說明螢幕上發生了什麼變化。根據已知事實繪製圖表和圖形：用 Mermaid 圖表表示事物之間的連線，用 `/visualize` 圖表表示數字。切勿捏造數字，也切勿繪製或生成你未擷取的螢幕圖片。僅連結實際存在的產物。

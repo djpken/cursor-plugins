@@ -1,23 +1,31 @@
 ---
 name: get-pr-comments
-description: Fetch and summarize review comments from the active pull request
+description: "擷取並摘要來自目前 pull request 的審查意見"
 ---
 
-# Get PR comments
+<a id="get-pr-comments"></a>
 
-## Trigger
+# 取得 PR 意見
 
-Need a concise, actionable summary of feedback on the active pull request.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發
 
-1. Resolve the active PR for the current branch.
-2. Fetch review comments and discussion comments.
-3. Group feedback by severity and actionability.
-4. Return a concise action list.
+需要一份簡潔且可執行、針對目前 pull request 回饋的摘要。
 
-## Output
+<a id="workflow"></a>
 
-- Grouped feedback summary
-- Action list ordered by priority
-- Open questions that still need clarification
+## 工作流程
+
+1. 解析目前分支對應的 active PR。
+2. 擷取審查意見與討論意見。
+3. 依嚴重程度與可執行性對回饋進行分組。
+4. 回傳一份簡潔的行動清單。
+
+<a id="output"></a>
+
+## 輸出
+
+- 分組後的回饋摘要
+- 依優先順序排列的行動清單
+- 仍需釐清的未決問題

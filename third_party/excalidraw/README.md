@@ -1,16 +1,18 @@
 # Excalidraw
 
-Cursor plugin that connects agents to [Excalidraw](https://github.com/excalidraw/excalidraw-mcp) through Excalidraw's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Excalidraw 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Excalidraw](https://github.com/excalidraw/excalidraw-mcp)。
 
-Draw and export hand-drawn diagrams from chat.
+從聊天中繪製並匯出手繪風格圖表。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Excalidraw**.
-3. Click **Install**.
+## 安裝
 
-Or run `/add-plugin excalidraw` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Excalidraw**。
+3. 點選 **安裝**。
+
+或在聊天中執行 `/add-plugin excalidraw`。
 
 ## MCP
 
@@ -25,34 +27,44 @@ Or run `/add-plugin excalidraw` in chat.
 }
 ```
 
-No authentication is required; the server covers public repositories only.
+不需要驗證；伺服器僅涵蓋公開儲存庫。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-No account is needed. The hosted server renders diagrams as interactive MCP App views in clients that support them, and can export `.excalidraw` files anywhere.
+## 在連線之前
 
-## What agents can do
+不需要帳號。託管伺服器會在支援的客戶端中將圖表渲染為互動式 MCP 應用檢視，並可將 `.excalidraw` 檔案匯出到任何位置。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 分類 | 功能 |
 | --- | --- |
-| Draw | Create a diagram view from elements the agent describes |
-| Export | Export the current drawing to an `.excalidraw` file |
-| Checkpoints | Save and restore drawing checkpoints within a session |
+| 繪製 | 根據代理描述的元素建立圖表檢視 |
+| 匯出 | 將當前繪製內容匯出為 `.excalidraw` 檔案 |
+| 檢查點 | 在會話中儲存和恢復繪製檢查點 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱和結構的來源依據。
 
-## Notes
+<a id="notes"></a>
 
-- This is the open-source Excalidraw MCP server. Excalidraw+ workspaces use a separate authenticated endpoint (`https://api.excalidraw.com/api/v1/mcp`) that this plugin does not configure.
-- The bare origin `https://mcp.excalidraw.com` redirects to `/mcp`; the plugin uses the final URL.
+## 注意事項
 
-## Docs
+- 這是開源的 Excalidraw MCP 伺服器。Excalidraw+ 工作區使用一個獨立且需要驗證的端點 (`https://api.excalidraw.com/api/v1/mcp`)，此外掛不會設定該端點。
+- 裸來源 `https://mcp.excalidraw.com` 會重新導向至 `/mcp`；外掛使用最終 URL。
 
-- excalidraw-mcp on GitHub: https://github.com/excalidraw/excalidraw-mcp
-- Server URL: https://mcp.excalidraw.com/mcp
+<a id="docs"></a>
 
-Logo is Excalidraw's official mark, from the `excalidraw` GitHub organization.
+## 文件
 
-## License
+- excalidraw-mcp 在 GitHub：https://github.com/excalidraw/excalidraw-mcp
+- 伺服器 URL：https://mcp.excalidraw.com/mcp
+
+標誌是 Excalidraw 官方標記，來自 `excalidraw` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

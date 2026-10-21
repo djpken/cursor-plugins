@@ -1,11 +1,15 @@
-# Keep Traditional Chinese documentation beside the upstream files
+> 狀態：已由 [0002-traditional-chinese-primary-documents.md](0002-traditional-chinese-primary-documents.md) 取代。以下保留先前的雙語對應檔決策供追溯。
 
-This fork uses `zh-TW` as its default branch and carries standard written Taiwan Traditional Chinese documentation in `*.zh-TW.md` sibling files. English files remain the source of truth. The only English README edit is a navigation banner linking to the Chinese README and document index.
+<a id="keep-traditional-chinese-documentation-beside-the-upstream-files"></a>
 
-Translate the README files, every `SKILL.md`, their Markdown reference documents, and reader-facing guides. Preserve frontmatter keys other than `description`, including `name`, byte for byte. Preserve code blocks, inline code, commands, paths, URLs, and plugin manifests. Do not translate `AGENTS.md`, `CLAUDE.md`, `RELEASE-NOTES.md`, or changelogs.
+# 繁體中文檔案與上游原檔並存
 
-Sibling files keep the executable skill sources stable and make upstream merges easier. Reference links retain their English destinations for source comparison; the Chinese index links directly to translated documents. Chinese headings retain explicit anchors for the original English headings so existing fragment links continue to work.
+此 fork 使用 `zh-TW` 作為預設分支，並以 `*.zh-TW.md` 對應檔提供臺灣繁體中文書面檔案。英文原檔是核對依據。英文 README 只新增導覽提示，連向中文 README 與檔案索引。
 
-`harness/pstack` is generated. Translate the corresponding `pstack` sources and run `node scripts/generate-pstack-harness-trees.mjs`; do not maintain independent translations in the generated tree or change the generator to support localization.
+翻譯 README、每份 `SKILL.md`、其 Markdown 參考檔案與閱讀指南。frontmatter 除了 `description` 外，其他欄位包含 `name` 都逐位元組保留。程式碼區塊、inline code、指令、路徑、URL 與 plugin manifest 保持原樣。不翻譯 `AGENTS.md`、`CLAUDE.md`、`RELEASE-NOTES.md` 與 changelog。
 
-Translations are machine-assisted. Verify source coverage, invocation names, frontmatter, code, link destinations, and Taiwan written register before publishing. Update a sibling whenever its English source changes; the English source governs if their meanings differ.
+對應檔讓執行中的 skill 來源保持穩定，也便於合併上游更新。參考連結保留英文目的地，方便核對原文；中文索引直接連向譯文。中文標題保留英文標題的明確錨點，讓既有片段連結繼續有效。
+
+`harness/pstack` 是產生檔目錄。翻譯對應的 `pstack` 來源，再執行 `node scripts/generate-pstack-harness-trees.mjs`；不在產生檔目錄獨立維護翻譯，也不為了在地化而修改 generator。
+
+翻譯由機器輔助完成。發布前驗證來源涵蓋範圍、呼叫名稱、frontmatter、程式碼、連結目的地與臺灣書面語。英文來源變更時，同步更新中文對應檔；兩者意思有落差時，以英文來源為準。

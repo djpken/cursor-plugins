@@ -1,16 +1,18 @@
 # Customer.io
 
-Cursor plugin that connects agents to [Customer.io](https://customer.io) through Customer.io's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Customer.io 官方遠端 [Model Context Protocol](https://customer.io) 伺服器，將代理連線到 [Customer.io](https://modelcontextprotocol.io/)。
 
-Inspect workspace data, build and manage campaigns and one-time sends, work with segments and people, and query the Journeys and Data Pipelines APIs in the signed-in Customer.io workspace.
+檢視工作區資料、建立和管理活動與一次性傳送、處理區段和人群，以及在已登入的 Customer.io 工作區中查詢 Journeys 和 Data Pipelines API。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Customer.io**.
-3. Click **Install**, then complete the Customer.io sign-in prompt.
+## 安裝
 
-Or run `/add-plugin customer-io` in chat.
+1. 開啟 **Cursor Settings → Plugins**。
+2. 搜尋 **Customer.io**。
+3. 點選 **Install**，然後完成 Customer.io 登入提示。
+
+或在聊天中執行 `/add-plugin customer-io`。
 
 ## MCP
 
@@ -25,41 +27,51 @@ Or run `/add-plugin customer-io` in chat.
 }
 ```
 
-Auth is OAuth 2.1 with PKCE and Dynamic Client Registration. Cursor registers itself and prompts for Customer.io sign-in when the plugin connects — there is no API key or client ID to configure. During the flow you choose which workspaces and scopes to grant.
+驗證採用 OAuth 2.1 搭配 PKCE 和 Dynamic Client Registration。Cursor 會自行註冊，並在外掛連線時提示 Customer.io 登入，無需設定 API 金鑰或客戶 ID。在流程中，您可以選擇授予的工作區和許可權範圍。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-A Customer.io account admin has to turn MCP on first under **Settings → AI**, including the separate toggles for editing live data and reading sensitive data. Until that happens the connection will fail at authorization.
+## 連線前
 
-This plugin points at the **US** region. If your account is in the EU, change the server URL to `https://mcp-eu.customer.io/mcp`.
+Customer.io 帳戶管理員必須先在 **Settings → AI** 中開啟 MCP，包括編輯真實資料和讀取敏感資料的獨立開關。在此之前，連線會在驗證階段失敗。
 
-## What agents can do
+此外掛指向 **US** 區域。如果您的帳戶位於 EU，請將伺服器 URL 改為 `https://mcp-eu.customer.io/mcp`。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 分類 | 功能 |
 | --- | --- |
-| Workspace context | Prime the agent with workspace structure, then browse object and attribute schemas |
-| People & objects | Look up people, objects, and their attributes, relationships, and activity |
-| Segments | Create, inspect, and query segments and their membership |
-| Campaigns & sends | Build and manage campaigns, newsletters, and one-time sends |
-| Data pipelines | Query CDP sources, destinations, and delivery data |
+| 工作區環境 | 先提供代理工作區結構，然後瀏覽物件和屬性結構 |
+| 人群與物件 | 查詢人群、物件及其屬性、關係和活動 |
+| 區段 | 建立、檢視和查詢區段及其成員 |
+| 活動與傳送 | 建立和管理活動、電子報和一次性傳送 |
+| 資料管道 | 查詢 CDP 來源、目的地和傳送資料 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱和結構的唯一來源。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Customer.io user who authorizes the connection and are scoped to the workspaces granted during OAuth.
-- The tool surface is deliberately small: rather than one tool per object, the server exposes a context primer, a schema browser, and verb-scoped API proxies that keep reads separate from writes and deletes so read tools can be auto-approved.
-- Set the transport type to `http`. Customer.io does not support the `sse` transport.
-- EU-region accounts must use `https://mcp-eu.customer.io/mcp`; the US URL will not serve EU data.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Customer.io 使用者身份執行，並僅限於 OAuth 期間授予的工作區。
+- 工具表面刻意保持簡潔：並非每個物件一個工具，伺服器提供環境說明、結構瀏器和以動詞為範圍的 API 代理，將讀取與寫入和刪除分開，以便讀取工具可自動核准。
+- 設定傳輸型別為 `http`。Customer.io 不支援 `sse` 傳輸。
+- EU 區域帳戶必須使用 `https://mcp-eu.customer.io/mcp`；美國 URL 不會提供 EU 資料。
+
+<a id="docs"></a>
+
+## 文件
 
 - Customer.io MCP: https://docs.customer.io/ai/mcp/
-- Connect an IDE: https://docs.customer.io/ai/mcp/ide/
-- Server URL: https://mcp.customer.io/mcp
+- 連線 IDE: https://docs.customer.io/ai/mcp/ide/
+- 伺服器 URL: https://mcp.customer.io/mcp
 
-Logo is Customer.io's official mark, from the `customerio` GitHub organization.
+標誌是 Customer.io 官方標識，來自 `customerio` GitHub 組織。
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

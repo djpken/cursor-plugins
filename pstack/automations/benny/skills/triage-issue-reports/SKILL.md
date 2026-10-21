@@ -1,217 +1,249 @@
 ---
 name: triage-issue-reports
-description: Triage Slack issue reports with one thread-only verdict, evidence review, cause-aware routing, tracker dedupe, and fail-closed ticket creation. Use only from the configured Benny triage automation.
+description: "使用單一僅限於該討論串的判定、證據審查、考量成因的路由、追蹤器去重，以及失敗即關閉的工單建立，來分級 Slack 問題報告。僅從已設定的 Benny 分級自動化中使用。"
 disable-model-invocation: true
 ---
 
-# Triage issue reports
+<a id="triage-issue-reports"></a>
 
-Classify one Slack report and post one useful verdict in its source thread. Create a tracker issue only for a clear, new bug. Do not reproduce or fix it here.
+# 分級問題報告
 
-Load the external Benny configuration supplied by the automation. If the config is missing, malformed, or incomplete, stop without posting or writing to the tracker.
+分類單一 Slack 報告，並在其來源討論串中發布一個有用的判定。僅針對明確且新的錯誤建立追蹤器問題。不要在此處重現或修復它。
 
-## Hard safety rules
+載入由自動化提供的外部 Benny 設定。如果設定缺失、格式錯誤或不完整，請停止，不要發布或寫入追蹤器。
 
-- The source channel and root thread coordinates are immutable.
-- Never post a root message in the source channel.
-- Never post to another channel, broadcast a reply, send a DM, or start a replacement thread.
-- Preflight the source parent before any tracker write and immediately before the verdict post.
-- If the parent is missing, deleted, inaccessible, or uncertain, stop with no writes.
-- Post one substantive verdict. Do not narrate progress.
-- The coordinator is the only Slack poster.
-- Delegated workers return findings only. They must be read-only and receive no Slack credentials or write actions.
-- Every child prompt must forbid `SendSlackMessage`, `PostToSlack`, `chat.postMessage`, and every other Slack write.
-- If worker isolation cannot enforce those limits, do the work in the coordinator.
-- Never create an issue that cannot link back to the source thread.
-- Prefer no ticket over a guessed or duplicate ticket.
-- Apply pstack's `principle-separate-before-serializing-shared-state` to source coordinates.
-- Apply pstack's `principle-minimize-reader-load` and `unslop` skills to the final verdict.
+<a id="hard-safety-rules"></a>
 
-## 1. Freeze source coordinates
+## 硬性安全規則
 
-Before making a work list or delegating:
+- 來源頻道與根討論串座標是不可變的。
+- 絕不在來源頻道中發布根訊息。
+- 絕不發布到其他頻道、廣播回覆、傳送私訊，或啟動替代討論串。
+- 在任何追蹤器寫入之前，以及判定發布之前，立即對來源父級進行預檢。
+- 如果父級缺失、已刪除、無法存取或不確定，請停止且不進行任何寫入。
+- 發布一個實質性的判定。不要敘述進度。
+- 協調者是唯一的 Slack 發布者。
+- 委託的工作者僅返回發現結果。它們必須是唯讀的，且不得接收任何 Slack 憑證或寫入動作。
+- 每個子提示詞必須禁止 `SendSlackMessage`、`PostToSlack`、`chat.postMessage`，以及任何其他 Slack 寫入。
+- 如果工作者隔離無法強制執行這些限制，請在協調器中執行工作。
+- 絕不建立無法連結回來源討論串的問題。
+- 寧可不建立工單，也不要建立猜測或重複的工單。
+- 將 pstack 的 `principle-separate-before-serializing-shared-state` 套用到來源座標。
+- 將 pstack 的 `principle-minimize-reader-load` 和 `unslop` 技能套用到最終判定。
 
-1. Read `source_channel_id` from the trigger.
-2. Require it to equal the configured source channel.
-3. Set `SOURCE_THREAD_TS` to `trigger.thread_ts` when present. Otherwise use `trigger.ts`.
-4. Require a nonempty `SOURCE_THREAD_TS`.
-5. Store `SOURCE_CHANNEL_ID` and `SOURCE_THREAD_TS` as immutable values.
-6. Read the thread and verify that its root has exactly those coordinates.
-7. Fetch a stable source permalink.
+<a id="1-freeze-source-coordinates"></a>
 
-Every later source read and post must use those stored values. Never replace them with a reply timestamp or an operations-thread timestamp.
+## 1. 凍結來源座標
 
-## 2. Read the whole report
+在製作工作清單或委託之前：
 
-Read the root and current replies before deciding.
+1. 從觸發器中讀取 `source_channel_id`。
+2. 要求它等於已設定的來源頻道。
+3. 如果存在，將 `SOURCE_THREAD_TS` 設為 `trigger.thread_ts`。否則使用 `trigger.ts`。
+4. 要求 `SOURCE_THREAD_TS` 非空。
+5. 將 `SOURCE_CHANNEL_ID` 和 `SOURCE_THREAD_TS` 儲存為不可變值。
+6. 讀取討論串並驗證其根是否具有確切的這些座標。
+7. 取得穩定的來源永久連結。
 
-Capture:
+之後所有的來源讀取和發布都必須使用這些儲存的值。絕不要用回覆時間戳記或操作討論串時間戳記取代它們。
 
-- Reporter wording
-- Product version, app build, environment, and platform when present
-- Expected behavior
-- Observed behavior
-- Frequency and trigger
-- Error text or stack signature
-- Existing issue, commit, or pull request links
-- Any explicit statement that someone is already fixing it
+<a id="2-read-the-whole-report"></a>
 
-Inspect every relevant attachment.
+## 2. 閱讀完整報告
 
-- Read screenshots at full useful resolution.
-- Review video for the state transition that separates correct and broken behavior.
-- Read logs, traces, and crash text for concrete signatures.
-- If media needs specialist review, use a read-only media worker and ask a narrow question. The worker returns findings only.
-- If an attachment cannot be read, say so in the verdict. Do not invent what it shows.
+在做出決定之前，閱讀根訊息和目前的回覆。
 
-Use evidence already in the thread before asking the reporter for more.
+記錄：
 
-## 3. Trace cause before routing
+- 報告者的措辭
+- 產品版本、應用程式建置、環境和平臺（如果存在）
+- 預期行為
+- 觀察到的行為
+- 頻率和觸發條件
+- 錯誤文字或堆疊簽名
+- 現有的問題、commit 或 pull request 連結
+- 任何明確宣告有人正在修復的陳述
 
-Do a bounded source and history pass before choosing an owner or destination. Use pstack's `how` skill to trace the path from the reported action to the observed result. Use `why` when the report looks like a regression or touches defensive code.
+檢查所有相關的附件。
 
-1. Identify the likely code path from the reported action to the observed result.
-2. Check whether the visible symptom belongs to that code path or a dependency below it.
-3. Check recent changes when the report looks like a regression.
-4. Check whether a merged commit or open pull request already addresses the same symptom.
-5. Separate confirmed facts from hypotheses.
+- 以完整且有用的解析度閱讀螢幕截圖。
+- 檢視影片，找出區分正確行為和錯誤行為的狀態轉換。
+- 閱讀紀錄、追蹤和崩潰文字以獲取具體簽名。
+- 如果媒體需要專家審查，請使用唯讀媒體工作者並提出一個狹窄的問題。工作者僅返回發現結果。
+- 如果無法讀取附件，請在判定中說明。不要捏造其顯示的內容。
 
-This pass does not need a complete root cause. It must be strong enough to avoid routing a visible symptom to the wrong owner.
+在向報告者索取更多資訊之前，先使用討論串中已有的證據。
 
-If the repository cannot be read, do not guess a code owner. Continue with a conservative classification and say that cause tracing was unavailable.
+<a id="3-trace-cause-before-routing"></a>
 
-## 4. Classify
+## 3. 在路由前追蹤成因
 
-Choose one category.
+在選擇擁有者或目的地之前，進行有界的來源和歷史檢查。使用 pstack 的 `how` 技能來追蹤從報告動作到觀察結果的路徑。如果報告看起來像回歸或涉及防禦性程式碼，請使用 `why`。
 
-### Bug
+1. 識別從報告動作到觀察結果的可能程式碼路徑。
+2. 檢查可見症狀是否屬於該程式碼路徑或其下方的相依性。
+3. 如果報告看起來像回歸，請檢查最近的變更。
+4. 檢查已合併的 commit 或開啟的 pull request 是否已處理相同的症狀。
+5. 將確認的事實與假設分開。
 
-Something violates intended behavior. Examples include wrong output, broken state, an error, a crash, a hang, a silent no-op, or a regression.
+此檢查不需要完整的根本原因。它必須足夠強大，以避免將可見症狀路由到錯誤的擁有者。
 
-### Performance
+如果無法讀取儲存庫，不要猜測程式碼擁有者。繼續進行保守的分級，並說明成因追蹤不可用。
 
-The report describes measurable slowness, excess memory, battery drain, jank, or another resource problem. Treat it as a bug, but preserve measurements and profiles.
+<a id="4-classify"></a>
 
-### Feature request
+## 4. 分類
 
-The current behavior appears intentional and the reporter wants a different behavior or affordance.
+選擇一個類別。
 
-### Question or feedback
+<a id="bug"></a>
 
-The report asks how something works, expresses a preference without a concrete defect, or gives general feedback.
+### 錯誤
 
-### Reroute
+某些內容違反了預期行為。範例包括錯誤輸出、損壞的狀態、錯誤、崩潰、掛起、靜默無操作，或回歸。
 
-Cause tracing shows that another configured destination owns the issue.
+<a id="performance"></a>
 
-When the bug versus feature line is unclear, do not file. The one verdict may ask one focused question and use the `other` marker.
+### 效能
 
-## 5. Apply configured routing
+報告描述了可量測的緩慢、過多記憶體、電池消耗、卡頓或其他資源問題。將其視為錯誤，但保留量測值和剖析結果。
 
-Read the optional routing map from `routing.map_path`.
+<a id="feature-request"></a>
 
-- Match on confirmed product area, code path, or error signature.
-- A visible symptom alone is not enough when cause tracing points elsewhere.
-- If no route matches, say the owner is unclear. Do not guess.
-- Do not cross-post. Tell the reporter where to take the issue in the source thread.
+### 功能請求
 
-Owner pings are off by default. A ping is allowed only when all of these hold:
+目前的行為似乎是預設的，而報告者希望有不同的行為或介面元素。
 
-1. The routing map explicitly names the owner.
-2. The config allows that ping type.
-3. The item is a feature request that needs owner input, or recent history identifies a likely regression author with strong evidence.
-4. The owner is not a broad on-call group.
+<a id="question-or-feedback"></a>
 
-No other case gets a ping.
+### 問題或回饋
 
-## 6. Use the issue-tracker adapter
+報告詢問某事物如何運作、表達偏好但沒有具體缺陷，或提供一般回饋。
 
-The tracker is an adapter, not a required vendor. A Linear adapter is one valid example. A GitHub Issues adapter or another tracker may implement the same contract.
+<a id="reroute"></a>
 
-The configured adapter must provide:
+### 重新路由
 
-- Search issues by text, state, label, source URL, and date range
-- Read one issue and its links
-- Create an issue with title, body, status, labels, and source URL
-- Update an existing issue without replacing unrelated fields
-- Add a source link and recurrence note
-- Cancel, close, or delete an issue created by this run if the Slack handoff fails
+成因追蹤顯示另一個已設定的目的地擁有該問題。
 
-If a required operation is unavailable, fail closed for that write.
+當錯誤與功能請求的界線不明確時，不要提交。單一判定可以提出一個專注的問題，並使用 `other` 標記。
 
-Resolve configured team, project, status, and labels at runtime. Do not invent IDs, create labels, assign owners, or set priority unless the config explicitly requires it.
+<a id="5-apply-configured-routing"></a>
 
-## 7. Dedupe
+## 5. 套用已設定的路由
 
-Always check whether this source permalink is already linked to a tracker issue or a prior triage reply. If so, do not post or create a duplicate.
+從 `routing.map_path` 讀取選用的路由地圖。
 
-For bugs and performance reports, search the tracker using:
+- 根據確認的產品領域、程式碼路徑或錯誤簽名進行匹配。
+- 當成因追蹤指向其他地方時，僅憑可見症狀是不夠的。
+- 如果沒有路由匹配，請說明擁有者不明確。不要猜測。
+- 不要交叉發布。在來源討論串中告訴報告者應將問題帶到哪裡。
 
-- Exact error or crash signature
-- Product area
-- Trigger
-- Symptom
-- Version or date window
-- Suspected regression commit
-- Source permalink
+擁有者通知預設為關閉。僅當以下所有條件都成立時，才允許通知：
 
-Choose one outcome:
+1. 路由地圖明確指名擁有者。
+2. 設定允許該通知型別。
+3. 該專案是需要擁有者輸入的功能請求，或最近的歷史記錄識別出可能的回歸作者並有強勁證據。
+4. 擁有者不是廣泛的值班群組。
 
-- Confident duplicate: same signature, or the same area, trigger, and symptom, or a confirmed shared cause.
-- Possibly related: a shared cause is plausible but not proven.
-- Weak resemblance: similarity is superficial.
-- No match.
+其他情況不進行通知。
 
-For a confident duplicate, update the existing issue with the source permalink and one short recurrence note. Do not reopen, relabel, or reassign it unless the config says to.
+<a id="6-use-the-issue-tracker-adapter"></a>
 
-For a possible match, link it in the verdict as uncertain and create nothing.
+## 6. 使用問題追蹤器介面卡
 
-A long-closed issue is a regression lead, not automatically a live duplicate.
+追蹤器是介面卡，而非必需的供應商。Linear 介面卡是一個有效的範例。GitHub Issues 介面卡或其他追蹤器可以實現相同的合約。
 
-## 8. Decide whether to create
+已設定的介面卡必須提供：
 
-Create only when all of these are true:
+- 按文字、狀態、標籤、來源 URL 和日期範圍搜尋問題
+- 讀取單一問題及其連結
+- 建立具有標題、內容、狀態、標籤和來源 URL 的問題
+- 更新現有問題而不取代無關欄位
+- 新增來源連結和復發註記
+- 如果 Slack 交接失敗，取消、關閉或刪除由此次執行建立的問題
 
-1. The classification is bug or performance.
-2. The behavior is clearly broken.
-3. The issue is still live or not known to be fixed.
-4. Dedupe found no confident or plausible live match.
-5. The source parent and permalink passed preflight.
-6. The tracker target fields resolved.
-7. The adapter can compensate if the verdict post fails.
+如果必需的作業不可用，請對該寫入操作失敗即關閉。
 
-Never create for a feature request, question, feedback item, reroute, possible duplicate, confident duplicate, or already-fixed issue.
+在執行時解析已設定的團隊、專案、狀態和標籤。除非設定明確要求，否則不要捏造 ID、建立標籤、指派擁有者或設定優先順序。
 
-The new issue must be self-contained:
+<a id="7-dedupe"></a>
 
-- Plain title that names the area and symptom
-- Reporter quote
-- Expected and observed behavior
-- Version and environment, or `unknown`
-- Trigger and frequency
-- Source thread permalink
-- Short cause-tracing findings with hypotheses labeled as hypotheses
-- Inline screenshot or representative video frame when supported
-- Links to remaining artifacts
-- Configured intake status and labels
+## 7. 去重
 
-Do not put a guessed root cause in the title.
+始終檢查此來源永久連結是否已連結到追蹤器問題或先前的分級回覆。如果是，不要發布或建立重複專案。
 
-## 9. Post one verdict
+對於錯誤和效能報告，使用以下內容搜尋追蹤器：
 
-Run a fresh source-parent preflight. Then post exactly one reply with `channel=SOURCE_CHANNEL_ID` and `thread_ts=SOURCE_THREAD_TS`.
+- 精確的錯誤或崩潰簽名
+- 產品領域
+- 觸發條件
+- 症狀
+- 版本或日期範圍
+- 疑似回歸 commit
+- 來源永久連結
 
-Never call a source-channel posting action without a nonempty `thread_ts`.
+選擇其中一個結果：
 
-Keep the reply short:
+- 確定的重複專案：具有相同的簽章，或相同的區域、觸發條件與症狀，或已確認的共同原因。
+- 可能相關：共同原因合理但尚未證實。
+- 弱相似性：相似之處僅屬表面。
+- 無匹配專案。
 
-- Lead with the outcome.
-- Link the existing or new tracker issue when there is one.
-- Mention a reroute or one missing fact when needed.
-- Include at most one allowed owner ping.
-- End with exactly one marker line.
+對於確定的重複專案，請使用來源永久連結和一條簡短的復發註記來更新現有的 issue。除非設定中另有規定，否則不要重新開啟、重新貼上標籤或重新指派該 issue。
 
-Marker contract:
+對於可能的匹配專案，請在判定結果中將其連結為不確定專案，且不要建立任何新專案。
+
+長期關閉的 issue 是回歸的線索，而非自動視為現行的重複專案。
+
+<a id="8-decide-whether-to-create"></a>
+
+## 8. 決定是否建立
+
+僅當以下所有條件皆為真時才建立：
+
+1. 分類為 bug 或效能問題。
+2. 行為明顯已損壞。
+3. 該 issue 仍為現行狀態，或未知是否已修復。
+4. 去重檢查未找到確定的或合理的現行匹配專案。
+5. 來源父級與永久連結已透過預檢。
+6. 追蹤器的目標欄位已解析。
+7. 若判定結果的釋出失敗，介面卡可以進行補償。
+
+切勿為功能請求、問題、回饋專案、重新路由、可能的重複專案、確定的重複專案或已修復的 issue 建立新專案。
+
+新的 issue 必須是自包含的：
+
+- 簡潔的標題，指明區域與症狀
+- 報告者引述
+- 預期行為與觀察到的行為
+- 版本與環境，或 `unknown`
+- 觸發條件與頻率
+- 來源討論串永久連結
+- 簡短的成因追蹤發現，並將假設標記為假設
+- 若支援，則內嵌截圖或具代表性的影片畫面
+- 剩餘產物的連結
+- 設定的接收狀態與標籤
+
+不要在標題中放入猜測的根本原因。
+
+<a id="9-post-one-verdict"></a>
+
+## 9. 釋出一個判定結果
+
+執行一次新的來源父級預檢。然後釋出恰好一則包含 `channel=SOURCE_CHANNEL_ID` 和 `thread_ts=SOURCE_THREAD_TS` 的回覆。
+
+切勿在 `thread_ts` 為空的情況下呼叫來源通道的釋出動作。
+
+保持回覆簡短：
+
+- 以結果開頭。
+- 若存在現有的或新的追蹤器 issue，請連結該 issue。
+- 必要時提及重新路由或缺少的一項事實。
+- 最多包含一個允許的擁有者提及。
+- 以恰好一行標記行結尾。
+
+標記合約：
 
 ```text
 [benny:bug]
@@ -221,20 +253,22 @@ Marker contract:
 [benny:other]
 ```
 
-Use only the configured marker strings. The repro automation trusts the marker only when it comes from the configured triage identity in this source thread.
+僅使用設定的標記字串。重現自動化僅在標記來自此來源討論串中設定的分診身分時，才會信任該標記。
 
-After posting, read the same source thread and verify the verdict appears under `SOURCE_THREAD_TS`. If it does not, never retry at the root.
+釋出後，讀取相同的來源討論串，並驗證判定結果是否出現在 `SOURCE_THREAD_TS` 之下。若未出現，切勿在根層級重試。
 
-If this run created a tracker issue and the verdict did not land, use the adapter's compensation action. Verify that the issue is canceled, closed, or deleted. If compensation cannot be verified, report the failure only in the automation run output.
+若此次執行建立了追蹤器 issue 但判定結果未成功釋出，請使用介面卡的補償動作。驗證該 issue 已被取消、關閉或刪除。若無法驗證補償，請僅在自動化執行輸出中報告失敗。
 
-## 10. Watch one follow-up window
+<a id="10-watch-one-follow-up-window"></a>
 
-Watch the source thread for the configured follow-up window, then stop.
+## 10. 監控一個後續視窗
 
-- Answer only a direct question to the triage identity.
-- Apply a concrete correction to the tracker issue when safe.
-- Do not emit a second marker in the same run.
-- Stay out of human coordination and side chatter.
-- Stop early if someone asks the automation to stop.
+監控來源討論串，持續設定的後續視窗時間，然後停止。
 
-Do not extend the window more than once. A new report should start a new run.
+- 僅回答直接針對分診身分的問題。
+- 在安全的情況下，對追蹤器 issue 套用具體的修正。
+- 不要在相同的執行中發出第二個標記。
+- 不要介入人類協調與閒聊。
+- 若有人要求自動化停止，請提前停止。
+
+不要將視窗延長超過一次。新的報告應啟動新的執行。

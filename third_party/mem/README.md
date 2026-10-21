@@ -1,16 +1,18 @@
 # Mem
 
-Cursor plugin that connects agents to [Mem](https://mem.ai) through Mem's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Mem 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Mem](https://mem.ai)。
 
-Capture, search, and organize notes and collections in Mem using semantic search, straight from the editor.
+直接在編輯器中使用語意搜尋，擷取、搜尋並整理 Mem 中的筆記與收藏。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Mem**.
-3. Click **Install**, then complete the Mem sign-in prompt.
+## 安裝
 
-Or run `/add-plugin mem` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Mem**。
+3. 點選 **安裝**，然後完成 Mem 登入提示。
+
+或在聊天中執行 `/add-plugin mem`。
 
 ## MCP
 
@@ -25,33 +27,41 @@ Or run `/add-plugin mem` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for Mem sign-in when the plugin connects.
+驗證方式為 OAuth。Cursor 會在外掛連線時提示 Mem 登入。
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-| Category | Capabilities |
+## 代理可執行的工作
+
+| 分類 | 功能 |
 | --- | --- |
-| Notes | Get, list, search, create, update, trash, restore, and delete notes |
-| Collections | Create and search collections, and add or remove note membership |
-| Attachments | Work with attachments and audio recordings |
+| 筆記 | 取得、列出、搜尋、建立、更新、丟棄、恢復及刪除筆記 |
+| 收藏 | 建立與搜尋收藏，並新增或移除筆記成員 |
+| 附件 | 處理附件與錄音 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱與結構的來源。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Mem user who authorizes the connection.
-- Mem enforces usage quotas. Hitting them returns HTTP 429 with a `UsageQuotaExceeded` or `CommercialUsageLimitRejection` payload.
-- An unauthenticated request to the endpoint failing is expected — Mem documents this as normal behaviour, not a broken connection.
+## 筆記
 
-## Docs
+- 工具呼叫會以授權連線的 Mem 使用者身份執行。
+- Mem 會執行用量限制。達到限制時會返回 HTTP 429，並帶有 `UsageQuotaExceeded` 或 `CommercialUsageLimitRejection` 資料。
+- 未驗證的請求對端點失敗是預期的行為，Mem 將此記錄為正常行為，並非連線故障。
 
-- Mem MCP overview: https://docs.mem.ai/mcp/overview
-- Setup: https://docs.mem.ai/mcp/setup
-- Supported tools: https://docs.mem.ai/mcp/supported-tools
-- Server URL: https://mcp.mem.ai/mcp
+<a id="docs"></a>
 
-Logo is Mem's official mark, from the `mem-labs` GitHub organization.
+## 文件
 
-## License
+- Mem MCP 概覽：https://docs.mem.ai/mcp/overview
+- 設定：https://docs.mem.ai/mcp/setup
+- 支援的工具：https://docs.mem.ai/mcp/supported-tools
+- 伺服器 URL：https://mcp.mem.ai/mcp
+
+Logo 是 Mem 官方標誌，來自 `mem-labs` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

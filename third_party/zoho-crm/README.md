@@ -1,56 +1,68 @@
 # Zoho CRM
 
-Cursor plugin that connects agents to [Zoho CRM](https://www.zoho.com/crm/) through a [Model Context Protocol](https://modelcontextprotocol.io/) server that Cursor hosts and credentials.
+Cursor 外掛，透過 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Zoho CRM](https://www.zoho.com/crm/)，該伺服器由 Cursor 託管並負責憑證處理。
 
-Work with your CRM data: leads, contacts, accounts, deals, and the other modules in your Zoho CRM organization.
+處理您的 CRM 資料：潛在客戶、聯絡人、帳戶、交易，以及您的 Zoho CRM 組織中的其他模組。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Zoho CRM**.
-3. Click **Install**, pick your Zoho data center, then sign in to Zoho when Cursor prompts you.
+## 安裝
 
-Or run `/add-plugin zoho-crm` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Zoho CRM**。
+3. 點選 **安裝**，選擇您的 Zoho 資料中心，然後在 Cursor 提示時登入 Zoho。
+
+或在聊天中執行 `/add-plugin zoho-crm`。
 
 ## MCP
 
-This plugin ships no `mcp.json`, and that is deliberate.
+此外掛不包含 `mcp.json`，這是刻意設計。
 
-Every other connector in this repository either points at a vendor's hosted endpoint or runs a package locally over stdio, so it carries its own server definition. Zoho CRM does not: Cursor runs the server, and the plugin exists only as the opt-in that turns it on for your account. Installing the plugin is what makes the server available; there is no command to run, no endpoint to reach, and no API key or client secret to paste.
+此儲存庫中的其他每個聯結器，不是指向供應商的託管端點，也不是透過 stdio 在本地執行套件，因此各自攜帶伺服器定義。Zoho CRM 則不然：Cursor 執行伺服器，外掛僅作為選入機制，為您的帳戶啟用它。安裝外掛即讓伺服器可用；沒有需要執行指令、沒有需要連線的端點，也沒有需要貼上的 API 金鑰或客戶端密碼。
 
-One consequence worth knowing: because the server is not declared here, you will not find it in a local `mcp.json` and you cannot point another MCP client at it. It is reachable from Cursor only.
+一個值得知道的後果：因為伺服器未在此宣告，您不會在本地 `mcp.json` 中找到它，也不能將其他 MCP 客戶端指向它。它僅從 Cursor 可達。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-Nothing to prepare. Cursor owns the OAuth client, so you do not need a Zoho developer account or an app of your own.
+## 連線前
 
-Pick the data center your Zoho account lives in before you sign in. It matches the domain you use for Zoho, such as `zoho.com` or `zoho.eu`. Zoho CRM is available in the United States, Europe, India, Australia, Japan, Saudi Arabia, the United Kingdom, the United Arab Emirates, and Singapore.
+無需準備任何事項。Cursor 擁有 OAuth 客戶端，因此您不需要 Zoho 開發者帳戶或自己的應用。
 
-## What agents can do
+在登入之前，選擇您的 Zoho 帳戶所在的資料中心。它與您使用的 Zoho 域名相符，例如 `zoho.com` 或 `zoho.eu`。Zoho CRM 在美國、歐洲、印度、澳洲、日本、沙烏地阿拉伯、英國、阿拉伯聯合大公國和新加坡均有提供。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 類別 | 能力 |
 | --- | --- |
-| Records | Read, create, update, and delete records in CRM modules such as leads, contacts, accounts, and deals |
-| Queries | Search records with COQL queries |
-| Settings | Read module and field settings |
-| Users and organization | Read users and organization details |
+| 記錄 | 在 CRM 模組中讀取、建立、更新和刪除記錄，例如潛在客戶、聯絡人、帳戶和交易 |
+| 查詢 | 使用 COQL 查詢搜尋記錄 |
+| 設定 | 讀取模組和欄位設定 |
+| 使用者與組織 | 讀取使用者與組織詳細資訊 |
 
-The server is the source of truth for tool names and schemas.
+伺服器是工具名稱與結構的來源真相。
 
-## Notes
+<a id="notes"></a>
 
-- Access follows whatever the signed-in Zoho user can see. The connector cannot reach records that user has no access to.
-- Some tools create, update, and delete CRM records. Review every tool call before you approve it.
-- Disconnecting is two independent steps: uninstalling the plugin stops Cursor from offering the server, and revoking Cursor's access in your Zoho account settings ends Cursor's access to your data.
+## 注意事項
 
-## Docs
+- 存取範圍遵循登入的 Zoho 使用者所能看到的內容。聯結器無法存取該使用者無權訪問的記錄。
+- 某些工具會建立、更新和刪除 CRM 記錄。在批准之前，請檢視每個工具呼叫。
+- 斷開連線是兩個獨立步驟：解除安裝外掛會停止 Cursor 提供伺服器，而在您的 Zoho 帳戶設定中撤銷 Cursor 的存取權，會結束 Cursor 對您的資料的存取。
 
-- Zoho CRM: https://www.zoho.com/crm/
-- Zoho CRM API: https://www.zoho.com/crm/developer/docs/api/v8/
-- Model Context Protocol: https://modelcontextprotocol.io
+<a id="docs"></a>
 
-Logo is Zoho CRM's official mark, from `zoho.com`.
+## 文件
 
-## License
+- Zoho CRM：https://www.zoho.com/crm/
+- Zoho CRM API：https://www.zoho.com/crm/developer/docs/api/v8/
+- Model Context Protocol：https://modelcontextprotocol.io
+
+標誌是 Zoho CRM 的官方標記，來自 `zoho.com`。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

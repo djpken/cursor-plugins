@@ -1,16 +1,18 @@
 # Interactive Brokers
 
-Cursor plugin that connects agents to [Interactive Brokers](https://www.interactivebrokers.com/en/trading/ai-integrations.php) through Interactive Brokers's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Interactive Brokers 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Interactive Brokers](https://www.interactivebrokers.com/en/trading/ai-integrations.php)。
 
-Review positions, balances, P&L, and draft trade instructions.
+檢視部位、餘額、損益，並起草交易指令。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Interactive Brokers**.
-3. Click **Install**, then complete the Interactive Brokers sign-in prompt.
+## 安裝
 
-Or run `/add-plugin interactive-brokers` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Interactive Brokers**。
+3. 點選 **安裝**，然後完成 Interactive Brokers 登入提示。
+
+或在聊天中執行 `/add-plugin interactive-brokers`。
 
 ## MCP
 
@@ -25,36 +27,46 @@ Or run `/add-plugin interactive-brokers` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for Interactive Brokers sign-in when the plugin connects — there is no client ID or personal access token to configure.
+驗證方式為 OAuth。Cursor 會在外掛連線時提示 Interactive Brokers 登入，不需要設定客戶 ID 或個人存取令牌。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need an Interactive Brokers account. You authorize one specific account during sign-in. Not available to clients in India or Japan.
+## 連線前
 
-## What agents can do
+您需要一個 Interactive Brokers 帳戶。登入時您會授權一個特定帳戶。此服務不適用於印度或日本的客戶。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 分類 | 功能 |
 | --- | --- |
-| Accounts | Balances, summaries, positions, and portfolio allocation |
-| Activity | Orders, trades, and historical transactions |
-| Market data | Price snapshots and history; contract search |
-| Instructions | Draft trade instructions for review in IBKR's AI Instructions tab |
+| 帳戶 | 餘額、摘要、部位與投資組合設定 |
+| 活動 | 訂單、交易與歷史交易紀錄 |
+| 市場資料 | 價格快照與歷史資料；合約搜尋 |
+| 指令 | 起草交易指令，供您在 IBKR 的 AI 指令頁中檢視 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱與結構的來源基準。
 
-## Notes
+<a id="notes"></a>
 
-- Trade instructions never become live orders automatically; you review and submit them inside an IBKR platform.
-- IBKR recommends the `mcp-public` endpoint for custom clients; Grok's catalog lists `/mcp`, which shares the same authorization server.
-- Revoke access from **Client Portal → Settings → Manage Third-Party Consents**.
+## 注意事項
 
-## Docs
+- 交易指令不會自動變成實際訂單；您需在 IBKR 平臺內檢視並提交。
+- IBKR 建議自訂客戶端使用 `mcp-public` 端點；Grok 的目錄列出 `/mcp`，兩者共用相同的授權伺服器。
+- 從 **客戶端入口 → 設定 → 管理第三方同意** 撤銷存取權。
 
-- IBKR AI integrations: https://www.interactivebrokers.com/en/trading/ai-integrations.php
-- Server URL: https://api.ibkr.com/v1/api/mcp-public
+<a id="docs"></a>
 
-Logo is Interactive Brokers's official mark.
+## 檔案
 
-## License
+- IBKR AI 整合：https://www.interactivebrokers.com/en/trading/ai-integrations.php
+- 伺服器 URL：https://api.ibkr.com/v1/api/mcp-public
+
+標誌為 Interactive Brokers 官方標記。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

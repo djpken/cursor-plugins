@@ -1,34 +1,36 @@
 ---
 name: principle-boundary-discipline
-description: "Apply when wiring validation, error handling, or framework adapters. Concentrate guards at system boundaries (CLI, config, network, external APIs); trust internal types and keep business logic in pure functions."
+description: "在連線驗證、錯誤處理或框架介面卡時應用。將防護集中在系統邊界（CLI、設定、網路、外部 API）；信任內部型別並將業務邏輯保持在純函式中。"
 disable-model-invocation: true
 ---
 
-# Boundary Discipline
+<a id="boundary-discipline"></a>
 
-Place validation, type narrowing, and error handling at system boundaries. Trust internal code unconditionally. Business logic lives in pure functions. The shell is thin and mechanical.
+# 邊界規範
 
-**Why:** Scattered validation is noisy, redundant, and gives a false sense of safety. Keep logic out of framework wiring so it can be tested without the framework.
+將驗證、型別縮窄和錯誤處理放在系統邊界。無條件信任內部程式碼。業務邏輯位於純函式中。外殼薄且機械化。
 
-**The pattern:**
-- **At boundaries** (CLI args, config files, external APIs, network protocols): validate, return errors, handle defensively.
-- **Inside the system:** typed data, error propagation, no re-validation. Trust the types.
-- **Across the boundary.** Expose domain concepts, not the boundary's private representation. Keep general-purpose mechanism inside and special-purpose policy at the edge.
+**原因：** 分散的驗證會造成噪音、冗餘，並帶來虛假的安全感。將邏輯從框架連線中抽出，以便可以在不依賴框架的情況下進行測試。
 
-**Applications:**
+**模式：**
+- **在邊界**（CLI 引數、設定檔案、外部 API、網路協議）：驗證、返回錯誤、進行防禦性處理。
+- **系統內部：** 型別化資料、錯誤傳播、不重新驗證。信任型別。
+- **跨越邊界。** 暴露領域概念，而非邊界的私有表示。將通用機制保留在內部，將特殊用途政策放在邊緣。
 
-Validation and error handling:
-- Validate config at parse time (the boundary), not inside business logic
-- Parse raw data into domain types at the boundary
-- Do not re-export transport, storage, framework, or wire types through the public surface
-- No redundant nil checks deep in call chains if the boundary already validated
+**應用：**
 
-Code organization:
-- Business logic in pure functions with no framework dependencies
-- Parse functions: pure transforms from raw bytes to typed state
-- Prompt construction: structured state in, string out
-- Scoring and assessment: pure transforms from state to results
+驗證和錯誤處理：
+- 在解析時間（邊界）驗證設定，而非在業務邏輯內部
+- 在邊界將原始資料解析為領域型別
+- 不要透過公開表面重新匯出傳輸、儲存、框架或線路型別
+- 如果邊界已經驗證，則在深層呼叫鏈中不要進行冗餘的 nil 檢查
 
-**The tests:**
-- "Is this data crossing a system boundary right now?" If not, validation is redundant.
-- "Can this be a pure function that the shell just calls?" If yes, extract it.
+程式碼組織：
+- 業務邏輯位於純函式中，無框架依賴
+- 解析函式：從原始位元組到型別化狀態的純轉換
+- 提示構建：結構化狀態輸入，字串輸出
+- 評分和評估：從狀態到結果的純轉換
+
+**測試：**
+- "此資料現在是否跨越系統邊界？" 如果不是，驗證就是冗餘。
+- "這是否可以成為一個純函式，外殼只需呼叫它？" 如果是，則提取它。

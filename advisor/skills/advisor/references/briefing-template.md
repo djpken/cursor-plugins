@@ -1,6 +1,8 @@
-# Advisor briefing
+<a id="advisor-briefing"></a>
 
-Fill every section. Quote evidence verbatim; summarize only narrative. Redact secrets. When resuming an earlier advisor, keep the headings but write only what changed since the last consult, plus the new questions.
+# 顧問簡報
+
+填寫每個章節。逐字引用證據；僅對敘述部分進行摘要。遮蔽機密資訊。當恢復先前顧問的諮詢時，保留標題，但僅撰寫自上次諮詢以來發生的變更，以及新的問題。
 
 ```markdown
 ## Checkpoint

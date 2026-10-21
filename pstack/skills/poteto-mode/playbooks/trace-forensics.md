@@ -1,14 +1,16 @@
-### Trace forensics
+<a id="trace-forensics"></a>
 
-**You own the diagnosis from the artifact.**
+### 追蹤鑑識
 
-Distinct from **Runtime forensics**, which instruments the live process. Here the capture already exists. The artifact is a fixed dataset, read it, don't re-run it. Keep tooling generic: a DevTools or trace parser for cpuprofile and `.json.gz`, a text editor for a spindump, your heap tooling for a heapsnapshot.
+**你從資料檔案中掌握診斷。**
 
-1. Identify the format and load it with the right tool. Parse large artifacts in a subagent (the **principle-guard-the-context-window** skill) and keep the reduced finding in the main thread. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section.
-2. Transform the raw artifact into a form you can query. Dump the trace or heap snapshot into sqlite, one row per sample, frame, or node. Reach the queryable shape before you read.
-3. Narrow to the cause. Query for the frames that hold the most time and walk the call tree to the hot path. For a leak, follow the retainer chain from the leaked object to a GC root. For a spindump, find the thread stuck on-CPU or blocked and its wait reason.
-4. Attribute to source. Map the hot frame to file, symbol, and line via the artifact's own symbols. A frame with no source mapping is not yet a diagnosis. Resolve the symbols, or say plainly the artifact does not carry them.
-5. If you have a paired capture, diff the before and after artifacts to confirm. Otherwise, mark the finding as the strongest hypothesis the artifact supports, not a confirmed cause.
-6. Hand back a cited diagnosis, no fix unless asked. Route to Bug fix or Perf issue once the cause is known. Throughput checkpoint stays one line: `throughput checkpoint: n/a, read-only forensics`.
+與**執行時鑑識**不同，該技術會對活躍的過程進行檢測。這裡的資料檔案已經存在。資料檔案是固定的資料集，請閱讀它，不要重新執行它。保持工具通用：對於 cpuprofile 和 `.json.gz`，使用 DevTools 或追蹤解析器；對於 spindump，使用文字編輯器；對於 heapsnapshot，使用你的堆工具。
 
-**Reply:** the artifact and format, the reduced finding, the source location, the artifact paths, and whether a paired capture confirmed it.
+1. 識別格式並使用正確的工具載入。在子代理中解析大型資料檔案（**原則-保護-上下文-視窗**技能），並將縮減的結果保留在主執行緒中。根據子代理部分，選擇每個子代理的推理等級和快速或標準速度來完成任務。
+2. 將原始資料檔案轉換為可查詢的形式。將追蹤或堆快照匯入 sqlite，每個樣本、框架或節點一行。在閱讀之前達到可查詢的形態。
+3. 縮窄到原因。查詢佔用最多時間的框架，並沿呼叫樹走到熱點路徑。對於記憶體洩漏，從洩漏物件沿保留鏈走到 GC 根。對於 spindump，找到卡在 CPU 上或被阻塞的執行緒及其等待原因。
+4. 歸因到來源。透過資料檔案自身的符號將熱點框架對映到檔案、符號和行號。沒有來源對映的框架不算診斷。解析符號，或明確說明資料檔案不包含它們。
+5. 如果有配對的資料檔案，比較前後資料檔案以確認。否則，將結果標為資料檔案支援的最強假設，而非已確認的原因。
+6. 回交有引用的診斷，除非被要求，不提供修復。一旦原因已知，路由到 Bug 修復或 Perf 問題。吞吐量檢查點保持一行：`throughput checkpoint: n/a, read-only forensics`。
+
+**回覆：**資料檔案和格式、縮減的結果、來源位置、資料檔案路徑，以及是否有配對資料檔案確認。

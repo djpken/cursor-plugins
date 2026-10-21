@@ -1,6 +1,6 @@
 ---
 name: arena
-description: "Spawn N parallel candidates at the same task, pick a base, graft the strongest parts of the losers into it. Use for /arena, 'arena this', 'throw it in the arena', or when one attempt at a non-trivial artifact would lock in the wrong shape."
+description: "在同一任務上生成 N 個平行候選方案，選取一個基礎版本，並將落選方案中最強的部分移植到該基礎版本中。適用於 /arena、「arena this」、「throw it in the arena」，或當對非平凡產出物的單次嘗試會鎖定錯誤結構時使用。"
 disable-model-invocation: true
 ---
 
@@ -8,43 +8,57 @@ disable-model-invocation: true
 
 In Claude Code, read [the Claude Code adapter](../../docs/harness/claude-code.md) once per session before you follow this skill. It maps the Cursor names in pstack skills to Claude Code.
 
-Open a todolist with one entry per phase (Frame, Fan out, Cross-judge, Pick, Graft, Verify) before launching anything.
+在啟動任何操作之前，開啟一份待辦清單，每個階段（Frame、Fan out、Cross-judge、Pick、Graft、Verify）各佔一個專案。
 
-## Phase A: Frame
+<a id="phase-a-frame"></a>
 
-Every candidate gets the same prompt, so the prompt is the contract.
+## 階段 A：框架
 
-1. State the artifact each candidate is producing.
-2. Derive the rubric, 3-6 concrete gradeable criteria for what success looks like on *this* task. It is the picker's tool in Phase D. Candidates only see the task.
-3. Pick the runners. Use the `arena runners` line in `~/.cursor/rules/pstack-models.mdc`. If the rule or that line is missing, default to one each on `claude-opus-5-5-xhigh` and `grok-4.7-xhigh-fast`. An `auto` or `inherit-parent` entry in this line or the cross-judge line means the parent model, so omit `model` for it. If the Task tool rejects a configured entry, run that seat on its family's default and say so. Families go by prefix: `claude-*`, and `grok-*` with `cursor-grok-*` and `composer-*`. A refused `composer-*` entry runs on `grok-4.7-xhigh-fast`. With no family match, use `claude-opus-5-5-xhigh`. If it rejects a default, use the closest valid slug of the same family from its error message. Spawn more runners when the arena covers multiple design directions. Use the same model N times when the work is generation-bound rather than judgment-sensitive. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
-4. Give each candidate its own output location (a git worktree where possible, otherwise `/tmp/arena-<slug>/candidate-<n>/`), per the **separate-before-serializing-shared-state** principle skill.
+每個候選方案都使用相同的提示詞，因此提示詞即為合約。
 
-## Phase B: Fan out
+1. 明確說明每個候選方案要產出的產出物。
+2. 推導評分標準，列出 3 至 6 項具體可評分的標準，以定義*此*任務的成功樣貌。這是階段 D 中挑選者的工具。候選方案只能看到任務內容。
+3. 挑選執行者。使用 `~/.cursor/rules/pstack-models.mdc` 中的 `arena runners` 行。如果規則或該行缺失，預設在 `claude-opus-5-5-xhigh` 和 `grok-4.7-xhigh-fast` 上各執行一個。如果此行或交叉評審行中有 `auto` 或 `inherit-parent` 專案，則代表父模型，因此為其省略 `model`。如果 Task 工具拒絕某個已設定的專案，請在該席位的家族預設上執行並說明情況。家族依字首區分：`claude-*`，以及帶有 `cursor-grok-*` 和 `composer-*` 的 `grok-*`。被拒絕的 `composer-*` 專案將在 `grok-4.7-xhigh-fast` 上執行。如果沒有匹配的家族，請使用 `claude-opus-5-5-xhigh`。如果它拒絕預設值，請使用其錯誤訊息中同一家族最接近的有效 slug。當 arena 涵蓋多個設計方向時，生成更多執行者。當工作受限於生成而非判斷敏感度時，使用同一模型 N 次。根據 **poteto-mode** skill 的 Subagents 章節，為每個子代理選擇適合該工作的推理層級以及快速或標準速度。
+4. 為每個候選方案提供獨立的輸出位置（在可能的情況下使用 git worktree，否則使用 `/tmp/arena-<slug>/candidate-<n>/`），遵循 **separate-before-serializing-shared-state** 原則 skill。
 
-Spawn all N subagents in one message with `run_in_background: true`, each with the task, the path to the shared grounding, its own output path, and instructions to produce the artifact and a short rationale naming the alternatives it considered and what it rejected.
+<a id="phase-b-fan-out"></a>
 
-If a candidate produces no output, proceed with N-1 and note the dropout.
+## 階段 B：展開
 
-## Phase C: Cross-judge
+在單則訊息中生成所有 N 個子代理，使用 `run_in_background: true`，每個代理都包含任務、共享基礎資料的路徑、其專屬的輸出路徑，以及指示其產出產出物並撰寫簡短理由的說明，理由中需列出其考慮過的替代方案及被拒絕的內容。
 
-After all Phase B candidates complete, choose one model from the `arena cross-judge pool` line in `~/.cursor/rules/pstack-models.mdc`. If the rule or that line is missing, choose from `claude-opus-5-5-xhigh` and `grok-4.7-xhigh-fast`. Prefer a different model family from the parent's. Spawn one readonly judge subagent on that model. It sees the rubric and the candidates by path label, scores each criterion, and recommends a base with rationale. It runs in parallel with your reading in Phase D. Don't spawn it while candidates are still writing.
+如果某個候選方案沒有產出輸出，請以 N-1 繼續進行並記錄該缺席者。
 
-## Phase D: Pick a base
+<a id="phase-c-cross-judge"></a>
 
-Read every candidate end to end before picking. Score each against the rubric criterion by criterion, not on holistic feel, and compare with the cross-judge. Agreement on the base confirms the pick. Disagreement means one of you is biased or the rubric was ambiguous. Read both rationales before deciding.
+## 階段 C：交叉評審
 
-Pick the base a future maintainer can extend most easily without breaking invariants. When two feel tied, prefer the cleaner boundary or smaller API, per the Laziness Protocol.
+在所有階段 B 的候選方案完成後，從 `~/.cursor/rules/pstack-models.mdc` 中的 `arena cross-judge pool` 行選擇一個模型。如果規則或該行缺失，請從 `claude-opus-5-5-xhigh` 和 `grok-4.7-xhigh-fast` 中選擇。優先選擇與父模型不同的模型家族。在該模型上生成一個唯讀評審子代理。它會看到評分標準和以路徑標籤標示的候選方案，對每項標準進行評分，並附上理由推薦一個基礎版本。它與你在階段 D 的閱讀工作平行執行。不要在候選方案仍在撰寫時生成它。
 
-## Phase E: Graft
+<a id="phase-d-pick-a-base"></a>
 
-Walk each losing candidate once more for what is worth porting into the base, usually one or two things per candidate, not most of it. Fold each graft in by hand, per the **redesign-from-first-principles** principle skill, so the result stays coherent under one mental model. Don't paste mechanically.
+## 階段 D：選取基礎版本
 
-If the candidates converge on one shape, that is strong agreement. Note it and ship the consensus shape. No graft is needed. If they wildly diverge, Phase A was under-specified. Reframe and re-run rather than averaging the divergence.
+在選取之前，先完整閱讀每個候選方案。根據評分標準逐項評分，而非憑整體感覺，並與交叉評審結果進行比較。對基礎版本達成一致確認了選取結果。不一致意味著其中一方有偏見，或評分標準含糊不清。在做出決定之前，請閱讀兩份理由。
 
-## Phase F: Verify
+選取一個未來維護者最容易擴充套件且不會破壞不變數的基礎版本。當兩者感覺難分高下時，根據 Laziness Protocol，優先選擇邊界更清晰或 API 更小的版本。
 
-Verify the synthesized artifact like any other output, per the **prove-it-works** principle skill. If verification finds a problem the arena missed, either Phase A was wrong (re-frame and re-run) or a candidate caught it and you missed the graft (go back to Phase E). Don't paper over it.
+<a id="phase-e-graft"></a>
 
-## Outputs
+## 階段 E：移植
 
-One synthesized artifact, with a short synthesis note alongside naming the base and why, the cross-judge's verdict, each graft with its source candidate, what was rejected and why, any convergence or dropouts, and the verification result.
+再次檢視每個落選候選方案，找出值得移植到基礎版本中的內容，通常每個候選方案只有一兩項，而非大部分內容。根據 **redesign-from-first-principles** 原則 skill，手動將每個移植部分整合進去，以確保結果在單一心智模型下保持連貫。不要機械式地貼上。
+
+如果候選方案收斂到同一結構，這代表強烈的共識。請記錄下來並發布共識結構。不需要移植。如果它們嚴重分歧，則表示階段 A 的規格不足。請重新定義框架並重新執行，而不是對分歧進行平均。
+
+<a id="phase-f-verify"></a>
+
+## 階段 F：驗證
+
+根據 **prove-it-works** 原則 skill，像驗證其他輸出物一樣驗證綜合後的產出物。如果驗證發現 arena 遺漏的問題，則表示階段 A 有誤（重新定義框架並重新執行），或某個候選方案發現了該問題但你遺漏了移植（回到階段 E）。不要掩蓋問題。
+
+<a id="outputs"></a>
+
+## 輸出
+
+一個綜合後的產出物，旁邊附有一份簡短的綜合說明，內容包括：基礎版本及其原因、交叉評審的裁決、每個移植部分及其來源候選方案、被拒絕的內容及原因、任何收斂或缺席情況，以及驗證結果。

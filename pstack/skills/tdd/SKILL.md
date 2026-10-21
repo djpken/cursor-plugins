@@ -1,42 +1,52 @@
 ---
 name: tdd
-description: "Use only when the user explicitly asks for TDD, a failing test, or a regression test, OR when the bug has an obvious cheap local test target. Skip when the test path is unclear, expensive, integration-heavy, or not requested."
+description: "僅在使用者明確要求 TDD、失敗測試或回歸測試時使用，或者當錯誤具有明顯且低成本的本機測試目標時使用。當測試路徑不清楚、成本高昂、整合密集或未要求時，請跳過。"
 disable-model-invocation: true
 ---
 
-# TDD Bug Fix
+<a id="tdd-bug-fix"></a>
 
-When fixing a bug with a clear, cheap test path, make the broken behavior executable before changing production code. The goal is a focused regression test that fails before the fix and passes after it.
+# TDD 錯誤修正
 
-Do not force a test when it would be impractical. If the available test would require broad harness setup, brittle mocks, slow end-to-end infrastructure, production-only state, vague reproduction steps, or large unrelated fixture churn, skip adding a new test and use the closest useful verification instead.
+當修正具有明確且低成本測試路徑的錯誤時，先讓錯誤行為可執行，再修改生產程式碼。目標是一個聚焦的回歸測試，在修正前失敗，修正後成功。
 
-## Workflow
+不要在測試不切實際時強加測試。如果可用測試需要廣泛的測試架設定、脆弱的 mock、慢速的端到端基礎設施、僅生產環境狀態、模糊的複現步驟或大量無關的 fixture 變動，請跳過新增測試，改用最接近且有用的驗證方式。
 
-1. **Understand the bug.** Identify the intended behavior, current behavior, affected path, and smallest observable reproduction.
-2. **Choose the narrowest executable check.** Prefer the closest unit, component, integration, or regression test already used for that codepath. If no practical test path is obvious, do not create one from scratch just to satisfy the workflow.
-3. **Write the failing test first.** Add the smallest focused test that would have caught the bug. The test should encode intended behavior, not mirror the current implementation.
-4. **Run the new test before fixing.** Confirm it fails for the intended reason. If it passes or fails for an unrelated reason, correct the test or reproduction before editing the implementation.
-5. **Fix the bug.** Make the smallest production change that satisfies the intended behavior while preserving nearby contracts.
-6. **Rerun the regression test.** Confirm the test now passes.
+<a id="workflow"></a>
 
-## If a Failing Test Is Impractical
+## 工作流程
 
-Use the closest executable regression check instead: a targeted script, manual reproduction command, browser automation, snapshot comparison, log assertion, or focused integration check.
+1. **瞭解錯誤。** 識別預期行為、當前行為、受影響路徑及最小的可觀察複現。
+2. **選擇最狹窄的可執行檢查。** 優先使用該程式路徑已有的最接近的單元、元件、整合或回歸測試。如果沒有明顯的實際測試路徑，不要為了滿足流程而從零建立測試。
+3. **先寫失敗測試。** 新增最小的聚焦測試，該測試應能捕捉錯誤。測試應編碼預期行為，而非反映當前實作。
+4. **在修正前執行新測試。** 確認它因預期原因失敗。如果它成功或因無關原因失敗，請先修正測試或複現步驟，再修改實作。
+5. **修正錯誤。** 做出最小的生產變更，滿足預期行為並保留鄰近契約。
+6. **重新執行回歸測試。** 確認測試現在成功。
 
-Prefer no new test over a bad test. A bad test is one that mostly tests mocks, encodes current implementation details, depends on timing or unrelated global state, needs expensive infrastructure for a small fix, or would be deleted immediately after proving the fix.
+<a id="if-a-failing-test-is-impractical"></a>
 
-## Guardrails
+## 如果失敗測試不切實際
 
-- Do not change tests merely to match a wrong implementation.
-- Do not weaken existing assertions unless the expected behavior has genuinely changed and the reason is clear.
-- Keep the regression test focused on the bug. Avoid broad fixture churn or unrelated coverage expansion.
-- If the bug is flaky, make the test deterministic where possible and document the signal being locked down.
-- If the bug exposes a broader class of failures, first land the focused regression path, then consider additional sibling coverage.
+改用最接近的可執行回歸檢查：目標指令碼、手動複現指令、瀏覽器自動化、畫面比較、紀錄斷言或聚焦整合檢查。
 
-## Final Response
+優先選擇不新增測試，而非新增糟糕測試。糟糕測試是指大多測試 mock、編碼當前實作細節、依賴時間或無關全域狀態、需要昂貴基礎設施來修正小錯誤，或在證明修正後立即刪除的測試。
 
-Report the evidence, not just the outcome:
+<a id="guardrails"></a>
 
-- Name the failing-before test or executable check and the failure it produced.
-- Name the passing-after test run and any nearby validation performed.
-- If failing-before evidence could not be demonstrated, state why and describe the closest regression check used instead.
+## 防護措施
+
+- 不要僅為了匹配錯誤實作而修改測試。
+- 不要削弱現有斷言，除非預期行為確實改變且原因明確。
+- 保持回歸測試聚焦於錯誤。避免廣泛的 fixture 變動或無關的覆蓋擴充套件。
+- 如果錯誤是偶發性的，盡可能讓測試確定化，並記錄被鎖定的訊號。
+- 如果錯誤暴露更廣泛的失敗類別，先落地聚焦的回歸路徑，再考慮新增鄰近的兄弟覆蓋。
+
+<a id="final-response"></a>
+
+## 最終回應
+
+報告證據，而非僅報告結果：
+
+- 指出失敗前的測試或可執行檢查及其產生的失敗。
+- 指出成功後的測試執行及任何鄰近驗證。
+- 如果無法展示失敗前的證據，說明原因並描述改用最接近的回歸檢查。

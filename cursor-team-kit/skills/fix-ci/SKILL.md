@@ -1,29 +1,39 @@
 ---
 name: fix-ci
-description: Find failing PR checks, inspect logs or external check links, and apply focused fixes
+description: "找出失敗的 PR 檢查，檢視記錄或外部檢查連結，並套用針對性的修正"
 ---
 
-# Fix CI
+<a id="fix-ci"></a>
 
-## Trigger
+# 修正 CI
 
-Branch or PR CI is failing and needs a fast, iterative path to green checks.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發
 
-1. Resolve the active PR and inspect `gh pr checks --json name,bucket,state,workflow,link`.
-2. Inspect failed jobs and extract the first actionable error. Use GitHub Actions logs when available; otherwise use the check link to identify the failing command or service.
-3. Apply the smallest safe fix.
-4. Push, re-check the PR check set, and repeat until green.
+分支或 PR 的 CI 失敗，需要快速且反覆的途徑來讓檢查變為綠色。
 
-## Guardrails
+<a id="workflow"></a>
 
-- Fix one actionable failure at a time.
-- Prefer minimal, low-risk changes before broader refactors.
-- Keep `gh pr checks` as the source of truth for overall PR CI state.
+## 工作流程
 
-## Output
+1. 解析目前的 PR 並檢視 `gh pr checks --json name,bucket,state,workflow,link`。
+2. 檢視失敗的工作並提取第一個可採取行動的錯誤。若可用，請使用 GitHub Actions 記錄；否則使用檢查連結來識別失敗的指令或服務。
+3. 套用最小且安全的修正。
+4. 推送，重新檢查 PR 檢查集，並重複執行直到變為綠色。
 
-- Primary failing job and root error
-- Fixes applied in iteration order
-- Current CI status and next action
+<a id="guardrails"></a>
+
+## 防護措施
+
+- 一次只修正一個可採取行動的失敗。
+- 在進行更廣泛的重構之前，優先選擇最小且低風險的變更。
+- 將 `gh pr checks` 保留為整體 PR CI 狀態的單一事實來源。
+
+<a id="output"></a>
+
+## 輸出
+
+- 主要失敗的工作與根本錯誤
+- 依迭代順序套用的修正
+- 目前的 CI 狀態與下一步行動

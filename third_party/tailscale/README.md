@@ -1,42 +1,52 @@
 # Tailscale
 
-Grok Bot plugin that lets agents reach [Model Context Protocol](https://modelcontextprotocol.io/) servers on your private [Tailscale](https://tailscale.com) network (tailnet).
+Grok Bot 外掛，讓代理可以存取您私人 [Tailscale](https://tailscale.com) 網路（tailnet）上的 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器。
 
-Let Grok Bot reach MCP servers on your private Tailscale network. On your own tailnet it joins as one tag:grokbot device; on your team's company tailnet, turned on by a team admin, it uses each member's own device.
+讓 Grok Bot 存取您私人 Tailscale 網路上的 MCP 伺服器。在您的個人 tailnet 中，它會以一個 tag:grokbot 裝置加入；在團隊的公司 tailnet 中，由團隊管理員啟用後，它會使用每位成員各自的裝置。
 
-## Who can use it
+<a id="who-can-use-it"></a>
 
-- Grok Bot **0.49** or newer.
-- A Tailscale account with permission to edit the tailnet policy file.
-- Not available in Cursor. Cursor must not list or install this plugin.
+## 誰可以使用
+
+- Grok Bot **0.49** 或更新版本。
+- 一個具有編輯 tailnet 政策檔案許可權的 Tailscale 帳戶。
+- 不適用於 Cursor。Cursor 不得列出或安裝此外掛。
 
 ## MCP
 
-This plugin ships no `mcp.json`. Grok Bot's Tailscale connection is served by the Cursor backend, and installing the plugin is the opt-in that turns it on. The MCP servers you want to reach on the tailnet are added separately, by their `*.ts.net` name or `100.x` address.
+此外掛不提供任何 `mcp.json`。Grok Bot 的 Tailscale 連線由 Cursor 後端提供，安裝外掛即表示同意並啟用此功能。您想要在 tailnet 上存取的其他 MCP 伺服器，需透過其 `*.ts.net` 名稱或 `100.x` 地址另行新增。
 
-## Setup
+<a id="setup"></a>
 
-1. In the tailnet policy file, define `tag:grokbot` and grant it access to only the MCP hosts and ports Grok Bot should reach.
-2. Open **Tailscale** in Grok Bot's plugins, click **Authenticate**, and sign in to Tailscale.
-3. Approve the new device in the Tailscale admin console if device approval is on. On a tailnet with Tailnet Lock, sign the device too.
+## 設定
 
-The `tailscale-setup` skill walks through each step, including a policy snippet.
+1. 在 tailnet 政策檔案中，定義 `tag:grokbot`，並僅授予它存取 Grok Bot 應可達的 MCP 主機和埠。
+2. 在 Grok Bot 的外掛中開啟 **Tailscale**，點選 **Authenticate**，並登入 Tailscale。
+3. 如果裝置核准功能已啟用，請在 Tailscale 管理控制檯中核準新裝置。在具有 Tailnet Lock 的 tailnet 上，也需簽署該裝置。
 
-## Notes
+`tailscale-setup` 技能會逐步說明每個步驟，包括政策片段範例。
 
-- Only messages from the bot owner and linked teammates, and routines the owner schedules, can use the tailnet.
-- Grok Bot reaches nothing beyond what your grants allow `tag:grokbot` to reach.
-- To disconnect, click **Remove** on the Tailscale plugin page in Grok Bot.
+<a id="notes"></a>
 
-## Docs
+## 注意事項
 
-- Tailscale grants: https://tailscale.com/docs/features/access-control/grants
-- Tags: https://tailscale.com/docs/features/tags
-- Device approval: https://tailscale.com/docs/features/access-control/device-management/device-approval
-- Tailnet Lock: https://tailscale.com/docs/features/tailnet-lock
+- 只有來自 bot 擁有者和連結的團隊成員的訊息，以及擁有者排定的例行任務，才能使用 tailnet。
+- Grok Bot 只能存取您授予 `tag:grokbot` 允許的範圍，無法存取其他內容。
+- 若要斷開連線，請在 Grok Bot 的 Tailscale 外掛頁面上點選 **Remove**。
 
-Logo is Tailscale's official mark, from the Tailscale press kit.
+<a id="docs"></a>
 
-## License
+## 檔案
+
+- Tailscale 授予權：https://tailscale.com/docs/features/access-control/grants
+- 標籤：https://tailscale.com/docs/features/tags
+- 裝置核准：https://tailscale.com/docs/features/access-control/device-management/device-approval
+- Tailnet Lock：https://tailscale.com/docs/features/tailnet-lock
+
+Logo 是 Tailscale 的官方標誌，來自 Tailscale 媒體資料包。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

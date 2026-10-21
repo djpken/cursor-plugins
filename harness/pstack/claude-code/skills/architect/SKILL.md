@@ -1,81 +1,97 @@
 ---
 name: architect
-description: "Sketch types, signatures, and module structure before code, then stay in the loop while implementation fills in. Use for /architect, 'architect this', 'design this', or non-trivial work where jumping to code would lock in the wrong shape."
+description: "在撰寫程式碼之前，先勾勒型別、簽名與模組結構，並在實作逐步補完時持續參與。適用於 /architect、「設計此架構」、「規劃此設計」，或任何若直接跳入程式碼就會鎖定錯誤結構的非平凡工作。"
 disable-model-invocation: true
 ---
 
-# Architect
+<a id="architect"></a>
+
+# 架構師
 
 In Claude Code, read [the Claude Code adapter](../../docs/harness/claude-code.md) once per session before you follow this skill. It maps the Cursor names in pstack skills to Claude Code.
 
-Sketch types, function signatures, class shapes, and module boundaries with `not implemented` bodies and pseudocode. Synthesize across multiple model perspectives, then fill in code against the chosen sketch.
+使用 `not implemented` 主體與偽程式碼，勾勒型別、函式簽名、類別結構與模組邊界。綜合多個模型視角，再依據選定的草圖填入程式碼。
 
-## Start
+<a id="start"></a>
 
-Open a todolist with one entry per phase before starting.
+## 開始
 
-1. Ground
-2. Sketch
-3. Agree
-4. Implement
-5. Scrap
+開始前，開啟一份待辦清單，每個階段對應一個專案。
 
-## Phase A: Ground the problem
+1. 接地
+2. 草圖
+3. 共識
+4. 實作
+5. 棄用
 
-Build a real mental model of every system the new code touches. Run the **how** skill over the relevant subsystems. Naming a file isn't grounding. Produce the architectural explanation `how` prescribes. If the design redefines ownership or layering, also run the **why** skill on the existing shape so the rationale becomes a constraint, not a guess.
+<a id="phase-a-ground-the-problem"></a>
 
-Skip Phase A only when the work is genuinely greenfield with no surrounding system to integrate.
+## 階段 A：問題接地
 
-## Phase B: Sketch
+為新程式碼所觸及的每個系統建立真實的心智模型。對相關子系統執行 **how** 技能。僅命名檔案並非接地。產出 `how` 所規定的架構說明。若設計重新定義了所有權或分層，也需對現有結構執行 **why** 技能，使設計理由成為約束條件，而非猜測。
 
-Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts. Pass `references/runner-prompt.md` as each runner's prompt.
+僅當工作確實是全新領域（greenfield），且無周圍系統需要整合時，才可跳過階段 A。
 
-Take the runners from the `architect runners` line in the `pstack-models.mdc` rule, in place of the `arena runners` line. If the rule or that line is missing, use `claude-opus-5-5-xhigh` and `grok-4.7-xhigh-fast`. Alias and rejected entries follow the runner rules in the **arena** skill's Phase A.
+<a id="phase-b-sketch"></a>
 
-Design it twice. Require at least two structurally distinct candidates before synthesis, even when the first looks sufficient. This is the **exhaust-the-design-space** principle skill made concrete. Whole-shape alternatives, not point fixes inside one shape.
+## 階段 B：草圖
 
-Screen every candidate against [`references/design-red-flags.md`](references/design-red-flags.md) before synthesis. Assume the next contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Prefer the design where a change that looks right from one file is right for the whole repo.
+使用設計草圖任務與階段 A 的接地產物執行 **arena** 技能。將 `references/runner-prompt.md` 作為每個執行器的提示詞。
 
-Compare viable candidates on interface depth. Prefer the design that hides more complexity behind a smaller, simpler public surface. A rich interface can keep call chains short by concentrating capability instead of scattering it across layers.
+從 `pstack-models.mdc` 規則中的 `architect runners` 行取得執行器，取代 `arena runners` 行。若規則或該行缺失，則使用 `claude-opus-5-5-xhigh` 與 `grok-4.7-xhigh-fast`。別名與被拒絕的專案遵循 **arena** 技能階段 A 中的執行器規則。
 
-Arena returns one synthesized design package. Its synthesis decision fills the rationale's "Synthesis decision" section.
+設計兩次。在綜合之前，要求至少兩個結構上不同的候選方案，即使第一個看起來已足夠。這是將 **exhaust-the-design-space** 原則技能具體化的做法。追求整體結構的替代方案，而非單一結構內的區域性修正。
 
-## Phase C: Agree (opt-in)
+在綜合之前，依據 [`references/design-red-flags.md`](references/design-red-flags.md) 篩選每個候選方案。假設下一位貢獻者是一個只能看到已開啟檔案、複製最近範例，並採取最短路徑以透過編譯的 agent。優先選擇那種從單一檔案看來正確的變更，對整個儲存庫而言也是正確的設計。
 
-Default: proceed directly to implementation with the synthesized design. No human checkpoint.
+比較可行候選方案的介面深度。優先選擇將更多複雜性隱藏在更小、更簡單公開介面後方的設計。豐富的介面可以透過集中能力而非將其分散在各層，來保持呼叫鏈的簡短。
 
-Opt in to a checkpoint when the invoker explicitly asks: "/architect with checkpoint," "stop and show me before implementing," or similar. Then surface the synthesized design and pause for sign-off.
+Arena 回傳一個綜合設計套件。其綜合決策將填入理由說明中的「Synthesis decision」章節。
 
-The synthesis can ship as its own commit either way, as the "scaffold first" mode of the **foundational-thinking** principle skill. Planned and scoped breakage during fill-in is fine, per the **outcome-oriented-execution** principle skill. For adversarial pressure on the design before implementing, run the **interrogate** skill on the synthesized sketch.
+<a id="phase-c-agree-opt-in"></a>
 
-If the human pushes back on the shape (in a checkpoint or after the fact), treat that as Phase A evidence. Re-ground and re-run Phase B before writing more code.
+## 階段 C：共識（選填）
 
-## Phase D: Implement against the sketch
+預設：直接依據綜合設計進入實作。無人為檢查點。
 
-Replace `not implemented` bodies with code, pseudocode with logic. The synthesized sketch is the contract. Deviations from it are signal to surface, not friction to absorb silently. If a function needs a parameter the sketch didn't anticipate, ask whether the sketch was wrong, the requirement was missed, or the implementation is overreaching.
+當呼叫者明確要求時，選填檢查點：「/architect with checkpoint」、「實作前暫停並展示給我」或類似表述。然後展示綜合設計並暫停等待核準。
 
-## Phase E: Scrap when the architecture is wrong
+無論如何，綜合結果都可以作為獨立的 commit 發布，作為 **foundational-thinking** 原則技能的「先搭骨架」模式。依據 **outcome-oriented-execution** 原則技能，填入程式碼期間的計畫內與範圍內的破壞是可以接受的。若要在實作前對設計進行對抗性壓力測試，請對綜合草圖執行 **interrogate** 技能。
 
-If implementation keeps producing friction the sketch can't absorb, throw the sketch out. Don't bolt fixes onto a wrong design, per the **redesign-from-first-principles** and **fix-root-causes** principle skills.
+若人類對結構提出異議（在檢查點期間或事後），將其視為階段 A 的證據。重新接地並重新執行階段 B，再撰寫更多程式碼。
 
-The signal is a *pattern*, not single instances. Tells:
+<a id="phase-d-implement-against-the-sketch"></a>
 
-- The same shape of workaround appearing repeatedly across unrelated code.
-- Multiple unrelated edge cases that all need special-case branches.
-- Types that need escape hatches (`any`, casts, optional fields always set in practice) to compile.
-- The "we need a lock" reflex when the sketch said the state wasn't shared.
-- Callers having to know the abstraction's internal rules to use it.
-- Two or more independent Phase D deviations of the same shape across the implementation.
+## 階段 D：依據草圖實作
 
-Use judgment. A few edge cases don't condemn an architecture. Some problems are legitimately complex. Complexity in the data is not complexity in the design.
+將 `not implemented` 主體替換為程式碼，將偽程式碼替換為邏輯。綜合草圖即為合約。偏離草圖是應浮現的訊號，而非應靜默吸收的摩擦。若函式需要草圖未預期的引數，請詢問是草圖錯誤、需求遺漏，還是實作過度延伸。
 
-When you scrap:
+<a id="phase-e-scrap-when-the-architecture-is-wrong"></a>
 
-1. Re-run the **how** skill over what's been built.
-2. Redesign as if the new constraints had been day-one assumptions, per redesign-from-first-principles.
-3. Subtract before adding, per the **subtract-before-you-add** principle skill. The new sketch should be smaller than the old one before it grows.
-4. Return to Phase B and re-run arena.
+## 階段 E：架構錯誤時棄用
 
-## Outputs
+若實作持續產生草圖無法吸收的摩擦，請丟棄草圖。依據 **redesign-from-first-principles** 與 **fix-root-causes** 原則技能，不要將修正補丁強加在錯誤的設計上。
 
-The caller's usage is written first and the type sketch derived from it. One file with new types and signatures for small changes. Module map plus type definitions for larger work. The rationale ships alongside, shaped per `references/rationale-template.md`, including the usage sketch and the synthesis decision.
+訊號是一種*模式*，而非單一例項。跡象包括：
+
+- 相同形狀的變通方法在無關程式碼中反覆出現。
+- 多個無關的邊界情況，全都需要特殊情況分支。
+- 型別需要逃生出口（`any`、強制轉型、實務上總是設定的選填欄位）才能透過編譯。
+- 當草圖指出狀態未共享時，卻出現「我們需要鎖」的反射動作。
+- 呼叫者必須瞭解抽象層的內部規則才能使用它。
+- 實作中出現兩個或更多相同形狀的獨立階段 D 偏離。
+
+運用判斷力。少數邊界情況不會判處架構死刑。某些問題確實複雜。資料中的複雜性不等於設計中的複雜性。
+
+當您棄用時：
+
+1. 對已建置的內容重新執行 **how** 技能。
+2. 依據 redesign-from-first-principles，假設新約束條件是首日假設，重新設計。
+3. 依據 **subtract-before-you-add** 原則技能，先減後加。新草圖在成長之前，應比舊草圖更小。
+4. 返回階段 B 並重新執行 arena。
+
+<a id="outputs"></a>
+
+## 輸出
+
+先撰寫呼叫者的使用方式，再從中推導型別草圖。小型變更使用單一檔案包含新型別與簽名。較大工作使用模組地圖加上型別定義。理由說明隨附發布，依據 `references/rationale-template.md` 塑形，包含使用草圖與綜合決策。

@@ -1,13 +1,17 @@
-# Failure lessons
+<a id="failure-lessons"></a>
 
-What broke in past Figma → UI runs, and which gate each one produced. Styling and token rules live in the repo's own guidance, found during design-system discovery. This file only records why the gates exist.
+# 失敗教訓
 
-## What went wrong
+過去 Figma → UI 執行中出現的故障，以及每個故障所產生的閘門。樣式與 token 規則位於儲存庫自身的指引中，會在設計系統探索期間找到。此檔案僅記錄這些閘門存在的原因。
 
-1. Shipped functional UI first; Figma-faithful visuals only came after the human pushed back. → Gate 1 blocks coding until intake exists.
-2. Drew a brand mark by hand instead of exporting it from Figma or using the repo's existing asset. → Hard ban 2.
-3. Reached for a list or dialog primitive that looked close but had different structure (a recessed card with divider rows is not a plain list). → Hard ban 3, node → primitive map.
-4. Trusted a primitive's size tokens where they disagreed with Figma px. → Metric table, hard ban 4.
-5. Styling that compiled but never emitted, or dynamic styles the styling system could not handle. → Gate 3, match neighbors and lint.
-6. Guessed icon names; downscaled a brand image before sizing it, which crushed its detail. → Rubric rows 2, 5, 6.
-7. Judged a light-theme build against a dark-theme frame. → Rubric row 0.
+<a id="what-went-wrong"></a>
+
+## 出了什麼問題
+
+1. 先交付功能性 UI；Figma 忠實的視覺效果是在人類反饋後才出現。→ 閘門 1 在 intake 存在之前阻止編碼。
+2. 手動繪製品牌標誌，而非從 Figma 匯出或使用儲存庫中現有的資產。→ 硬性禁令 2。
+3. 使用了看似接近但結構不同的清單或對話方塊原始元件（帶有分隔列的凹陷卡片並非普通清單）。→ 硬性禁令 3，節點 → 原始元件對應表。
+4. 在原始元件的尺寸 token 與 Figma px 不一致時，仍信任該 token。→ 度量表，硬性禁令 4。
+5. 樣式能編譯但從未輸出，或樣式系統無法處理的動態樣式。→ 閘門 3，比對相鄰元素並執行 lint。
+6. 猜測圖示名稱；在調整品牌影像大小前先縮小，導致細節損毀。→ 評分標準第 2、5、6 行。
+7. 以深色主題框架來判斷淺色主題的建置。→ 評分標準第 0 行。

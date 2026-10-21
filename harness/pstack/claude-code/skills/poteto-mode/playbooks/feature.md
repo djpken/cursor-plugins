@@ -1,21 +1,23 @@
-### Feature
+<a id="feature"></a>
 
-**You own the design. Plan, review, verify.** Delegate implementation. Stay in the lead.
+### 功能
 
-1. `how` over the affected subsystem.
-2. `architect` for parallel design exploration.
-3. Write the throughput checkpoint as four todo items. A dimension that genuinely does not apply (single file, no fan-out) keeps its item with `n/a: <reason>` rather than being dropped:
-   - **Blocking first steps.** Gates run before fan-out.
-   - **Independent workstreams.** Disjoint files, services, or layers parallelize. Shared writes serialize.
-   - **Shared mutable state.** Default to splitting the target (the **separate-before-serializing-shared-state** principle skill). Serialize only for real invariants.
-   - **Smallest safe decomposition.** If one worker is best, name why.
-4. Delegate code-writing to a subagent using your configured feature model (default `grok-4.7-xhigh-fast`) with a specific scope (file paths, named data shape and its organizing structure per **principle-model-the-domain**, a state machine over scattered booleans, a table/registry over branching, a typed model over repeated shape assumptions, chosen before the delegate writes logic, and success criteria). Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section. When the implementation admits multiple valid shapes (error handling, abstraction layer, test structure), delegate via the **arena** skill instead so the runners surface the alternatives and the cross-judge guards the pick. Mandatory: no skip-with-reason escape, and Laziness Protocol does not override it (the gain is review separation, not lines saved). A subagent forbidden to spawn satisfies this by owning the diff directly with the same review separation. No "standing by" reply that waits on a nested agent. Comments per **Comments**. Surgical edits, re-ground against the source for upstream-derived files. Port shared-primitive improvements to all consumers and verify each. Commit liberally.
-5. Verify on the matching surface. "Inconclusive" or wrong-surface is not a pass. Flag it.
-6. Rebase into small, ordered commits. Stack follow-ups.
-   Use the **sequence-verifiable-units** principle skill, building, verifying, and committing each small unit before the next.
-7. If the design is contested, `interrogate` before shipping.
-8. Run **Opening a PR**.
+**你擁有設計。規劃、審閱、驗證。委派實作。保持主導。**
 
-Code-coupled work (one feature, one migration) goes to a single owner with the checkpoint inline. That owner fans out internally after the blocking phase. Parent-level fan-out is for slices that produce independent artifacts (audits, cross-subsystem investigations, competing experiments). Rewrite the checkpoint at phase boundaries. Spawn a fresh owner rather than chaining interrupts.
+1. `how` 於受影響的子系統。
+2. `architect` 用於平行設計探索。
+3. 將吞吐量檢查點寫成四個待辦事項。一個真正不適用（單一檔案、無扇出）的維度會保留其專案並標記 `n/a: <reason>`，而不是刪除：
+   - **阻擋性第一步。** 閘門在扇出之前執行。
+   - **獨立工作流。** 不相交的檔案、服務或層級可平行化。共享寫入需序列化。
+   - **共享可變狀態。** 預設為拆分目標（**先拆分再序列化共享狀態**原則技能）。僅針對真實不變數進行序列化。
+   - **最小安全分解。** 如果單一工作者最佳，請說明原因。
+4. 委派程式碼撰寫給子代理，使用您設定的功能模型（預設 `grok-4.7-xhigh-fast`），並指定明確範圍（檔案路徑、命名資料形狀及其組織結構，依據**原則-模型-領域**；針對散佈的布林值使用狀態機；針對分支使用表格/登錄檔；針對重複形狀假設使用型別模型，在委派邏輯之前選擇；以及成功標準）。根據子代理章節，選擇每個子代理的推理等級和快速或標準速度。當實作允許多個有效形狀（錯誤處理、抽象層、測試結構），委派透過**競技場**技能，讓執行者呈現替代方案，並讓交叉評審保護選擇。強制要求：不得以理由跳過，且懶惰協議不能覆蓋它（收益是審閱分離，不是節省行數）。禁止產生子代理的子代理可直接擁有 diff，並保持相同的審閱分離。不得有等待巢狀代理的「待命」回應。評論依據**評論**。精確編輯，對於上游衍生檔案需重新對源進行確認。將共享基礎改善移植到所有消費者並驗證每個。自由提交。
+5. 在匹配的表面上驗證。「不確定」或錯誤表面不算透過。標記它。
+6. 重基為小且有序的提交。堆疊後續。
+   使用**序列可驗證單位**原則技能，構建、驗證並提交每個小單位，再進行下一個。
+7. 如果設計有爭議，在發布之前執行 `interrogate`。
+8. 執行 **Opening a PR**。
 
-**Reply:** what you built, what you chose and why, the throughput checkpoint, open decisions. Tables for design alternatives.
+程式碼耦合的工作（一個功能、一個遷移）歸單一擁有者，並將檢查點內嵌。該擁有者在阻擋階段之後內部扇出。父層級扇出適用於產生獨立產品的切片（審查、跨子系統調查、競爭實驗）。在階段邊界重寫檢查點。產生新的擁有者，而不是連結中斷。
+
+**回應：** 您構建了什麼、您選擇了什麼及原因、吞吐量檢查點、開放決策。設計替代方案使用表格。

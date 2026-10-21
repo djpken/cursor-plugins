@@ -1,24 +1,26 @@
 ---
 name: principle-prove-it-works
-description: "Apply after completing a task, before declaring done. Verify against the real artifact (run the feature, read the actual value, inspect the diff), not a proxy, self-report, or 'it compiles.'"
+description: "在完成任務後、宣告完成之前執行。針對真實的成品進行驗證（執行功能、讀取實際值、檢查差異），而非透過代理、自我報告或「它能編譯」來驗證。"
 disable-model-invocation: true
 ---
 
-# Prove It Works
+<a id="prove-it-works"></a>
 
-In Claude Code, read [the Claude Code adapter](../../docs/harness/claude-code.md) once per session before you follow this skill. It maps the Cursor names in pstack skills to Claude Code.
+# 證明它確實有效
 
-Verify every task output by checking the real thing directly. Do not infer from proxies, self-reports, or "it compiles."
+透過直接檢查真實事物來驗證每個任務的輸出。不要從代理、自我報告或「它能編譯」來推斷。
 
-**Why:** Unverified work has unknown correctness. Indirect verification (file mtimes, output freshness, agent self-reports, cached screenshots) feels cheaper than direct observation. Acting on a wrong inference costs far more than checking the source.
+**原因：**未驗證的工作具有未知的正確性。間接驗證（檔案修改時間、輸出新鮮度、代理自我報告、快取的截圖）感覺比直接觀察更便宜。根據錯誤的推斷行動的成本遠超過檢查來源。
 
-Check the real thing, not a proxy:
-- Check process liveness directly, not indirectly through derived state
-- Read the actual value, not a cached or derived representation
-- When verification fails, suspect the observation method before suspecting the system
+檢查真實事物，而非代理：
+- 直接檢查過程的存活狀態，而非透過衍生狀態間接檢查
+- 讀取實際值，而非快取或衍生的表示
+- 當驗證失敗時，先懷疑觀察方法，再懷疑係統
 
-## Script the check when you can
+<a id="script-the-check-when-you-can"></a>
 
-The strongest proof is a deterministic script that re-runs the same comparison, not a one-time eyeball. Write the script, run it, and keep its output as an artifact a reviewer can re-run instead of trusting your word.
+## 如果可以，將檢查寫成指令碼
 
-Keep the artifact visible for the human. Commit it only for large or complex work where the trail has to be auditable later, like a big port or migration (the **show-me-your-work** skill).
+最有力的證明是可重跑的確定性指令碼，而非一次性的肉眼觀察。寫下指令碼、執行它，並保留其輸出作為審查者可重跑的成品，而非信任你的話。
+
+將成品保留給人類可見。僅針對大型或複雜的工作進行提交，例如大型移植或遷移，其軌跡必須在之後可稽核（**[show-me-your-work](../show-me-your-work/SKILL.md)**技能）。

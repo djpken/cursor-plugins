@@ -1,14 +1,16 @@
-### Prototype
+<a id="prototype"></a>
 
-**You own the design decision, not the code. The prototype is a throwaway instrument. The real build follows Feature.**
+### 原型
 
-The one playbook where the Laziness Protocol's "smallest change" and the verification bar invert. Speed over polish, code quality does not matter, no planning. The rigor is in picking the right design cheaply. Propose variations the user didn't ask for, throw an approach away and try another.
+**你擁有設計決策，而非程式碼。原型是可拋棄的工具。真正的構建遵循 Feature。**
 
-1. Scope the decision the prototype exists to make: which layout, which interaction, which density, or for an empirical fork which behavior, timing, or approach. No decision means no prototype. Route to Feature.
-2. Gather references when the design space is open. Search for prior art, summarize a moodboard of themes, palettes, and layouts, let the user pick directions before building. Skip when the direction is set.
-3. Build throwaway in an isolated scratch dir, separate from production source. For a visual decision, vanilla HTML/CSS/JS or the lightest stack that renders the idea, CDN deps, a dev server with hot reload. For a behavioral or timing decision, the smallest script that exercises the question. No production framework, no tests, no abstractions.
-4. When comparing alternatives, build them behind one switcher (buttons or a keypress), each variant labeled. This is the **exhaust-the-design-space** principle skill made cheap.
-5. Verify on the matching surface. For a visual decision, screenshot each variant via the control skill and drive the interaction. For a behavioral or timing decision, observe the thing you are deciding by logging the timing, printing the output, or watching the render. The observation is the test here, not an assertion.
-6. Present alternatives, tradeoffs, and a recommendation. The output is the decision plus the throwaway artifact, not shippable code. Hand the chosen direction to **Feature** (or `architect` for the shape) for the real build.
+這是唯一一個懶惰協議中「最小變更」與驗證標準顛倒的劇本。速度勝於打磨，程式碼品質不重要，無需規劃。嚴謹之處在於便宜地選擇正確的設計。提出使用者未要求的變體，拋棄一個方法並嘗試另一個。
 
-**Reply:** the variants explored, the evidence (screenshots for a visual decision, the observed output or timing for a behavioral one), tradeoffs, your recommendation, and the scratch path. Say plainly that the prototype is throwaway.
+1. 界定原型存在的決策範圍：哪種佈局、哪種互動、哪種密度，或對於實證分支，哪種行為、時間或方法。無決策即無原型。轉至 Feature。
+2. 當設計空間開放時收集參考。搜尋先前作品，總結主題、色板與佈局的靈感板，讓使用者先選擇方向再構建。當方向已定時跳過。
+3. 在與生產來源隔離的獨立暫存資料夾中構建拋棄式原型。對於視覺決策，使用純 HTML/CSS/JS 或最輕量的能呈現概念的技術棧，CDN 依賴，帶熱過載的開發伺服器。對於行為或時間決策，使用最小的指令碼來測試問題。無生產框架、無測試、無抽象。
+4. 當比較替代方案時，將它們放在一個切換器（按鈕或按鍵）後面，每個變體標示。這是**窮盡設計空間**原則技能變得便宜的方式。
+5. 在匹配的表面上驗證。對於視覺決策，透過控制技能擷取每個變體的螢幕截圖並驅動互動。對於行為或時間決策，觀察你正在決定的事物，記錄時間、列印輸出或觀察渲染。觀察在此是測試，而非斷言。
+6. 呈現替代方案、權衡與建議。輸出是決策加上拋棄式原型，而非可交付的程式碼。將選定的方向交給 **Feature**（或 `architect` 對於形狀）進行真正的構建。
+
+**回應：**探索的變體、證據（視覺決策的螢幕截圖，行為決策的觀察輸出或時間）、權衡、你的建議，以及暫存資料夾路徑。明確說明原型是拋棄式的。

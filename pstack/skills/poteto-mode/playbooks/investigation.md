@@ -1,14 +1,16 @@
-### Investigation
+<a id="investigation"></a>
 
-**You own the answer. Plan, route, write.**
+### 調查
 
-Investigation requests are read-only. They produce a cited explanation or a recommendation, not a code change.
+**你擁有答案。規劃、路由、撰寫。**
 
-1. Route through the **how** skill. For motivation questions, also route through the **why** skill.
-2. Throughput checkpoint stays one line: `throughput checkpoint: n/a, read-only investigation`.
-3. Produce the `how`-shaped output (Overview / Key Concepts / How It Works / Where Things Live / Gotchas), or a recommendation with a tradeoffs table if the request is a decision between alternatives.
-4. Apply the **unslop** skill to the reply.
+調查請求僅限讀取。它們產生有引用的說明或建議，而非程式碼變更。
 
-No PR, no babysit, no `architect` unless the investigation precedes a code change. If it does, hand back to the user and re-route to Bug fix or Feature.
+1. 透過 **how** 技能進行路由。對於動機類問題，也透過 **why** 技能進行路由。
+2. 吞吐量檢查點保持一行：`throughput checkpoint: n/a, read-only investigation`。
+3. 產生 `how` 形狀的輸出（概述 / 關鍵概念 / 運作方式 / 資源位置 / 常見陷阱），或若請求是決策選擇，則產生帶有權衡表的建議。
+4. 將 **unslop** 技能應用於回應。
 
-**Reply:** the investigation output. For "are we sure?" answers, include your real judgment with reasons. Push back if the premise is wrong (see Autonomy).
+無 PR、無監督、無 `architect`，除非調查先於程式碼變更。若如此，則交還給使用者並重新路由至 Bug 修復或功能。
+
+**回應：** 調查輸出。對於「我們確定嗎？」類答案，包含你的真實判斷與理由。若前提錯誤則提出反對意見（見自主權）。

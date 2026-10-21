@@ -1,16 +1,22 @@
-# Grok Voice
+<a id="grok-voice"></a>
 
-Cursor plugin with four skills for building voice features on Grok: realtime speech-to-speech, speech-to-text dictation, text-to-speech read-aloud, and a debug loop for voice sessions.
+# Grok 語音
 
-## What it includes
+Cursor 外掛，包含四項技能，用於在 Grok 上建置語音功能：即時語音對語音、語音轉文字聽寫、文字轉語音朗讀，以及語音工作階段的除錯迴圈。
 
-- `add-voice`: build speech-to-speech into an app, or replace an STT-LLM-TTS cascade / OpenAI Realtime with it. Wires the realtime session, safe auth, and the app mic; adds a waveform Voice Mode button to the composer.
-- `add-dictation`: speech-to-text. Batch for a mic button or recorded audio (files, uploads, URLs) with word timestamps, diarization, and subtitles; streaming through a relay for live text.
-- `add-read-aloud`: text-to-speech. Batch MP3 for a speaker button on replies; streaming PCM through a relay so audio starts before the reply finishes.
-- `debug-voice`: proposes a plan, installs a dev-only log pipeline (client logger → local NDJSON) in the app's own language and conventions, then runs the fix loop: match the user's report to log signatures, fix one thing, re-test.
+<a id="what-it-includes"></a>
 
-Icon convention across the skills: waveform = voice mode, microphone = dictation, speaker = read aloud.
+## 包含內容
 
-## When to use it
+- `add-voice`：將語音對語音功能建置到應用程式中，或用它取代 STT-LLM-TTS 串接流程 / OpenAI Realtime。它會設定即時工作階段、安全的驗證機制以及應用程式麥克風；並在編輯器中加入波形圖示的語音模式按鈕。
+- `add-dictation`：語音轉文字。針對麥克風按鈕或錄製的音訊（檔案、上傳、URL）進行批次處理，提供單字時間戳記、講者分離與字幕功能；透過中繼伺服器進行串流，以取得即時文字。
+- `add-read-aloud`：文字轉語音。針對回覆中的喇叭按鈕進行批次 MP3 處理；透過中繼伺服器進行 PCM 串流，使音訊能在回覆完成前開始播放。
+- `debug-voice`：提出計畫，在應用程式自身的語言與慣例中安裝僅供開發使用的紀錄管線（客戶端記錄器 → 本地 NDJSON），然後執行修正迴圈：將使用者的報告與紀錄特徵進行比對，修正一項問題，並重新測試。
 
-Use when a user asks to add voice, dictation, or read-aloud to an app with Grok, runs `/add-voice`, `/add-dictation`, `/add-read-aloud`, or `/debug-voice`, or reports that voice mode misbehaves and needs logs to diagnose it.
+各技能中的圖示慣例：波形圖示代表語音模式，麥克風圖示代表聽寫，喇叭圖示代表朗讀。
+
+<a id="when-to-use-it"></a>
+
+## 適用時機
+
+當使用者要求使用 Grok 為應用程式新增語音、聽寫或朗讀功能，執行 `/add-voice`、`/add-dictation`、`/add-read-aloud` 或 `/debug-voice`，或回報語音模式行為異常並需要紀錄來診斷問題時，請使用此功能。

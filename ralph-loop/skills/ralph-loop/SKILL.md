@@ -1,21 +1,27 @@
 ---
 name: ralph-loop
-description: Start a Ralph Loop for iterative self-referential development. Use when the user asks to run a ralph loop, start an iterative loop, or wants repeated autonomous iteration on a task until completion.
+description: "啟動 Ralph 迴圈進行迭代自我參考開發。當使用者要求執行 ralph 迴圈、開始迭代迴圈，或希望在任務完成前進行多次自主迭代時使用。"
 ---
 
-# Ralph Loop
+<a id="ralph-loop"></a>
 
-## Trigger
+# Ralph 迴圈
 
-The user wants to start a Ralph loop. An iterative development loop where the same prompt is fed back after every turn, and the agent sees its own previous work each iteration.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發條件
 
-1. Gather the user's task prompt and optional parameters:
-   - `max_iterations` (number, default 0 for unlimited)
-   - `completion_promise` (text, or "null" if not set)
+使用者想要啟動 Ralph 迴圈。一種迭代開發迴圈，每次回合後將相同的提示回饋，且代理在每次迭代中能看到自己的先前工作。
 
-2. Create the directory `.cursor/ralph/` if it doesn't exist, then write the state file at `.cursor/ralph/scratchpad.md` with this exact format:
+<a id="workflow"></a>
+
+## 工作流程
+
+1. 收集使用者任務提示和可選引數：
+   - `max_iterations`（數字，預設為 0 表示無限制）
+   - `completion_promise`（文字，若未設定則為 "null"）
+
+2. 如果目錄 `.cursor/ralph/` 不存在，則建立它，然後在 `.cursor/ralph/scratchpad.md` 寫入狀態檔案，格式如下：
 
    ```markdown
    ---
@@ -27,7 +33,7 @@ The user wants to start a Ralph loop. An iterative development loop where the sa
    <the user's task prompt goes here>
    ```
 
-   Example:
+   示例：
    ```markdown
    ---
    iteration: 1
@@ -38,17 +44,21 @@ The user wants to start a Ralph loop. An iterative development loop where the sa
    Build a REST API for todos with CRUD operations, input validation, and tests.
    ```
 
-3. Confirm to the user that the Ralph loop is active, then begin working on the task.
+3. 向使用者確認 Ralph 迴圈已啟動，然後開始處理任務。
 
-4. The stop hook automatically intercepts each turn end and feeds the same prompt back as a followup message. You will see it prefixed with `[Ralph loop iteration N.]`.
+4. 停止鉤子自動攔截每個回合結束，並將相同的提示作為後續訊息回饋。您會看到它以 `[Ralph loop iteration N.]` 字首標示。
 
-## Guardrails
+<a id="guardrails"></a>
 
-- If a completion promise is set, you may ONLY output `<promise>TEXT</promise>` when the statement is completely and genuinely true.
-- Do not output false promises to escape the loop.
-- Always recommend setting `max_iterations` as a safety net.
-- Quote the `completion_promise` value in the YAML frontmatter if it contains special characters.
+## 防護措施
 
-## Output
+- 如果設定了完成承諾，您只能在該陳述完全且真實時輸出 `<promise>TEXT</promise>`。
+- 不要輸出虛假承諾來逃避迴圈。
+- 始終建議設定 `max_iterations` 作為安全網。
+- 如果 `completion_promise` 值包含特殊字元，請在 YAML frontmatter 中引用該值。
 
-Confirm the loop is active (prompt, iteration limit, promise if set), then start working on the task immediately.
+<a id="output"></a>
+
+## 輸出
+
+確認迴圈已啟動（提示、迭代限制、承諾若設定），然後立即開始處理任務。

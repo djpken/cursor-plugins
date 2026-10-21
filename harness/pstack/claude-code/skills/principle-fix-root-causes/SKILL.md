@@ -1,21 +1,23 @@
 ---
 name: principle-fix-root-causes
-description: "Apply when debugging. Trace each symptom back to the first place the system went wrong and fix it there. A guard is a fix only when the state it handles is legitimate."
+description: "在除錯時應用此原則。將每個症狀追溯到系統首次出錯的位置，並在那裡修復。只有當防護所處理的狀態是合法的時，防護才算修復。"
 disable-model-invocation: true
 ---
 
-# Fix Root Causes
+<a id="fix-root-causes"></a>
 
-When debugging, fix the fault, not the place where it surfaced. The symptom is where a wrong state became visible. The root cause is the first place the system did something it should not do, or failed to handle a state it should handle.
+# 修復根本原因
 
-**Why:** A symptom fix hides the evidence and leaves the fault free to surface somewhere else. Each one makes the system harder to reason about, because the code now carries a workaround for a bug that nobody named.
+除錯時，修復故障本身，而非其顯現之處。症狀是錯誤狀態變得可見的地方。根本原因是系統首次做了不該做的事，或未能處理本應處理的狀態的地方。
 
-**Pattern:**
-- Reproduce first.
-- Ask "why" at each step until the answer is a wrong decision in the code, not a consequence of an earlier one.
-- When stuck, instrument. Read the actual error and the actual state. Do not guess.
-- Ask whether the state that triggered the symptom is legitimate. If the system may be in that state, the code that broke on it is the root cause, and handling the state there is the fix. If the state should never exist, a check where it broke hides the bug. Find what produced the state. Guards, retries, swallowed errors, clamped values, and discarded state are the usual ways to hide a bug.
-- When something fails only after a restart, suspect persisted state first: config files, caches, lock files, serialized state.
-- Check for the pattern, not just the instance. Find every place with the same fault and fix them all.
-- If a workaround needs a paragraph-long comment to justify it, the code is wrong. Fix the code, not the comment.
-- If the deciding fact took a deep dig to find, propose the cheap, always-on signal that would have shown it at first look.
+**原因：** 症狀修復掩蓋了證據，使故障得以在其他地方顯現。每一次這樣的修復都使系統更難推理，因為程式碼現在攜帶了對一個未被命名的錯誤的修補。
+
+**模式：**
+- 先重現問題。
+- 每一步都追問“為什麼”，直到答案是程式碼中的錯誤決策，而非先前決策的後果。
+- 遇到困難時，進行檢測。讀取實際錯誤和實際狀態。不要猜測。
+- 詢問觸發症狀的狀態是否合法。如果系統可能處於該狀態，則在該狀態下崩潰的程式碼是根本原因，處理該狀態即為修復。如果該狀態不應存在，則在崩潰處新增檢查會掩蓋錯誤。找出產生該狀態的原因。防護、重試、吞掉的錯誤、鉗制值以及丟棄的狀態是常見的掩蓋錯誤的方式。
+- 當某事物僅在重啟後失敗時，首先懷疑持久狀態：設定檔案、快取、鎖檔案、序列化狀態。
+- 檢查模式，而非僅此例項。找出所有具有相同故障的位置並全部修復。
+- 如果修補需要一段長註釋來解釋，則程式碼是錯誤的。修復程式碼，而非註釋。
+- 如果決定性事實需要深入挖掘才能發現，提出一個廉價、常開的訊號，以便一眼就能看出。

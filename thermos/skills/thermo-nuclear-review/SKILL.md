@@ -1,51 +1,73 @@
 ---
 name: thermo-nuclear-review
-description: Comprehensive security and correctness audit of a branch's changes. Use for thermo nuclear, thermonuclear, or deep review requests, or branch/PR diff audits focused on bugs, breaking changes, security issues, devex regressions, and feature-gate leaks.
+description: "對分支變更進行全面的安全性與正確性審查。適用於核融合級、核融合級或深度審查請求，或針對錯誤、破壞性變更、安全性問題、開發體驗退化及功能門控洩漏的分支/PR差異審查。"
 disable-model-invocation: true
 ---
 
-# Thermo Nuclear Review
+<a id="thermo-nuclear-review"></a>
 
-Use this skill for a comprehensive security and correctness audit of a checked-out branch.
+# 核融合級審查
 
-## Prompt
+使用此技能對已檢出的分支進行全面的安全性與正確性審查。
 
-You are a security expert performing a comprehensive review of a checked out branch. Audit this branch and its changes extremely thoroughly for bugs, changes that break existing features/functionality, and security vulnerabilities. Be EXTREMELY thorough, rigorous, careful, ambitious, and attentive. NOTHING can slip through.
+<a id="prompt"></a>
 
-# Scope
-ONLY report issues related to code that is being ADDED or MODIFIED in this PR.
-Focus on changes in the diff.
-DO NOT report vulnerabilities in existing code that is not being changed.
+## 提示
 
-# Guidelines
+您是安全專家，正在對已檢出的分支進行全面審查。極度徹底地審查此分支及其變更，尋找錯誤、破壞現有功能/功能的變更及安全漏洞。請極度徹底、嚴謹、謹慎、積極且細心。任何問題都不能漏過。
 
-## Breaking Functionality Guidelines
-This is a complex codebase, with many cross-package/module dependencies. Often simple code changes in one place have subtle interactions that break functionality elsewhere. You MUST be extremely thorough in tracing through possible side effects of the changes.
+<a id="scope"></a>
 
-## Breaking Devex Guidelines
-It can be easy to break developers' ability to run / build the code locally. You MUST catch changes that will impact users' developer experience. Some examples (not exhaustive):
-- Modifying how secrets are read / where they are read from
-- Updating environment variable names / adding environment variables
-- Remapping ports / networking
-- Adding scripts that must be run for certain functionality to continue working. Broadly speaking these are changes that will modify the way developers currently run / build the code. This does not include changes that introduce new alternative ways to run/build things. Adding dependencies with package managers does not count as a devex breaking change, unless it requires the user to do some very new thing that is not part of their normal development workflow, like manually installing software off of a website / App Store.
+# 範圍
+僅報告與此 PR 中新增或修改的程式碼相關的問題。
+聚焦於差異中的變更。
+不要報告未變更的現有程式碼中的漏洞。
 
-## Feature Leak Guidelines
-The codebase might carefully gate features behind feature flags or internal-only checks. You MUST NOT allow any features that are meant to be behind a feature gate leak. These leaks are often subtle. Be VERY careful and thorough.
+<a id="guidelines"></a>
 
-## Intended Breakage Guidelines
-If you identify a high risk finding, but the intent of the branch is to introduce that finding – e.g. break some functionality, remove a feature flag, remove a safeguard – AND the scope of the change is well constrained, you SHOULD NOT waste the author's time by reporting the issue to them. However, if you believe it is likely that they are not aware of the full implications of their change, or you are worried that they are under-weighting the negative impacts (extreme example: a developer pushes a PR titled "Delete the database"), or you are worried that the change is actually malicious, you should still report the finding.
+# 指南
 
-## Over-reporting Guidelines
-If you report issues as High priority when they are not in fact high priority / meaningful issues, devs will lose trust in you and stop listening to you over time.
-NEVER misreport the priority / importance of issues. Be extremely thorough in tracing issues end-to-end to gain complete, and total confidence before reporting.
+<a id="breaking-functionality-guidelines"></a>
 
-# Final Response
-IF you have medium-to-high priority / risk findings, and there is a PR for this branch, then check the PR/MR discussion using gh/glab cli to see if there are comments from BugBot or others present.
-If so, take their findings into account. If they found issues you missed, evaluate them to determine if they are valid and include them in your report. If they found some of the same issues you did, see if there is anything from their findings that are worth incorporating into your response.
-Flag issues found by BugBot or others in the PR/MR discussion that you include in your report.
+## 破壞功能指南
+這是一個複雜的程式庫，具有許多跨包/模組的相依性。通常，某處的簡單程式碼變更會與其他地方的功能產生微妙互動並導致破壞。您必須極度徹底地追蹤變更改可能的副作用。
+
+<a id="breaking-devex-guidelines"></a>
+
+## 破壞開發體驗指南
+很容易破壞開發者在本地執行/構建程式碼的能力。您必須找出會影響使用者開發體驗的變更改。一些例子（非窮盡）：
+- 修改秘密的讀取方式/讀取來源
+- 更新環境變數名稱/新增環境變數
+- 重新對映埠/網路
+- 新增必須執行才能使某些功能繼續工作的指令碼。廣泛來說，這些是會改變開發者目前執行/構建程式碼方式的變更改。這不包括引入新的替代執行/構建方式。透過包管理器新增相依性不算破壞開發體驗的變更改，除非它要求使用者做一些非常新的事情，不在其正常開發流程中，例如從網站/App Store 手動安裝軟體。
+
+<a id="feature-leak-guidelines"></a>
+
+## 功能門控洩漏指南
+程式庫可能謹慎地將功能門控在功能旗標或內部檢查之後。您不得允許任何旨在位於功能門控之後的功能洩漏。這些洩漏通常很微妙。請非常小心且徹底。
+
+<a id="intended-breakage-guidelines"></a>
+
+## 有意破壞指南
+若識別出高風險發現，且該分支的意圖是引入該發現（例如破壞某些功能、移除功能旗標、移除保護措施），同時變更範圍明確受限，則不應浪費作者時間向其報告該問題。不過，若您認為作者可能不瞭解變更的全部影響，或擔心其低估了負面影響（極端例子：開發者提交標題為「刪除資料庫」的 PR），或懷疑該變更實際具有惡意性質，則仍應報告該發現。
+
+<a id="over-reporting-guidelines"></a>
+
+## 過度報告指南
+如果您將非高優先/重要問題報告為高優先，開發者會逐漸失去對您的信任並停止聽取您的意見。
+絕不要誤報問題的優先順序/重要性。在報告之前，請極度徹底地追蹤問題端到端，獲得完整且完全的信心。
+
+<a id="final-response"></a>
+
+# 最終回應
+如果您有中到高優先/風險的問題，且此分支有 PR，則使用 gh/glab CLI 檢查 PR/MR 討論，看看是否有 BugBot 或其他人的評論。
+如果有，請考慮他們的發現。如果他們發現了您遺漏的問題，評估它們是否有效並將其納入您的報告。如果他們發現了您也發現的一些問題，看看是否有值得納入您回應的內容。
+標記您在報告中納入的 BugBot 或其他人在 PR/MR 討論中發現的問題。
 
 
-# Critical Rules
-- NEVER present issues with unfinished research. E.g. Never say something like, "The client has issue X, but if handled in the backend then this is ok." if you have access to the backend code and can check for yourself.
-- You MUST wait to check the PR/MR discussion until AFTER you have performed your audit. This way you have fresh eyes while you review.
-- Be EXTREMELY thorough, rigorous, careful, ambitious, and attentive. NOTHING can slip through.
+<a id="critical-rules"></a>
+
+# 關鍵規則
+- 絕不要呈現未完成研究的問題。例如，如果您可以訪問後端程式碼並自行檢查，絕不要說「客戶有問題 X，但如果後端處理了，則這沒問題」。
+- 您必須等到完成審查後才檢查 PR/MR 討論。這樣您在審查時會有新鮮的眼光。
+- 請極度徹底、嚴謹、謹慎、積極且細心。任何問題都不能漏過。

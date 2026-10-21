@@ -1,18 +1,20 @@
 ---
 name: principle-minimize-reader-load
-description: "Apply when reviewing or shaping code that's hard to trace. Count layers between question and answer, and hidden state in the reader's head; collapse one-caller wrappers and shrink mutable scope."
+description: "在審視或塑造難以追蹤的程式碼時，請套用此原則。計算問題與答案之間的層級數，以及讀者腦中需持有的隱藏狀態；將單一呼叫者的包裝器收縮，並縮小可變狀態的範圍。"
 disable-model-invocation: true
 ---
 
-# Minimize Reader Load
+<a id="minimize-reader-load"></a>
 
-Maintainability is the work a reader must do to understand code. Track two axes: **layers to trace** (indirections between the question and the answer) and **state to hold** (hidden or mutable context the reader must keep in their head). LOC, cyclomatic complexity, and "clean architecture" are proxies. Reader load is the thing that matters. The two axes are independent. A flat file with 50 globals can be as hard to reason about as a 6-layer adapter stack. Guard both. This is the human analog of [Guard the Context Window](../principle-guard-the-context-window/SKILL.md). Working memory is finite for readers too.
+# 最小化讀者負荷
 
-- **Collapse layers** that cost more than they save: wrappers with one caller, adapters with no second implementation, speculative indirection that was never needed. Inline them.
-- **Make adjacent layers change the abstraction.** A layer that repeats the same methods and arguments adds reader load without compression. Collapse pass-through layers.
-- **Demand interface compression.** A broad interface that hides little complexity makes readers learn both the surface and the implementation. Prefer boundaries that hide meaningful decisions.
-- **Shrink state scope:** prefer pure functions (returns over mutations), locals over fields, fields over module state, and module state over globals. Derive instead of sync.
-- **Name the invariant at the boundary,** not in every consumer, so the reader learns it once.
-- Before adding a layer or a piece of state, ask: does it reduce reader load elsewhere by at least as much?
+可維護性是讀者為了理解程式碼所需付出的工作。追蹤兩個軸：**追蹤層級**（問題與答案之間的間接層）與**需持有的狀態**（讀者必須記在腦中的隱藏或可變上下文）。LOC、迴圈複雜度與「乾淨的架構」都是代理指標。讀者負荷才是真正重要的。兩個軸是獨立。一個有50個全域變數的扁平檔案，可能與一個6層的介面卡堆疊一樣難以推理。需同時保護兩者。這是 [保護上下文視窗](../principle-guard-the-context-window/SKILL.md)] 的人類類比。讀者的工作記憶也是有限的。
 
-**The test:** can a new reader answer "where does X come from?" and "what can change X?" in under 30 seconds? If not, cut layers or cut state.
+- **收縮層級**，那些成本超過收益的層級：單一呼叫者的包裝器、沒有第二個實作的介面卡、從未需要的投機性間接層。將其內聯。
+- **讓相鄰層級改變抽象。** 一個層級重複相同的方法與引數，增加了讀者負荷卻沒有壓縮。收縮純傳遞層級。
+- **要求介面壓縮。** 一個寬泛的介面隱藏很少的複雜度，讓讀者必須學習表面與實作兩者。偏好能隱藏有意義決策的邊界。
+- **縮小狀態範圍：** 偏好純函式（返回而非修改）、區域性變數優先於欄位、欄位優先於模組狀態、模組狀態優先於全域變數。推導而非同步。
+- **在邊界命名不變數，** 而非在每個消費者中，讓讀者只學習一次。
+- 在新增層級或狀態之前，問：它是否在其他地方減少至少同等量的讀者負荷？
+
+**測試：** 一個新讀者能否在30秒內回答「X從哪裡來？」與「什麼可以改變X？」如果不能，則減少層級或減少狀態。

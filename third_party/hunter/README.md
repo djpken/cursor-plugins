@@ -1,18 +1,20 @@
 # Hunter
 
-Cursor plugin that connects agents to [Hunter](https://hunter.io) through Hunter's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Hunter 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Hunter](https://hunter.io)。
 
-Find and verify professional email addresses, list the contacts behind any company domain, discover companies that match a profile, enrich people and companies, and save contacts as leads.
+尋找並驗證專業電子郵件地址，列出任何公司域名背後的聯絡人，發現符合特定背景的公司，豐富人員與公司資料，並將聯絡人儲存為潛在客戶。
 
-Official Cursor setup: https://hunter.io/agents.md
+官方 Cursor 設定：https://hunter.io/agents.md
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Hunter**.
-3. Click **Install**, then set your Hunter API key (below).
+## 安裝
 
-Or run `/add-plugin hunter` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Hunter**。
+3. 點選 **安裝**，然後設定您的 Hunter API 金鑰（如下）。
+
+或在聊天中執行 `/add-plugin hunter`。
 
 ## MCP
 
@@ -30,43 +32,53 @@ Or run `/add-plugin hunter` in chat.
 }
 ```
 
-Auth is a Hunter **API key** sent in an `X-API-Key` header. Create one at https://hunter.io/api-keys (Free plan is enough), then set it in **Dashboard → Plugins → Configure**. Do not commit the key.
+驗證是 Hunter **API 金鑰**，透過 `X-API-Key` 標頭傳送。請在 https://hunter.io/api-keys 建立一個金鑰（免費方案即可），然後在 **Dashboard → 外掛 → 設定** 中設定。請勿提交金鑰。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need a Hunter account and an API key. The MCP server is available on all Hunter plans, including the free plan, and uses the plan and credits attached to that key.
+## 在連線之前
 
-## What agents can do
+您需要一個 Hunter 帳戶和 API 金鑰。MCP 伺服器適用於所有 Hunter 方案，包括免費方案，並使用該金鑰所附的方案與點數。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 分類 | 功能 |
 | --- | --- |
-| Discover | Find companies by industry, size, location, technology, and more, or describe the target in natural language (free, no credits) |
-| Domain Search | List the people and email addresses behind a company domain, with department and seniority filters |
-| Email Finder | Find a professional's most likely email address from a name and company or domain |
-| Email Verifier | Check whether an email address is deliverable and see its confidence score and sources |
-| Enrichment | Pull person and company data from an email address or domain |
-| Leads | Create, update, and organize leads and lead lists; push leads to a connected CRM |
-| Campaigns | Add recipients to campaigns and start outreach sequences |
+| 探索 | 依產業、規模、地點、技術等條件尋找公司，或以自然語言描述目標（免費，不需點數） |
+| 域名搜尋 | 列出公司域名背後的人員與電子郵件地址，並提供部門與職級篩選 |
+| 電子郵件尋找 | 從姓名與公司或域名，找出專業人士最可能的電子郵件地址 |
+| 電子郵件驗證 | 檢查電子郵件地址是否可投遞，並檢視信心分數與來源 |
+| 資料豐富化 | 從電子郵件地址或域名提取人員與公司資料 |
+| 潛在客戶 | 建立、更新與組織潛在客戶及潛在客戶列表；將潛在客戶推送到連線的 CRM |
+| 行銷活動 | 將收件人加入行銷活動，並啟動外聯序列 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱與結構的來源基準。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run with the permissions and credits attached to the API key. Domain Search, Email Finder, Email Verifier, and Enrichment calls cost credits the same way they do in the Hunter app; Discover is free.
-- This plugin follows Hunter's official Cursor packaging: Streamable HTTP at `https://mcp.hunter.io/mcp` with `X-API-Key`. Hunter also documents OAuth for some clients; do not use OAuth for this plugin.
-- Hunter's `test-api-key` only works against the REST API; the MCP server rejects it with a 401.
-- The `hunter-io/hunter-mcp` GitHub repository is Hunter's old local (stdio) server and is archived. Hunter directs all clients to the remote server above.
+## 注意事項
 
-## Docs
+- 工具呼叫會以 API 金鑰所附的許可權與點數執行。域名搜尋、電子郵件尋找、電子郵件驗證與資料豐富化呼叫會消耗點數，如同在 Hunter 應用中操作；探索是免費的。
+- 此外掛遵循 Hunter 官方 Cursor 打包方式：Streamable HTTP 位於 `https://mcp.hunter.io/mcp`，使用 `X-API-Key`。Hunter 也為某些客戶端提供 OAuth 說明；請勿使用 OAuth 於此外掛。
+- Hunter 的 `test-api-key` 僅適用於 REST API；MCP 伺服器會以 401 拒絕它。
+- `hunter-io/hunter-mcp` GitHub 儲存庫是 Hunter 舊的本地（stdio）伺服器，已封存。Hunter 將所有客戶端導向上述遠端伺服器。
 
-- Agent setup instructions: https://hunter.io/agents.md
-- Hunter MCP: https://hunter.io/mcp
-- API keys: https://hunter.io/api-keys
-- API reference (MCP section): https://hunter.io/api-documentation/v2#mcp
-- Server URL: https://mcp.hunter.io/mcp
+<a id="docs"></a>
 
-Logo is Hunter's official fox mark, from the `hunter-io` GitHub organization.
+## 檔案
 
-## License
+- 代理設定說明：https://hunter.io/agents.md
+- Hunter MCP：https://hunter.io/mcp
+- API 金鑰：https://hunter.io/api-keys
+- API 參考（MCP 區段）：https://hunter.io/api-documentation/v2#mcp
+- 伺服器 URL：https://mcp.hunter.io/mcp
+
+標誌是 Hunter 官方狐狸標誌，來自 `hunter-io` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

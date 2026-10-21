@@ -1,18 +1,22 @@
-# X Ads
+<a id="x-ads"></a>
 
-Cursor plugin that connects agents to the [X Ads API](https://docs.x.com/x-ads-api/introduction) through X's official hosted [Model Context Protocol](https://modelcontextprotocol.io/) server at `https://ads-api.x.com/mcp`.
+# X 廣告
 
-This plugin signs you in with OAuth as your own X account and works with the ads accounts you can access. Agents can manage campaigns, create ads, set up pixels and conversion tracking, and pull performance stats.
+Cursor 外掛，透過 X 官方託管的 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器（位於 `https://ads-api.x.com/mcp`）將代理連線到 [X Ads API](https://docs.x.com/x-ads-api/introduction)。
 
-This is a separate plugin from the [X](../x/) plugin: the ads MCP server lives on a different subdomain (`ads-api.x.com` vs `api.x.com`) and requires different OAuth scopes, so it needs its own authorization. Installing both means signing in twice — once per plugin.
+此外掛使用 OAuth 以您的 X 帳戶登入，並可與您能存取的所有廣告帳戶配合使用。代理可以管理廣告活動、建立廣告、設定畫素與轉換追蹤，以及提取效能統計資料。
 
-## Install
+這是與 [X](../x/) 外掛不同的外掛：廣告 MCP 伺服器位於不同的子域名（`ads-api.x.com` 對 `api.x.com`），且需要不同的 OAuth 許可權範圍，因此需要獨立授權。安裝兩者意味著需登入兩次，每個外掛各一次。
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **X Ads**.
-3. Click **Install**, then complete the OAuth sign-in when prompted.
+<a id="install"></a>
 
-Or run `/add-plugin x-ads` in chat.
+## 安裝
+
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **X 廣告**。
+3. 點選 **安裝**，然後在提示時完成 OAuth 登入。
+
+或在聊天中執行 `/add-plugin x-ads`。
 
 ## MCP
 
@@ -36,35 +40,45 @@ Or run `/add-plugin x-ads` in chat.
 }
 ```
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-| Category | Capabilities |
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Accounts | Read your ads accounts, funding instruments, and settings |
-| Campaigns | Create, update, pause, and read campaigns and line items |
-| Ads & creatives | Create and manage promoted ads and creatives |
-| Audiences | Read and manage targeting and audiences |
-| Pixels & conversions | Set up the X pixel and conversion tracking |
-| Analytics | Pull campaign, line item, and ad performance stats |
+| 帳戶 | 讀取您的廣告帳戶、資金工具與設定 |
+| 廣告活動 | 建立、更新、暫停與讀取廣告活動及廣告專案 |
+| 廣告與創意素材 | 建立與管理促銷廣告與創意素材 |
+| 受眾 | 讀取與管理目標設定與受眾 |
+| 畫素與轉換 | 設定 X 畫素與轉換追蹤 |
+| 分析 | 提取廣告活動、廣告專案與廣告的效能統計資料 |
 
-## Setup
+<a id="setup"></a>
 
-No token to paste — the plugin ships with X's OAuth client ID (the same one the X connector uses) and requests the scopes below. On first use, Cursor opens a browser window where you sign in to X and approve access. The `offline.access` scope lets Cursor refresh the session automatically, so you only sign in once.
+## 設定
 
-Requests run in your user context against the ads accounts your X account can access. You can revoke access at any time from your X account's connected apps settings.
+無需貼上任何令牌，外掛內已包含 X 的 OAuth 客戶端 ID（與 X 聯結器使用的相同 ID），並請求以下許可權範圍。首次使用時，Cursor 會開啟瀏覽器視窗，讓您登入 X 並核准存取。`offline.access` 許可權範圍允許 Cursor 自動重新整理會話，因此您只需登入一次。
 
-## Scopes requested
+請求會在您的使用者環境中執行，針對您的 X 帳戶可存取的所有廣告帳戶。您可以隨時從您的 X 帳戶的連線應用設定中撤銷存取權。
+
+<a id="scopes-requested"></a>
+
+## 請求的許可權範圍
 
 `ads.read`, `ads.write`, `media.write`, `offline.access`
 
-## Docs
+<a id="docs"></a>
 
-- X Ads API: https://docs.x.com/x-ads-api/introduction
-- OAuth protected resource metadata: https://ads-api.x.com/.well-known/oauth-protected-resource
-- Authentication overview: https://docs.x.com/fundamentals/authentication/overview
+## 文件
 
-Logo is X's official mark from the [X brand toolkit](https://about.x.com/en/who-we-are/brand-toolkit), placed on a black tile matching X's own app icon.
+- X Ads API：https://docs.x.com/x-ads-api/introduction
+- OAuth 受保護資源元資料：https://ads-api.x.com/.well-known/oauth-protected-resource
+- 驗證概述：https://docs.x.com/fundamentals/authentication/overview
 
-## License
+標誌是 X 官方品牌工具包](https://about.x.com/en/who-we-are/brand-toolkit)中的官方標誌，放置在與 X 應用圖示一致的黑色底板上。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

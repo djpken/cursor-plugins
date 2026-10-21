@@ -1,16 +1,18 @@
 # Gamma
 
-Cursor plugin that connects agents to [Gamma](https://developers.gamma.app/mcp/gamma-mcp-server.md) through Gamma's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Gamma 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Gamma](https://developers.gamma.app/mcp/gamma-mcp-server.md)。
 
-Generate presentations, documents, and webpages.
+生成簡報、檔案和網頁。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Gamma**.
-3. Click **Install**, then complete the Gamma sign-in prompt.
+## 安裝
 
-Or run `/add-plugin gamma` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Gamma**。
+3. 點選 **安裝**，然後完成 Gamma 登入提示。
+
+或在聊天中執行 `/add-plugin gamma`。
 
 ## MCP
 
@@ -25,36 +27,46 @@ Or run `/add-plugin gamma` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for Gamma sign-in when the plugin connects — there is no client ID or personal access token to configure.
+驗證採用 OAuth。當外掛連線時，Cursor 會提示 Gamma 登入，不需要設定客戶端 ID 或個人存取令牌。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need a Gamma account. Generations consume credits from that account.
+## 連線前
 
-## What agents can do
+你需要一個 Gamma 帳戶。生成會消耗該帳戶的點數。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可以執行什麼
+
+| 分類 | 功能 |
 | --- | --- |
-| Generate | Presentations, documents, webpages, and social posts from a prompt, outline, or template |
-| Export | PDF, PPTX, and PNG exports |
-| Browse | List and read existing Gammas, themes, and folders |
-| Analytics | Views and comments on existing Gammas |
+| 生成 | 從提示、大綱或模板生成簡報、檔案、網頁和社交帖子 |
+| 匯出 | PDF、PPTX 和 PNG 匯出 |
+| 瀏覽 | 列出和讀取現有的 Gamma、主題和資料夾 |
+| 分析 | 檢視現有 Gamma 的瀏覽量和評論 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱和結構的來源。
 
-## Notes
+<a id="notes"></a>
 
-- Generation is asynchronous: tools return a generation id that the agent polls until complete.
-- Auth is OAuth 2.0 with Dynamic Client Registration.
+## 注意
 
-## Docs
+- 生成是非同步的：工具返回一個生成 ID，代理會持續查詢直到完成。
+- 驗證採用 OAuth 2.0 並支援動態客戶端註冊。
 
-- Gamma MCP server: https://developers.gamma.app/mcp/gamma-mcp-server.md
-- Tools reference: https://developers.gamma.app/mcp/mcp-tools-reference.md
-- Server URL: https://mcp.gamma.app/mcp
+<a id="docs"></a>
 
-Logo is Gamma's official mark, from the `gamma-app` GitHub organization.
+## 檔案
 
-## License
+- Gamma MCP 伺服器：https://developers.gamma.app/mcp/gamma-mcp-server.md
+- 工具參考：https://developers.gamma.app/mcp/mcp-tools-reference.md
+- 伺服器 URL：https://mcp.gamma.app/mcp
+
+標誌是 Gamma 官方標記，來自 `gamma-app` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

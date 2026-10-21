@@ -1,14 +1,16 @@
 # benny
 
-benny gives you two cursor automations for slack issue reports. one triages each report. the other reproduces confirmed bugs and may prepare a small draft fix.
+benny 為您提供兩個用於 Slack 問題報告的 Cursor 自動化流程。其中一個負責對每份報告進行分級，另一個則重現已確認的錯誤，並可能準備一份小型的修復草稿。
 
-the files in this directory are dormant setup and automation sources. they do not appear as slash skills.
+此目錄中的檔案是處於休眠狀態的設定與自動化來源。它們不會顯示為斜線技能。
 
-## set it up
+<a id="set-it-up"></a>
 
-1. point cursor at [`FOR_AGENTS.md`](./FOR_AGENTS.md) and name the target repository.
-2. let setup merge this whole directory into the target at `.cursor/automations/benny/`. it must preserve destination-only files and review conflicts instead of overwriting local edits.
-3. let setup enable pstack in the target repository's `.cursor/settings.json` for shared dependencies:
+## 進行設定
+
+1. 將 Cursor 指向 [`FOR_AGENTS.md`](./FOR_AGENTS.md)，並命名目標儲存庫。
+2. 讓設定流程將整個目錄合併至 `.cursor/automations/benny/` 的目標位置。它必須保留僅存在於目標端的檔案，並審查衝突，而不是覆寫本機編輯。
+3. 讓設定流程在目標儲存庫的 `.cursor/settings.json` 中啟用 pstack，以處理共用相依性：
 
 ```json
 {
@@ -18,6 +20,6 @@ the files in this directory are dormant setup and automation sources. they do no
 }
 ```
 
-4. keep user-owned configuration outside the copied pack, for example in `.cursor/benny/`. adapt [`configuration.example.yaml`](./templates/configuration.example.yaml) and [`feature-map.example.md`](./skills/reproduce-and-fix-issues/references/feature-map.example.md).
-5. commit `.cursor/settings.json`, `.cursor/automations/benny/`, and any secret-free configuration before enabling either automation.
-6. review each new automation draft or update existing automations in their editors. then send a harmless test report and verify every source-channel post stays in the original thread.
+4. 將使用者擁有的設定保留在複製的套件之外，例如放在 `.cursor/benny/`。請調整 [`configuration.example.yaml`](./templates/configuration.example.yaml) 與 [`feature-map.example.md`](./skills/reproduce-and-fix-issues/references/feature-map.example.md)。
+5. 在啟用任何自動化之前，請先提交 `.cursor/settings.json`、`.cursor/automations/benny/`，以及任何不含機密的設定。
+6. 在編輯器中審查每個新的自動化草稿，或更新現有的自動化。然後傳送一份無害的測試報告，並驗證每個來源頻道的貼文都保留在原始討論串中。

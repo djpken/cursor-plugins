@@ -1,74 +1,102 @@
 ---
 name: interrogate
-description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple LLM reviewers challenge changes from independent angles."
+description: "適用於「質詢」、「對抗性審查」、「多模型審查」、「挑戰此內容」、「對這段程式碼進行壓力測試」、「找出盲點」或「徹底拆解」。多個 LLM 審查者會從獨立的角度挑戰變更。"
 disable-model-invocation: true
 ---
 
-# Interrogate
+<a id="interrogate"></a>
 
-Spawn one reviewer per configured model to adversarially review code changes. The adversarial signal comes from model diversity, not assigned personas. The deliverable is a synthesized verdict. Do NOT auto-apply changes.
+# 質詢
 
-## Step 1, Scope
+為每個已設定的模型生成一個審查者，以對抗性方式審查程式碼變更。對抗性訊號來自模型的多樣性，而非指派的角色。交付物是一份綜合裁決。請勿自動套用變更。
 
-Identify what to review from context:
+<a id="step-1-scope"></a>
 
-- If the user points at specific files or a diff, use that.
-- If on a feature branch, run `git diff main...HEAD` (or the appropriate base branch) for the full changeset.
-- If the user's message references recent work, gather the relevant files.
+## 步驟 1，範圍
 
-Package the diff or file contents with any surrounding context files the reviewers need to understand the code.
+從上下文中識別要審查的內容：
 
-## Step 2, Intent
+- 如果使用者指向特定的檔案或 diff，請使用該內容。
+- 如果目前在功能分支上，請執行 `git diff main...HEAD`（或適當的基礎分支）以取得完整的變更集。
+- 如果使用者的訊息提及最近的工作，請收集相關的檔案。
 
-Before spawning reviewers, state the intent in one clear paragraph from the user's message, commit messages, the PR description if one exists, and the code. If you're unsure about the intent, ask the user before proceeding.
+將 diff 或檔案內容與審查者理解程式碼所需的周圍上下文件案一起打包。
 
-## Step 3, Spawn Reviewers
+<a id="step-2-intent"></a>
 
-Launch all reviewers in a single message with the Task tool, one per entry on the `interrogate reviewers` line in `~/.cursor/rules/pstack-models.mdc`, labeled Reviewer A, B, and so on to match the entry count. If the rule or that line is missing, use the table defaults.
+## 步驟 2，意圖
 
-| Subagent | Default model |
+在生成審查者之前，請根據使用者的訊息、commit 訊息、PR 描述（如果存在）以及程式碼，用一段清晰的文字陳述意圖。如果您不確定意圖，請在繼續之前詢問使用者。
+
+<a id="step-3-spawn-reviewers"></a>
+
+## 步驟 3，生成審查者
+
+使用 Task 工具在單則訊息中啟動所有審查者，`~/.cursor/rules/pstack-models.mdc` 中 `interrogate reviewers` 行的每個專案對應一個，並標記為 Reviewer A、B 等，以符合專案數量。如果規則或該行缺失，請使用表格預設值。
+
+| 子代理 | 預設模型 |
 |----------|---------------|
 | Reviewer A | `claude-opus-5-5-xhigh` |
 | Reviewer B | `grok-4.7-xhigh-fast` |
 
-Each reviewer gets `subagent_type: generalPurpose`, `readonly: true`, and `model` set to its configured entry, or its table default when there is no configured line. Omit `model` for an `auto` or `inherit-parent` entry, so that reviewer runs on the parent model.
+每個審查者都會將 `subagent_type: generalPurpose`、`readonly: true` 和 `model` 設定為其已設定的專案，或在沒有設定行時使用其表格預設值。對於 `auto` 或 `inherit-parent` 專案，請省略 `model`，以便該審查者在父模型上執行。
 
-If the Task tool rejects a configured entry, run that reviewer on its family's table default and say so. Families go by prefix: `claude-*`, and `grok-*` with `cursor-grok-*` and `composer-*`. A refused `composer-*` entry runs on Reviewer B's default. With no family match, use Reviewer A's default. If it rejects a table default, spawn with the closest equivalent from the valid slugs in its error message (prefer the same family and reasoning tier), and open a separate PR to update the default table. Do not block the review on the slug issue. Never treat an alias entry as a rejected slug or apply either fallback to it.
+如果 Task 工具拒絕已設定的專案，請在該家族的表格預設值上執行該審查者，並說明情況。家族依字首劃分：`claude-*`，以及 `grok-*` 搭配 `cursor-grok-*` 和 `composer-*`。被拒絕的 `composer-*` 專案會在 Reviewer B 的預設值上執行。如果沒有家族匹配，請使用 Reviewer A 的預設值。如果它拒絕表格預設值，請使用其錯誤訊息中有效 slugs 裡最接近的等效項生成（優先選擇相同家族和推理層級），並開啟一個獨立的 PR 來更新預設表格。請勿因 slug 問題而阻擋審查。切勿將別名專案視為被拒絕的 slug，或對其套用任何回退機制。
 
-Read `references/reviewer-prompt.md` and fill in the same template for every reviewer with the stated intent, the diff or file contents, the rubric from `references/rubric.md`, and the code-quality lens from `references/code-quality-review.md`. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section of the **poteto-mode** skill.
+閱讀 `references/reviewer-prompt.md`，並為每個審查者填入相同的範本，包含已陳述的意圖、diff 或檔案內容、來自 `references/rubric.md` 的評分標準，以及來自 `references/code-quality-review.md` 的程式碼品質視角。根據 **poteto-mode** skill 的 Subagents 章節，為每個子代理選擇適合該工作的推理層級和快速或標準速度。
 
-## Step 4, Synthesize
+<a id="step-4-synthesize"></a>
 
-As results come back, build a unified picture. Parse every reviewer's findings. Merge findings that describe the same issue differently, and note which models raised each one. Findings two or more models raised independently are the highest signal. Read a lone model's finding, but weight it accordingly. Note disagreements. If one model flags something and another explicitly says the opposite, that is context for the verdict.
+## 步驟 4，綜合
 
-## Step 5, Lead Judgment
+當結果返回時，建立統一的圖景。解析每個審查者的發現。合併描述同一問題但方式不同的發現，並記錄哪些模型提出了每一項。兩個或更多模型獨立提出的發現具有最高的訊號價值。閱讀單一模型的發現，但相應地調整其權重。記錄分歧。如果一個模型標記了某項內容，而另一個模型明確表示相反意見，這將作為裁決的上下文。
 
-You are the lead reviewer, a pragmatic senior engineer, not a neutral aggregator. Read `references/lead-judgment.md` for the full framework. Put every finding in one of four buckets, with the model(s) that raised it and a one-line rationale.
+<a id="step-5-lead-judgment"></a>
 
-- **Act on**. Real issues affecting correctness, security, or maintainability given the actual goals. They would block a real PR.
-- **Consider**. Legitimate, but you're not sure they outweigh the cost of addressing them now. Worth the user's attention.
-- **Noted**. Technically valid but not actionable. Context-dependent, premature optimization, or low-impact at this stage.
-- **Dismissed**. Wrong, nitpicky, or missing context, with a brief reason.
+## 步驟 5，主導判斷
 
-## Output Format
+您是主導審查者，一位務實的資深工程師，而非中立的聚合器。閱讀 `references/lead-judgment.md` 以瞭解完整框架。將每個發現歸入四個類別之一，並附上提出該發現的模型以及一行理由。
 
-### Intent
-> [The stated intent paragraph from Step 2]
+- **採取行動**。影響正確性、安全性或可維護性的真實問題，基於實際目標。這些問題會阻擋一個真實的 PR。
+- **考慮**。合理，但不確定它們是否超過現在處理它們的成本。值得使用者關注。
+- **已記錄**。技術上有效但無法採取行動。取決於上下文、過早最佳化，或在當前階段影響較低。
+- **駁回**。錯誤、吹毛求疵或缺乏上下文，並附上簡短原因。
 
-### Reviewers
-- Reviewer [label]: [model name], [N findings] (one bullet per reviewer)
+<a id="output-format"></a>
 
-### Act On
-[Each: description, which models raised it, why it matters.]
+## 輸出格式
 
-### Consider
-[Each: description, which models raised it, the tradeoff.]
+<a id="intent"></a>
 
-### Noted
-[Brief list.]
+### 意圖
+> [步驟 2 中陳述的意圖段落]
 
-### Dismissed
-[Each with a brief rationale.]
+<a id="reviewers"></a>
 
-### Agreement Map
-[Where models agreed and diverged, and what that pattern tells us.]
+### 審查者
+- Reviewer [標籤]: [模型名稱], [N 個發現]（每個審查者一個專案符號）
+
+<a id="act-on"></a>
+
+### 採取行動
+[每一項：描述、哪些模型提出、為何重要。]
+
+<a id="consider"></a>
+
+### 考慮
+[每一項：描述、哪些模型提出、權衡。]
+
+<a id="noted"></a>
+
+### 已記錄
+[簡短清單。]
+
+<a id="dismissed"></a>
+
+### 駁回
+[每一項附簡短理由。]
+
+<a id="agreement-map"></a>
+
+### 共識地圖
+[模型在哪裡達成一致和分歧，以及該模式告訴我們什麼。]

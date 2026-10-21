@@ -1,16 +1,18 @@
 # MailerLite
 
-Cursor plugin that connects agents to [MailerLite](https://www.mailerlite.com) through MailerLite's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 MailerLite 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [MailerLite](https://www.mailerlite.com)。
 
-Add and update subscribers, organize groups and segments, build and inspect campaigns, and manage forms, automations, and webhooks in the signed-in MailerLite account.
+在已登入的 MailerLite 帳戶中，新增和更新訂閱者、組織群組與區段、建立和檢查活動，以及管理表單、自動化和 Webhook。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **MailerLite**.
-3. Click **Install**, then complete the MailerLite sign-in prompt.
+## 安裝
 
-Or run `/add-plugin mailerlite` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **MailerLite**。
+3. 點選 **安裝**，然後完成 MailerLite 登入提示。
+
+或在聊天中執行 `/add-plugin mailerlite`。
 
 ## MCP
 
@@ -25,34 +27,42 @@ Or run `/add-plugin mailerlite` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for MailerLite sign-in when the plugin connects — there is no API key or token to paste.
+驗證方式為 OAuth。當外掛連線時，Cursor 會提示 MailerLite 登入，不需要貼上 API 金鑰或令牌。
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-| Category | Capabilities |
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Subscribers | Add and update subscribers, read activity, and count the audience |
-| Groups & segments | Create groups, manage membership, and query segments |
-| Campaigns | Create, update, schedule, and inspect campaigns and their recipients |
-| Forms & automations | Manage forms, create automations, and read automation activity |
-| Webhooks & imports | Manage webhooks and run subscriber imports |
+| 訂閱者 | 新增和更新訂閱者、讀取活動，並計算受眾數量 |
+| 群組與區段 | 建立群組、管理成員資格，並查詢區段 |
+| 活動 | 建立、更新、排程和檢查活動及其收件者 |
+| 表單與自動化 | 管理表單、建立自動化，並讀取自動化活動 |
+| Webhook 與匯入 | 管理 Webhook 並執行訂閱者匯入 |
 
-The hosted runtime is the source of truth for tool names and schemas. Call `get_subscriber_count` as a read-only smoke test after connecting.
+託管執行環境是工具名稱和結構的來源。連線後，將 `get_subscriber_count` 作為僅讀的冒煙測試執行。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the MailerLite user who authorizes the connection.
-- The MCP server is in beta, so the tool catalog can change.
-- The server exposes close to 40 tools. MailerLite notes that Cursor's free plan caps a single connector at 40 active tools, so you may see an "Exceeding total tools limit" warning there.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 MailerLite 使用者身份執行。
+- MCP 伺服器處於 beta 階段，因此工具目錄可能變動。
+- 伺服器提供約 40 個工具。MailerLite 指出 Cursor 免費方案將單一聯結器限制為 40 個有效工具，因此您可能會看到「超出總工具限制」的警告。
 
-- MailerLite MCP server: https://developers.mailerlite.com/mcp
-- How to connect MailerLite's MCP: https://www.mailerlite.com/help/how-to-connect-mailerlites-mcp
-- Server URL: https://mcp.mailerlite.com/mcp
+<a id="docs"></a>
 
-Logo is MailerLite's official mark, from the `mailerlite` GitHub organization.
+## 文件
 
-## License
+- MailerLite MCP 伺服器：https://developers.mailerlite.com/mcp
+- 如何連線 MailerLite 的 MCP：https://www.mailerlite.com/help/how-to-connect-mailerlites-mcp
+- 伺服器 URL：https://mcp.mailerlite.com/mcp
+
+Logo 是 MailerLite 官方標誌，來自 `mailerlite` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

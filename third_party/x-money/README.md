@@ -1,22 +1,26 @@
 # X Money
 
-Grok Bot plugin that connects agents to [X Money](https://x.com/i/money) through X Money's hosted [Model Context Protocol](https://modelcontextprotocol.io/) server at `https://mcp.money.x.com/mcp`.
+Grok Bot 外掛，透過 X Money 託管的 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器（位於 `https://mcp.money.x.com/mcp`）將代理連線到 [X Money](https://x.com/i/money)。
 
-Use your X Money Card, send money to users on X, manage your finances, view your balance and browse through your transaction history.
+使用您的 X Money 卡片、向 X 上的使用者傳送資金、管理財務、檢視餘額以及瀏覽交易歷史。
 
-## Who can use it
+<a id="who-can-use-it"></a>
 
-- Grok Bot **0.52** or newer.
-- An active X Money account. X Money is available to eligible customers in the United States.
-- Not available in Cursor. Cursor must not list or install this plugin.
+## 適用物件
 
-## Install
+- Grok Bot **0.52** 或更新版本。
+- 有效的 X Money 帳戶。X Money 僅適用於美國的合格客戶。
+- 不適用於 Cursor。Cursor 不得列出或安裝此外掛。
 
-1. Open **Grok Bot → Plugins**.
-2. Search for **X Money**.
-3. Click **Install**, then complete the X Money connection when prompted.
+<a id="install"></a>
 
-Or ask the agent to connect your X Money account.
+## 安裝
+
+1. 開啟 **Grok Bot → 外掛**。
+2. 搜尋 **X Money**。
+3. 點選 **安裝**，然後在提示時完成 X Money 連線。
+
+或請代理協助連線您的 X Money 帳戶。
 
 ## MCP
 
@@ -32,51 +36,65 @@ Or ask the agent to connect your X Money account.
 }
 ```
 
-## Connecting
+<a id="connecting"></a>
 
-Auth is OAuth. There is no client ID, API key, or token to paste. Cursor completes the sign-in on your behalf.
+## 連線
 
-1. Grok Bot opens the **Connect Grok Bot to X Money** page in a browser. It shows a connection code and a QR code.
-2. Enter the code in the X Money app, or scan the QR code, and approve with your passkey.
-3. The page confirms the connection and Grok Bot picks it up on its own.
+驗證方式為 OAuth。沒有需要貼上的客戶 ID、API 金鑰或令牌。Cursor 會代表您完成登入。
 
-The code is valid for about 5 minutes. You can revoke the connection at any time from **X → Money → Settings → Connections**.
+1. Grok Bot 會在瀏覽器中開啟 **將 Grok Bot 連線至 X Money** 頁面。頁面會顯示連線碼和 QR 碼。
+2. 在 X Money 應用中輸入該碼，或掃描 QR 碼，並使用您的通行金鑰進行核准。
+3. 頁面會確認連線，Grok Bot 會自行接收該連線。
 
-## What agents can do
+該碼的有效期限約為 5 分鐘。您可以隨時從 **X → 錢包 → 設定 → 連線** 撤銷連線。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 分類 | 功能 |
 | --- | --- |
-| Balances | Available balance of your X Money accounts |
-| Transactions | Your transaction history, with optional filters |
-| Payments | Send money to another X user, or ask another X user to pay you |
-| Purchases | Pay a merchant online with an X Money virtual card |
+| 餘額 | 您的 X Money 帳戶的可用餘額 |
+| 交易 | 您的交易歷史，可加上篩選條件 |
+| 付款 | 向另一位 X 使用者傳送資金，或請求另一位 X 使用者付款給您 |
+| 購買 | 使用 X Money 虛擬卡片向線上商家付款 |
 
-X Money decides which actions are available for each account, so the set can differ between users.
+X Money 會決定每個帳戶可使用的動作，因此不同使用者之間的可用動作可能有所不同。
 
-## Approval
+<a id="approval"></a>
 
-Every action that moves money is confirmed with you first. Before sending money, requesting money, or paying a merchant, the agent shows an Approve / Cancel prompt that states exactly who, how much, and what for. Nothing happens until you approve, and each action needs its own approval. X Money also enforces this on its side and refuses any such call that was not approved.
+## 核准
 
-## Skill
+每個涉及資金移動的動作都會先與您確認。在傳送資金、請求資金或向商家付款之前，代理會顯示核准 / 取消提示，明確說明物件、金額和用途。直到您核准後才會執行，且每個動作都需要獨立核准。X Money 也會在其端強制執行此規則，並拒絕任何未核准的此類呼叫。
 
-`skills/x-money-guide/SKILL.md` gives the agent the approval rule above, the connection flow, how to guide you through connect, reconnect, and revoke, and what each X Money failure message means.
+<a id="skill"></a>
 
-## Notes
+## 技能
 
-- Payments and purchases made through this plugin are live and move real money.
-- Every action passes the same X Money checks as the app, plus separate limits for agents. When X Money refuses an action, the agent relays the reason and does not retry.
-- Higher-risk transfers stay in the X app and are not available to agents.
-- Card details used for a purchase go straight to the merchant checkout and are never shown in chat.
-- The agent never sees your X Money password, passkey, or bank credentials.
+`skills/x-money-guide/SKILL.md` 提供代理上述核准規則、連線流程、如何指導您進行連線、重新連線和撤銷，以及每個 X Money 失敗訊息的含義。
 
-## Docs
+<a id="notes"></a>
 
-- X Money: https://x.com/i/money
-- Manage connected agents: https://x.com/i/money/settings/connections
-- Server URL: https://mcp.money.x.com/mcp
+## 注意事項
 
-Logo is X Money's official mark.
+- 透過此外掛進行的付款和購買是實際操作，會移動真實資金。
+- 每個動作都會經過與應用相同的 X Money 檢查，並加上代理的獨立限制。當 X Money 拒絕動作時，代理會轉達原因且不會重試。
+- 較高風險的轉帳會保留在 X 應用中，不提供給代理。
+- 購買時使用的卡片資訊會直接傳送至商家結帳頁面，絕不會在聊天中顯示。
+- 代理絕不會看到您的 X Money 密碼、通行金鑰或銀行憑證。
 
-## License
+<a id="docs"></a>
+
+## 文件
+
+- X Money：https://x.com/i/money
+- 管理已連線的代理：https://x.com/i/money/settings/connections
+- 伺服器 URL：https://mcp.money.x.com/mcp
+
+標誌為 X Money 的官方標誌。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

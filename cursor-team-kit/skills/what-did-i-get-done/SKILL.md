@@ -1,31 +1,41 @@
 ---
 name: what-did-i-get-done
-description: Summarize authored commits over a user-specified time period into a concise update
+description: "將使用者指定時間範圍內所撰寫的 commit 彙整為簡潔的更新摘要"
 ---
 
-# What did I get done
+<a id="what-did-i-get-done"></a>
 
-## Trigger
+# 我完成了哪些工作
 
-Need a short, high-signal summary of work completed in a specific time range (for example: yesterday, last 3 days, or last week).
+<a id="trigger"></a>
 
-## Workflow
+## 觸發條件
 
-1. Resolve the requested time window into concrete dates.
-2. Read commits authored by the current git user email within that range.
-3. Exclude merge commits and uncommitted changes.
-4. Synthesize the most important shipped changes into a concise status update.
-5. Include the actual date range used in the final summary.
+需要針對特定時間範圍（例如：昨天、最近 3 天或上週）內完成的工作，提供簡短且資訊密度高的摘要。
 
-## Guardrails
+<a id="workflow"></a>
 
-- Be extremely concise and information-dense.
-- Prioritize substantial behavior or architecture changes.
-- Omit cosmetic-only changes (formatting, imports, minor renames).
-- Do not infer intent or motivation. Describe changes functionally.
+## 工作流程
 
-## Output
+1. 將要求的時間範圍解析為具體日期。
+2. 讀取該範圍內由目前 git 使用者電子郵件地址所撰寫的 commit。
+3. 排除合併 commit 與未提交的變更。
+4. 將最重要的已發布變更彙整為簡潔的狀態更新。
+5. 在最終摘要中包含實際使用的日期範圍。
 
-- One short summary suitable for a status update
-- Real date range
-- Optional 2-5 bullets for major changes only
+<a id="guardrails"></a>
+
+## 限制條件
+
+- 保持極度簡潔且資訊密集。
+- 優先處理實質性的行為或架構變更。
+- 省略僅涉及外觀的變更（格式、匯入、次要重新命名）。
+- 不要推測意圖或動機。以功能性方式描述變更。
+
+<a id="output"></a>
+
+## 輸出
+
+- 一段適合用於狀態更新的簡短摘要
+- 實際日期範圍
+- 選填 2 至 5 個專案，僅列出重大變更

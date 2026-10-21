@@ -1,38 +1,42 @@
-# The pstack guide
+<a id="the-pstack-guide"></a>
 
-pstack works best when you stop micromanaging the agent. You describe what you want and how you'll know it's done. `/poteto-mode` picks the playbook, runs the other skills as the steps need them, and shows you the evidence. This guide teaches that habit with realistic prompts.
+# pstack 指南
 
-Here's what you'll learn:
+當您停止微觀管理 agent 時，pstack 的運作效果最佳。您只需描述想要達成的目標，以及如何判斷任務已完成。`/poteto-mode` 會選擇 playbook，在步驟需要時執行其他 skills，並向您展示證據。本指南透過實際的 prompts 教導您養成這種習慣。
 
-1. [Set up pstack](./01-setup.md). Install the plugin and pick your models.
-2. [Route work through `/poteto-mode`](./02-poteto-mode.md). Give it a goal and watch it pick a playbook.
-3. [Understand the code](./03-understand.md). A read-only investigation, then `/how`, `/why`, `/teach`, and `/recall` before you edit anything.
-4. [Design the change](./04-design.md). `/architect`, `/arena`, `/swarm`, `/interrogate`, prototypes, and plans before code locks in a shape.
-5. [Build and clean the change](./05-build-and-clean.md). The build playbooks, `/tdd`, `/unslop`, and `/no-comments`.
-6. [Verify and ship](./06-verify-and-ship.md). Prove behavior on the real app, formally verify what tests rarely reach, vet numbers with `/benchmark-checklist`, then open a focused PR and drive it to merged.
-7. [Run work while you sleep](./07-overnight.md). Trust before loops, an overnight contract, a decision log you can audit, and Projects and automations that scale past one agent.
-8. [Steer with principle names](./08-principles.md). The 24 names that redirect an agent mid-task.
-9. [Make it yours](./09-make-it-yours.md). Your own mode, `/correct` for repeated mistakes, and how to test a skill change.
-10. [Recipes and pitfalls](./10-recipes-and-pitfalls.md). Prompts to copy and mistakes to skip.
+您將學到以下內容：
 
-Read the pages in order the first time. After that, each page stands alone.
+1. [設定 pstack](./01-setup.md)。安裝 plugin 並選擇您的 models。
+2. [透過 `/poteto-mode`](./02-poteto-mode.md) 路由工作。提供一個目標，並觀察它如何選擇 playbook。
+3. [理解程式碼](./03-understand.md)。進行唯讀調查，然後在編輯任何內容之前執行 `/how`、`/why`、`/teach` 和 `/recall`。
+4. [設計變更](./04-design.md)。在程式碼鎖定結構之前，執行 `/architect`、`/arena`、`/swarm`、`/interrogate`、原型和計畫。
+5. [建置並清理變更](./05-build-and-clean.md)。使用建置 playbooks、`/tdd`、`/unslop` 和 `/no-comments`。
+6. [驗證並發布](./06-verify-and-ship.md)。在實際應用程式上證明行為，正式驗證測試很少涵蓋的部分，使用 `/benchmark-checklist` 審核數字，然後開啟一個專注的 PR 並推動其合併。
+7. [在您睡覺時執行工作](./07-overnight.md)。在 loops 之前建立信任、過夜合約、可稽核的決策記錄，以及能擴充套件至單一 agent 之外的 Projects 和 automations。
+8. [使用原則名稱進行引導](./08-principles.md)。這 24 個名稱可在任務中途重新引導 agent。
+9. [使其成為您自己的](./09-make-it-yours.md)。您自己的 mode、用於重複錯誤的 `/correct`，以及如何測試 skill 變更。
+10. [食譜與陷阱](./10-recipes-and-pitfalls.md)。可複製的 prompts 和應避免的錯誤。
 
-When you're stuck, or can't tell which skill fits, type [`/poteto-help`](../../skills/poteto-help/SKILL.md) with your question:
+第一次請依序閱讀各頁面。之後，每個頁面都可獨立閱讀。
+
+當您卡住，或無法判斷哪個 skill 適合時，輸入 [`/poteto-help`](../../skills/poteto-help/SKILL.md) 並附上您的問題：
 
 ```text
 /poteto-help which skill should i use to review this branch?
 ```
 
-It answers, hands you a prompt to send, and links the skill or guide page the answer came from. It doesn't start the work, because a pstack run spends real tokens, so you send the prompt when you're ready. It runs only when you type it.
+它會回答問題，提供一個可傳送的 prompt，並連結答案來源的 skill 或指南頁面。它不會開始執行工作，因為 pstack 執行會消耗實際 tokens，所以請在您準備好時再傳送 prompt。它只會在您輸入時執行。
 
-## If you only remember one thing
+<a id="if-you-only-remember-one-thing"></a>
 
-Give the agent a goal and a way to check it, in your own words:
+## 如果您只記得一件事
+
+用您自己的話，給 agent 一個目標和檢查方式：
 
 ```text
 /poteto-mode the export writes duplicate rows when a retry lands mid-run. repro first, then fix and verify.
 ```
 
-You don't need to name a playbook or list skills. "repro first" and a checkable outcome are all the routing signal `/poteto-mode` needs. It matches the Bug fix playbook, copies the steps into a todo list, and calls the right skills as each step fires.
+您不需要指定 playbook 或列出 skills。「先重現」和可檢查的結果就是 `/poteto-mode` 所需的所有路由訊號。它會匹配 Bug fix playbook，將步驟複製到 todo list，並在每個步驟觸發時呼叫正確的 skills。
 
-Next: [Set up pstack](./01-setup.md).
+下一步：[設定 pstack](./01-setup.md)。

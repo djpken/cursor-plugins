@@ -1,16 +1,18 @@
 # HighLevel
 
-Cursor plugin that connects agents to [HighLevel](https://www.gohighlevel.com) (also branded LeadConnector) through HighLevel's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 HighLevel 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [HighLevel](https://www.gohighlevel.com)（亦以 LeadConnector 品牌稱之）。
 
-Find and update CRM data in a HighLevel sub-account — contacts, conversations and messages, opportunities and pipelines, calendars and appointments, payments, blogs, email templates, and social posts.
+在 HighLevel 子帳戶中查詢和更新 CRM 資料：聯絡人、對話與訊息、機會與管道、行事曆與預約、付款、部落格、電子郵件模板及社交貼文。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **HighLevel**.
-3. Click **Install**, then complete the LeadConnector sign-in prompt.
+## 安裝
 
-Or run `/add-plugin highlevel` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **HighLevel**。
+3. 點選 **安裝**，然後完成 LeadConnector 登入提示。
+
+或在聊天中執行 `/add-plugin highlevel`。
 
 ## MCP
 
@@ -25,38 +27,46 @@ Or run `/add-plugin highlevel` in chat.
 }
 ```
 
-Auth is OAuth with Dynamic Client Registration and PKCE. Cursor registers itself and opens the LeadConnector sign-in when the plugin connects: sign in, choose the sub-account (location) to expose, and approve. There is no Private Integration Token or `locationId` header to configure.
+驗證採用 OAuth，搭配 Dynamic Client Registration 與 PKCE。Cursor 會自行註冊，並在外掛連線時開啟 LeadConnector 登入：登入、選擇要暴露的子帳戶（位置）、然後核准。不需要設定 Private Integration Token 或 `locationId` 標頭。
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-HighLevel's client-specific `/v2` endpoints expose a small set of unified tools that reach the full operation catalog:
+## 代理可執行的工作
 
-| Tool | Purpose |
+HighLevel 的客戶特定 `/v2` 端點暴露了一組小型統一工具，可涵蓋完整的操作目錄：
+
+| 工具 | 用途 |
 | --- | --- |
-| `list_locations` | List the sub-accounts this connection can use, or return the one bound sub-account |
-| `search_operations` | Discover operations by intent, including record searches and create, update, or delete actions |
-| `describe_operation` | Inspect an operation's inputs, example payload, required scopes, and safety information |
-| `execute_operation` | Run an operation, subject to OAuth scopes, permissions, and built-in safety checks |
+| `list_locations` | 列出此連線可使用的子帳戶，或返回唯一繫結的子帳戶 |
+| `search_operations` | 依意圖探索操作，包括記錄搜尋及建立、更新或刪除動作 |
+| `describe_operation` | 檢視操作的輸入、示例 payload、所需許可權範圍及安全資訊 |
+| `execute_operation` | 執行操作，受 OAuth 許可權範圍、許可權及內建安全檢查之限制 |
 
-Behind those tools sit more than 550 operations across 38 domains, including contacts, conversations and messages, opportunities and pipelines, calendars and appointments, payments, products and store, invoices and estimates, social planner, blogs, emails, forms and surveys, funnels, workflows, Voice AI, custom objects and fields, and users. The operations available depend on the scopes granted.
+這些工具背後有超過 550 個操作，涵蓋 38 個領域，包括聯絡人、對話與訊息、機會與管道、行事曆與預約、付款、產品與商店、發票與估價、社交規劃器、部落格、電子郵件、表單與調查、漏斗、工作流程、Voice AI、自訂物件與欄位，以及使用者。可使用的操作取決於授予的許可權範圍。
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管 runtime 是工具名稱與 schema 的來源真相。
 
-## Notes
+<a id="notes"></a>
 
-- The server can write as well as read — including sending messages, updating contacts and opportunities, and creating posts. Approve only the access agents need, and test on a non-production sub-account first.
-- Every request runs against one sub-account chosen at sign-in. Agencies that install with the multi-sub-account option can switch between the selected sub-accounts in the same chat.
-- Sensitive and irreversible operations go through additional confirmation and safety checks.
-- This plugin uses HighLevel's Cursor endpoint (`/mcp/cursor/v2`). The universal endpoint (`/mcp/`) exposes a smaller set of named tools.
+## 注意事項
 
-## Docs
+- 伺服器既可讀也可寫，包括髮送訊息、更新聯絡人與機會、建立貼文。僅核准代理所需的最小存取權，並先在非生產子帳戶上測試。
+- 每個請求都會針對登入時選擇的一個子帳戶執行。使用多子帳戶選項安裝的代理商，可在同一聊天中切換所選的子帳戶。
+- 敏感及不可逆的操作會經過額外的確認與安全檢查。
+- 此外掛使用 HighLevel 的 Cursor 端點（`/mcp/cursor/v2`）。通用端點（`/mcp/`）暴露較小的命名工具集合。
 
-- MCP server help article: https://help.leadconnectorhq.com/support/solutions/articles/155000008185
-- Developer docs: https://marketplace.gohighlevel.com/docs/other/mcp/
-- Server URL: https://services.leadconnectorhq.com/mcp/cursor/v2
+<a id="docs"></a>
 
-Logo is HighLevel's official arrow mark, taken from the wordmark on gohighlevel.com.
+## 文件
 
-## License
+- MCP 伺服器說明文章：https://help.leadconnectorhq.com/support/solutions/articles/155000008185
+- 開發者文件：https://marketplace.gohighlevel.com/docs/other/mcp/
+- 伺服器 URL：https://services.leadconnectorhq.com/mcp/cursor/v2
+
+標誌為 HighLevel 官方箭頭標記，取自 gohighlevel.com 上的文字標誌。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

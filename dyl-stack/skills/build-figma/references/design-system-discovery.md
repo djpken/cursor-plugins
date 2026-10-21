@@ -1,17 +1,23 @@
-# Design-system discovery
+<a id="design-system-discovery"></a>
 
-Find what the repo already has before mapping a single node. Record every answer in `intake.md`. A mapping built on a guess at the component library is the failure this step exists to stop.
+# 設計系統探索
 
-## Look for, in order
+在對映任何節點之前，先找出儲存庫中已有的內容。將所有答案記錄在 `intake.md` 中。基於對元件庫的猜測所建立的對映，正是此步驟旨在防止的失敗。
 
-1. **Repo guidance.** `AGENTS.md`, `.cursor/rules/`, `.cursor/skills/`, and `CONTRIBUTING.md` for anything on UI, styling, design tokens, or components. A repo-local design-system, styling, or primitives skill outranks everything below. Read it in full and follow it.
-2. **Target surface.** Which app or package the Figma frame belongs to. Use the ask and the Figma file name. If the repo has several UI surfaces with different styling systems, name the one you picked and why. Ask only when two surfaces are equally plausible and picking wrong means redoing the work.
-3. **Component library.** The shared package or directory the surface imports primitives from (buttons, text, dialogs, icons, inputs). Note its import path and where its stories, gallery, or examples live.
-4. **Tokens.** Where color, spacing, radius, and type scales are defined, and how components consume them (CSS variables, a theme object, a utility config).
-5. **Styling system.** What the surface actually uses: CSS modules, a CSS-in-JS library, utility classes, plain CSS. Check lint rules that ban alternatives. Match what neighboring files in the target directory do.
-6. **Icons and brand assets.** The icon set and its naming, and where logos and brand images live. Verify every icon name exists before using it.
-7. **Live surface.** How to run and capture the target UI (dev server command, story, gallery page, desktop build). This is the treatment side of the visual judge.
+<a id="look-for-in-order"></a>
 
-## Output in `intake.md`
+## 依序尋找以下專案
 
-A short table: surface, code path, component library path, token source, styling system, icon source, and the command to drive it live. Every row cites the file you read it from.
+1. **儲存庫指引。** 在 `AGENTS.md`、`.cursor/rules/`、`.cursor/skills/` 和 `CONTRIBUTING.md` 中尋找任何關於 UI、樣式、設計令牌或元件的內容。儲存庫內部的設計系統、樣式或原語 skill 優先於以下所有專案。請完整閱讀並遵循其內容。
+2. **目標介面。** Figma 框架屬於哪個應用程式或套件。請使用提問內容和 Figma 檔案名稱來判斷。如果儲存庫中有數個使用不同樣式系統的 UI 介面，請指明您選擇的介面及其原因。僅當兩個介面同樣合理，且選錯會導致重做工作時，才提出提問。
+3. **元件庫。** 該介面匯入原語（按鈕、文字、對話方塊、圖示、輸入框）的共用套件或目錄。請記錄其匯入路徑，以及其 stories、gallery 或範例的位置。
+4. **令牌。** 顏色、間距、圓角和字型比例定義的位置，以及元件如何消費它們（CSS 變數、主題物件、工具設定）。
+5. **樣式系統。** 該介面實際使用的技術：CSS modules、CSS-in-JS 函式庫、工具類別、純 CSS。請檢查禁止使用替代方案的 lint 規則。請與目標目錄中相鄰檔案的做法保持一致。
+6. **圖示與品牌資產。** 圖示集及其命名規則，以及標誌和品牌圖片的位置。在使用每個圖示名稱之前，請驗證其是否存在。
+7. **即時介面。** 如何執行並擷取目標 UI（開發伺服器指令、story、gallery 頁面、桌面版建置）。這是視覺判斷的處理端。
+
+<a id="output-in-intakemd"></a>
+
+## 輸出至 `intake.md`
+
+一個簡短的表格：介面、程式碼路徑、元件庫路徑、令牌來源、樣式系統、圖示來源，以及驅動其即時運作的指令。每一列都需引用您閱讀該資訊的檔案。

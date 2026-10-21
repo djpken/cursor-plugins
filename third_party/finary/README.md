@@ -1,16 +1,18 @@
 # Finary
 
-Cursor plugin that connects agents to [Finary](https://finary.com) through Finary's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Finary 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Finary](https://finary.com)。
 
-Read your net worth, accounts, holdings, spending, and budgets.
+讀取您的淨資產、帳戶、持股、支出與預算。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Finary**.
-3. Click **Install**, then complete the Finary sign-in prompt.
+## 安裝
 
-Or run `/add-plugin finary` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Finary**。
+3. 點選 **安裝**，然後完成 Finary 登入提示。
+
+或在聊天中執行 `/add-plugin finary`。
 
 ## MCP
 
@@ -25,42 +27,52 @@ Or run `/add-plugin finary` in chat.
 }
 ```
 
-Auth is OAuth with Dynamic Client Registration and PKCE. Cursor registers itself and opens Finary's sign-in when the plugin connects: sign in with your Finary account, review the list of data the assistant can read, and authorize read-only access. There is no API key, client ID, or banking credential to configure.
+驗證採用 OAuth，並使用 Dynamic Client Registration 與 PKCE。Cursor 會自行註冊，並在外掛連線時開啟 Finary 的登入頁面：使用您的 Finary 帳戶登入，檢視助理可讀取的資料列表，並授權唯讀存取。不需要設定 API 金鑰、客戶 ID 或銀行憑證。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need a Finary account. The connector reads what is already in Finary, so link your bank, brokerage, and other accounts in Finary first.
+## 連線前
 
-## What agents can do
+您需要一個 Finary 帳戶。聯結器會讀取 Finary 中已有的資料，因此請先在 Finary 中連結您的銀行、券商及其他帳戶。
 
-The connector reads the signed-in user's Finary data:
+<a id="what-agents-can-do"></a>
 
-| Area | Data |
+## 代理可執行的工作
+
+聯結器會讀取登入使用者自身的 Finary 資料：
+
+| 區域 | 資料 |
 | --- | --- |
-| Net worth | Total wealth and its allocation, including the split per family member |
-| Accounts and assets | Accounts, holdings and positions, property, loans, and other assets |
-| Investments | Fees per fund and compounding simulations |
-| Cash flow | Income, spending, and budgets, with up to two years of history |
-| Planning | Goals and plans |
-| Profile | Family members and companies added in Finary, name, email, and linked-account status |
+| 淨資產 | 總財富及其設定，包括每位家庭成員的分項 |
+| 帳戶與資產 | 帳戶、持股與部位、不動產、貸款及其他資產 |
+| 投資 | 每項基金的費用與複利模擬 |
+| 現金流 | 收入、支出與預算，最多兩年歷史 |
+| 規劃 | 目標與計畫 |
+| 個人資料 | 在 Finary 中新增的家庭成員與公司、姓名、電子郵件及連結帳戶狀態 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱與結構的來源基準。
 
-## Notes
+<a id="notes"></a>
 
-- The connector is read-only. It cannot place orders, make transfers, or change or delete anything in Finary.
-- It only reads the signed-in user's own data.
-- Answers describe your wealth and are not investment advice.
-- To disconnect, remove the plugin or revoke access from your Finary account. Revocation takes effect immediately, and reconnecting requires authorizing again.
+## 注意事項
 
-## Docs
+- 聯結器僅具唯讀功能。它無法下單、進行轉帳，或更改、刪除 Finary 中的任何內容。
+- 它只讀取登入使用者自身的資料。
+- 回答描述您的財富狀況，並非投資建議。
+- 若要斷開連線，請移除外掛或從您的 Finary 帳戶中撤銷存取權。撤銷會立即生效，重新連線則需再次授權。
 
-- Finary MCP page: https://finary.com/en/mcp
-- Setup guide: https://help.finary.com/en/articles/16335735-using-the-finary-mcp-with-my-ai-assistant-claude-chatgpt-perplexity-mistral
-- Server URL: https://public-api.finary.com/mcp
+<a id="docs"></a>
 
-Logo is Finary's official mark.
+## 文件
 
-## License
+- Finary MCP 頁面：https://finary.com/en/mcp
+- 設定指南：https://help.finary.com/en/articles/16335735-using-the-finary-mcp-with-my-ai-assistant-claude-chatgpt-perplexity-mistral
+- 伺服器 URL：https://public-api.finary.com/mcp
+
+Logo 為 Finary 官方標誌。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

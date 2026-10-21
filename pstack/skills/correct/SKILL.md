@@ -1,32 +1,42 @@
 ---
 name: correct
-description: "Find the mistakes agents keep repeating in this repo and make each one impossible. Try architecture first, then types, then a lint whose error names the fix, then a test, and write docs last. Prove each check fails on a real past mistake. Repeat this each time the operator corrects you. Use for /correct."
+description: "找出此儲存庫中 agent 不斷重複犯的錯誤，並讓每個錯誤都無法再發生。優先嘗試架構，其次是型別，接著是錯誤訊息中會指出修正方式的 lint，然後是測試，最後才撰寫檔案。證明每個檢查都能針對真實的過去錯誤而失敗。每次操作員修正你時，都要重複這個流程。用於 /correct."
 disable-model-invocation: true
 ---
 
-# Correct
+<a id="correct"></a>
 
-The operator keeps correcting agents in this repo for the same mistakes. Change the repo so the next agent can't make them.
+# 正確
 
-Assume every contributor is an agent that sees only the files it opened, copies the nearest example, and takes the shortest path that compiles. Design the repo so a change that looks right from one file is right for the whole repo.
+操作員不斷在此儲存庫中因相同的錯誤而修正 agent。修改儲存庫，讓下一個 agent 無法再犯這些錯誤。
 
-## Find the mistake classes
+假設每位貢獻者都是一個 agent，只能看到它開啟的檔案，會複製最近的範例，並選擇能編譯的最短路徑。設計儲存庫，使得從單一檔案看來正確的變更，對整個儲存庫而言也是正確的。
 
-First, read recent commits, reverts, review comments, agent instruction files, and comments that explain workarounds. Group the mistakes into classes. A class counts once it has happened twice.
+<a id="find-the-mistake-classes"></a>
 
-## Fix each class at the highest level that works
+## 找出錯誤類別
 
-1. **Eliminate it with architecture.** Give each piece of state one owner and each task one supported way. Hide internals so the wrong import fails. Replace hand-synced lists with one source of truth. Delete old ways and dead code an agent would copy.
-2. **Enforce it with types so the bad state can't be written.** If bad code still compiles, add a lint or CI check whose error names the file, type, or function to use instead. If the pattern is already common, fail only when a change adds more.
-3. **Test the behavior.** Fix or delete any test that still passes when the behavior it checks breaks, or that fails when only the internals change.
-4. **Write docs or agent rules last, only for judgment calls.** Nothing fails when an agent skips them.
+首先，閱讀近期的 commit、revert、審查意見、agent 指令檔案，以及解釋變通方法的註解。將錯誤分組為類別。當一個類別發生兩次時，即計為一個類別。
 
-## Fix and prove
+<a id="fix-each-class-at-the-highest-level-that-works"></a>
 
-Then fix the most frequent classes now, one commit each. Prove each new check fails on a real past mistake. Run the same command locally and in CI. Exceptions go on the offending line with a reason, an expiry date, and a human's approval.
+## 在可行的最高層級修正每個類別
 
-## Keep the rule table
+1. **以架構消除它。** 為每個狀態片段指定一個擁有者，為每個任務指定一種支援的方式。隱藏內部實作，使錯誤的 import 會失敗。用單一真實來源取代手動同步的清單。刪除 agent 可能會複製的舊方式與死程式碼。
+2. **以型別強制執行，使錯誤狀態無法被撰寫。** 如果錯誤程式碼仍能編譯，請新增一個 lint 或 CI 檢查，其錯誤訊息需指出應改用哪個檔案、型別或函式。如果該模式已經很常見，僅當變更增加了更多此類模式時才讓檢查失敗。
+3. **測試行為。** 修正或刪除任何在行為被破壞時仍能透過的測試，或在僅內部實作變更時會失敗的測試。
+4. **最後才撰寫檔案或 agent 規則，且僅針對需要判斷的情況。** 當 agent 略過這些內容時，不會有任何檢查失敗。
 
-Last, keep a table in the agent instruction file that pairs each rule with what enforces it. When the operator corrects you, fix the mistake and add the rule. If the rule was already there and nothing enforces it, that's a repeat, so fix it at the highest level in the same change. Drop a rule once its mistake can't happen.
+<a id="fix-and-prove"></a>
 
-**Reply:** each class with its evidence, the level you picked, and why a higher level didn't work.
+## 修正並證明
+
+接著，立即修正最頻繁的類別，每個類別一個 commit。證明每個新檢查都能針對真實的過去錯誤而失敗。在本地端和 CI 中執行相同的命令。例外情況需標註在違規行上，並附上原因、到期日以及人類的核準。
+
+<a id="keep-the-rule-table"></a>
+
+## 維護規則表格
+
+最後，在 agent 指令檔案中維護一個表格，將每條規則與其強制執行機制配對。當操作員修正你時，修正錯誤並新增規則。如果規則已存在但沒有強制執行機制，這屬於重複發生，因此需在相同的變更中於最高層級修正它。一旦某個錯誤無法再發生，就移除該規則。
+
+**回覆：** 每個類別及其證據、你選擇的層級，以及為何更高層級不起作用。

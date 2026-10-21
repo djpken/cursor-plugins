@@ -1,52 +1,60 @@
 ---
 name: advisor
 description: >-
-  Advisor mode. Consult a stronger (or different) model at key checkpoints:
-  before major decisions, when stuck on an error, and before declaring a task
-  done. Use when the user types /advisor, asks to turn the advisor on or off,
-  picks an advisor model, or explicitly asks for a second opinion from a
-  stronger or different model. Never enable it on your own.
+  顧問模式。在關鍵檢查點諮詢更強大（或不同）的模型：
+  在做出重大決策之前、遇到錯誤卡住時，以及宣告任務
+  完成之前。當使用者輸入 /advisor、要求開啟或關閉顧問、
+  選擇顧問模型，或明確要求向更強大或不同的模型尋求第二意見時使用。
+  切勿自行啟用。
 icon: lightbulb
 color: purple
 ---
 
-# Advisor
+<a id="advisor"></a>
 
-You are the main model. Advisor mode adds a second, stronger model that you consult at a few key points. The advisor gets your briefing (and the full transcript when available), thinks hard, and returns a verdict with guidance. It does not edit files. You still do the work and make the final call.
+# 顧問
 
-State lives in `.cursor/advisor/state.json` at the project root. When that file exists with `"enabled": true`, advisor mode is on for this project.
+你是主要模型。顧問模式會新增一個第二個、更強大的模型，供你在幾個關鍵點諮詢。顧問會收到你的簡報（若可用則包含完整對話記錄），深入思考，並返回包含指導意見的裁決。它不會編輯檔案。你仍然負責執行工作並做出最終決定。
 
-## Commands
+狀態儲存在專案根目錄的 `.cursor/advisor/state.json` 中。當該檔案存在且 `"enabled": true` 為真時，此專案的顧問模式即為開啟狀態。
 
-The text after `/advisor` selects the action.
+<a id="commands"></a>
 
-| Input | Action |
+## 指令
+
+`/advisor` 之後的文字會決定動作。
+
+| 輸入 | 動作 |
 | --- | --- |
-| `/advisor` | Enable for this conversation with the default advisor: the latest Grok at its highest reasoning effort. If a state file already exists, from this or another conversation, re-bind it here, keeping its `model` and `nudge` settings. |
-| `/advisor <model>` | Same, with the given model. Any model available to subagents works: `/advisor cursor-grok-4.6-xhigh-fast`, `/advisor composer-2.5`. |
-| `/advisor off` | Disable: delete `.cursor/advisor/`. |
-| `/advisor status` | Report model, consult count, and whether the end-of-turn nudge is on. Changes nothing. |
-| `/advisor ask <question>` | Consult now about the current work, regardless of checkpoint. |
-| `/advisor nudge on` / `off` | Toggle the end-of-turn reminder posted by the plugin's stop hook (default on). |
+| `/advisor` | 使用預設顧問啟用此對話：最新 Grok 模型，設定為最高推理努力等級。若狀態檔案已存在（無論來自此對話或其他對話），請在此重新繫結，並保留其 `model` 和 `nudge` 設定。 |
+| `/advisor <model>` | 相同，但使用指定的模型。任何可供子代理使用的模型皆可：`/advisor cursor-grok-4.6-xhigh-fast`、`/advisor composer-2.5`。 |
+| `/advisor off` | 停用：刪除 `.cursor/advisor/`。 |
+| `/advisor status` | 報告模型、諮詢次數，以及回合結束提示是否開啟。不變更任何設定。 |
+| `/advisor ask <question>` | 立即就目前工作進行諮詢，無論是否處於檢查點。 |
+| `/advisor nudge on` / `off` | 切換由 plugin 的 stop hook 發布的回合結束提醒（預設為開啟）。 |
 
-If the message also contains a task (`/advisor, then refactor the cache layer`), enable first, then do the task under advisor mode.
+若訊息也包含任務（`/advisor, then refactor the cache layer`），請先啟用，然後在顧問模式下執行該任務。
 
-### Choosing the model
+<a id="choosing-the-model"></a>
 
-The default is the latest Grok model at its highest reasoning effort, currently `cursor-grok-4.6-xhigh`. If a newer Grok or a higher effort tier appears in the subagent model list available to you, prefer it and say so.
+### 選擇模型
 
-For `/advisor <model>`, resolve the request against the subagent model slugs available to you:
+預設為最新 Grok 模型，設定為最高推理努力等級，目前為 `cursor-grok-4.6-xhigh`。若可供你使用的子代理模型清單中出現更新的 Grok 或更高的努力等級，請優先選擇並說明。
 
-- An exact slug: use it as is.
-- A family or version name (`grok fast`, `composer`): that family's latest model at its highest reasoning tier.
-- No match: say so, name two or three close options, and keep the current model.
+對於 `/advisor <model>`，請根據你可用的子代理模型 slug 解析請求：
 
-If the Task tool rejects a slug, read the valid slugs from its error message, pick the closest one (same family, highest reasoning tier), save it to `state.json`, and tell the user in one line. Do not block the consult on the slug.
+- 精確的 slug：直接使用。
+- 家族或版本名稱（`grok fast`、`composer`）：該家族的最新模型，設定為最高推理等級。
+- 無匹配：請說明，列出兩三個相近選項，並保留目前模型。
 
-## Enabling
+若 Task 工具拒絕某個 slug，請從其錯誤訊息中讀取有效的 slug，選擇最接近的一個（相同家族、最高推理等級），將其儲存至 `state.json`，並用一行文字告知使用者。切勿因 slug 問題而阻擋諮詢。
 
-1. Resolve the model as described above.
-2. Write `.cursor/advisor/state.json` with the file-writing tool (not a shell redirect), creating the directory if needed. If a state file already exists, carry over its `model` (unless this command names one) and `nudge`, and reset every other field to the values below. You cannot see which conversation an existing file belongs to, so always rewrite it: that re-binds the mode to this conversation, the hooks re-fill `conversation_id` and `transcript_path`, and the next consult starts a fresh advisor instead of resuming another chat's. Also delete `.cursor/advisor/pending` and `.cursor/advisor/last-response.txt` if they exist, so a marker left by another conversation cannot trigger the end-of-turn nudge here. Keep `log.md`.
+<a id="enabling"></a>
+
+## 啟用
+
+1. 如上所述解析模型。
+2. 使用檔案寫入工具（而非 shell 重定向）寫入 `.cursor/advisor/state.json`，必要時建立目錄。若狀態檔案已存在，請沿用其 `model`（除非此指令指定了其他值）和 `nudge`，並將其他所有欄位重設為以下值。你無法看到現有檔案屬於哪個對話，因此請務必重新寫入：這會將模式重新繫結到此對話，hooks 會重新填入 `conversation_id` 和 `transcript_path`，且下一次諮詢將啟動新的顧問，而非恢復另一個對話的顧問。若 `.cursor/advisor/pending` 和 `.cursor/advisor/last-response.txt` 存在，也請刪除它們，以免其他對話留下的標記在此觸發回合結束提示。保留 `log.md`。
 
    ```json
    {
@@ -62,62 +70,72 @@ If the Task tool rejects a slug, read the valid slugs from its error message, pi
    }
    ```
 
-   The plugin's hooks fill in `conversation_id`, `transcript_path`, `consults`, and `last_consult_at`. Leave them alone.
-3. Confirm in one line: `Advisor on: <slug>. I'll consult it before major decisions, when I'm stuck, and before I call the task done.` Then continue with any task in the same message.
+   plugin 的 hooks 會填入 `conversation_id`、`transcript_path`、`consults` 和 `last_consult_at`。請勿更動它們。
+3. 用一行文字確認：`Advisor on: <slug>. I'll consult it before major decisions, when I'm stuck, and before I call the task done.` 然後繼續執行同一訊息中的任何任務。
 
-Never stage or commit `.cursor/advisor/`.
+切勿暫存或提交 `.cursor/advisor/`。
 
-## Checkpoints
+<a id="checkpoints"></a>
 
-Consult at these points and nowhere else. Each consult is a strong-model call; the value comes from using it selectively.
+## 檢查點
 
-1. **Before a major decision.** Choosing between architectures or approaches; changes that are hard to reverse or have a wide blast radius (schema or data migrations, deleting or rewriting a module, public API or config format changes, dependency swaps, auth, payments, or other security-sensitive code); or a request that is ambiguous in a way that would change the work materially. Consult once you have a concrete plan and the options in hand, not before you understand the problem. One consult covers the plan; do not re-consult per file.
-2. **When stuck.** The same error or failing test after two genuine fix attempts; behavior you cannot explain from the code; or when you are about to reach for a workaround: a retry loop, a `sleep`, a broad `try/except`, skipping a test, or disabling a check to get past something.
-3. **Before declaring done.** Any task that changed logic or touched more than a couple of files: consult once before writing the final summary, and include what you verified and how. Skip for trivial edits (typos, comments, a one-line config change) and say so in one line.
-4. **On request.** `/advisor ask ...`, or the user asks what the advisor thinks.
+僅在以下點進行諮詢，其他時候不要諮詢。每次諮詢都是一次強模型呼叫；其價值在於選擇性地使用。
 
-Do not consult for routine steps, for things you can verify yourself (run the test, read the code), or more than once per checkpoint. If you would consult more than about four times in one task, the task should probably be split, or you should ask the user.
+1. **在重大決策之前。** 在架構或方法之間做出選擇；難以逆轉或影響範圍廣泛的變更（schema 或資料遷移、刪除或重寫模組、公開 API 或設定格式變更、相依性替換、驗證、付款或其他安全敏感程式碼）；或請求存在歧義，且該歧義會實質改變工作內容。請在擁有具體計畫和選項後再諮詢，而非在理解問題之前。一次諮詢涵蓋整個計畫；請勿針對每個檔案重新諮詢。
+2. **當卡住時。** 經過兩次真正的修復嘗試後仍出現相同的錯誤或失敗測試；無法從程式碼解釋的行為；或當你準備使用變通方法時：重試迴圈、`sleep`、廣泛的 `try/except`、跳過測試，或停用檢查以繞過問題。
+3. **在宣告完成之前。** 任何變更了邏輯或涉及超過兩個檔案的任務：在撰寫最終摘要前諮詢一次，並包含你驗證的內容及方式。對於微不足道的編輯（錯字、註解、單行設定變更）可跳過，並用一行文字說明。
+4. **依請求。** `/advisor ask ...`，或使用者詢問顧問的意見。
 
-## How to consult
+請勿針對例行步驟、可自行驗證的事項（執行測試、閱讀程式碼）或每個檢查點超過一次進行諮詢。若你在單一任務中諮詢超過約四次，該任務可能應該拆分，或你應該詢問使用者。
 
-1. Read `.cursor/advisor/state.json` and decide which situation you are in:
-   - **Mode on here**: the file exists with `enabled: true` and you ran the Enabling steps in this conversation. Checkpoint consults and `/advisor ask` both follow the steps below in full, including `resume` and state writes.
-   - **Not on here**: the file is missing, `enabled` is false, or you did not write it. A file you did not write belongs to another chat; only `/advisor` re-binds it, so leave it alone and never `resume` an `advisor_agent_id` you did not save yourself. Do not consult at checkpoints. If the user explicitly asks for a consult in this message (`/advisor ask ...`, or a request for a second opinion), run it as a one-off: a fresh spawn on the file's `model` if there is one, otherwise the default; no `resume`, no state writes, and no `transcript_path` (another chat's transcript is not yours to share; write "not available"). Mention that `/advisor` turns the mode on for this conversation.
-2. Build the briefing from `references/briefing-template.md`. Give the advisor everything it needs to disagree with you:
-   - The user's request verbatim, plus constraints or corrections they added later.
-   - What has happened so far, in order: what you investigated, decided, changed, tried, and ruled out.
-   - Relevant tool results verbatim: error messages, stack traces, test output, diffs. Trim unrelated noise and mark trims with `[...]`, but never paraphrase evidence.
-   - Current state: `git status --short`, `git diff --stat`, files you touched, anything half-done.
-   - Your specific questions, the options you see, and your current leaning with reasons.
-   - The `transcript_path` from `state.json` when set and the mode is on in this conversation, so the advisor can read the full conversation itself.
-   - No secrets. Redact tokens, keys, and `.env` values.
-3. Spawn the advisor in the foreground and wait for it:
+<a id="how-to-consult"></a>
+
+## 如何諮詢
+
+1. 閱讀 `.cursor/advisor/state.json` 並判斷你處於哪種情況：
+   - **此處模式開啟**：檔案存在且 `enabled: true` 為真，且你在此對話中執行了啟用步驟。檢查點諮詢和 `/advisor ask` 均完整遵循以下步驟，包括 `resume` 和狀態寫入。
+   - **此處未開啟**：檔案缺失、`enabled` 為假，或你未寫入該檔案。你未寫入的檔案屬於其他對話；只有 `/advisor` 會重新繫結它，因此請勿更動，且切勿 `resume` 你未自行儲存的 `advisor_agent_id`。請勿在檢查點進行諮詢。若使用者在此訊息中明確要求諮詢（`/advisor ask ...`，或要求第二意見），請將其作為一次性操作執行：若檔案中有 `model`，則在其上進行新的 spawn，否則使用預設值；無 `resume`、無狀態寫入，且無 `transcript_path`（其他對話的記錄不屬於你，不可分享；請寫入 "not available"）。提及 `/advisor` 會為此對話開啟模式。
+2. 從 `references/briefing-template.md` 建立簡報。提供顧問所有需要與你持不同意見的資訊：
+   - 使用者的原始請求，加上他們後來新增的約束或更正。
+   - 目前為止發生的事情，按順序排列：你調查了什麼、決定了什麼、變更了什麼、嘗試了什麼，以及排除了什麼。
+   - 相關的原始工具結果：錯誤訊息、堆疊追蹤、測試輸出、diff。修剪無關的雜訊，並用 `[...]` 標記修剪處，但切勿改述證據。
+   - 目前狀態：`git status --short`、`git diff --stat`、你觸碰過的檔案，以及任何未完成的工作。
+   - 你的具體問題、你看到的選項，以及你目前的傾向與理由。
+   - 當 `transcript_path` 已設定且本次對話中模式為開啟狀態時，來自 `state.json` 的內容，以便顧問可以自行閱讀完整對話。
+   - 不要包含機密。請移除 token、金鑰以及 `.env` 值。
+3. 在前臺啟動顧問並等待其完成：
    - `subagent_type: "advisor-subagent"`
    - `model: <state.model>`
-   - `description: "Advisor: <checkpoint>"`, for example `Advisor: pre-completion review`
+   - `description: "Advisor: <checkpoint>"`，例如 `Advisor: pre-completion review`
    - `run_in_background: false`
-   - When `state.advisor_agent_id` is set, pass it as `resume` and omit `model`; the advisor keeps its model and the context of earlier consults, so the briefing can be a delta: what changed since last time plus the new questions. If the resume fails, spawn fresh.
-   - Save the returned agent id to `advisor_agent_id` in `state.json`. Clear it when the model changes.
-4. Act on the verdict:
-   - `proceed`: go.
-   - `proceed with changes`: make the recommended changes unless they conflict with the user's instructions or facts you have verified. Say which you skipped and why.
-   - `stop`: do not continue with the plan. Rethink, or bring the disagreement to the user if it is a product or scope question.
-   - If the advisor asks for something it needs, provide it via `resume`, once. Do not ping-pong.
-   - You are accountable for the result. The advisor is a strong second opinion, not an authority. If it is wrong about the codebase, show it the evidence once, or overrule it and tell the user why.
-5. Report each consult to the user in one or two lines: `Advisor (<model>): <verdict>. <One-line summary>. <What you did about it.>` Keep the advisor's full response out of the chat unless the user asks; the hooks also append it to `.cursor/advisor/log.md`.
+   - 當 `state.advisor_agent_id` 已設定時，將其作為 `resume` 傳遞並省略 `model`；顧問會保留其模型以及先前諮詢的上下文，因此簡報可以是增量內容：自上次以來的變化加上新的問題。如果恢復失敗，請重新啟動。
+   - 將傳回的 agent id 儲存至 `state.json` 中的 `advisor_agent_id`。當模型變更時，請清除它。
+4. 根據裁決採取行動：
+   - `proceed`：繼續。
+   - `proceed with changes`：除非與使用者的指示或你已驗證的事實衝突，否則進行建議的變更。說明你跳過了哪些專案以及原因。
+   - `stop`：不要繼續執行該計畫。重新思考，或者如果這是產品或範圍問題，請將分歧帶給使用者。
+   - 如果顧問請求它需要的東西，請透過 `resume` 提供一次。不要來回拉扯。
+   - 你必須對結果負責。顧問是強有力的第二意見，而非權威。如果它對程式碼庫的判斷有誤，請向它展示一次證據，或者推翻它的判斷並告訴使用者原因。
+5. 向使用者報告每次諮詢，用一到兩行：`Advisor (<model>): <verdict>. <One-line summary>. <What you did about it.>` 除非使用者要求，否則不要將顧問的完整回應放入聊天中；hooks 也會將其附加到 `.cursor/advisor/log.md`。
 
-## End-of-turn nudge
+<a id="end-of-turn-nudge"></a>
 
-When files changed since the last consult and a turn ends without one, the plugin's `stop` hook posts a follow-up that starts with `[Advisor]`. Treat it as the "before declaring done" checkpoint: run the pre-completion consult, or answer in one line that the change was trivial, or that you are waiting on the user, and stop. It fires at most once per batch of edits. `/advisor nudge off` disables it.
+## 回合結束提示
 
-## Disabling
+當檔案自上次諮詢以來有變更，且回合結束時未進行諮詢，plugin 的 `stop` hook 會發布以 `[Advisor]` 開頭的後續訊息。將其視為「宣告完成前」的檢查點：執行完成前諮詢，或用一行回答變更微不足道，或你正在等待使用者，然後停止。它每批編輯最多觸發一次。`/advisor nudge off` 會停用此功能。
 
-`/advisor off`: delete `.cursor/advisor/` and confirm in one line. Do not consult again in this conversation unless the user re-enables the mode or explicitly asks for a one-off consult.
+<a id="disabling"></a>
 
-## Guardrails
+## 停用
 
-- Never enable advisor mode unasked. "Get a second opinion on this" is a one-off consult, not a mode change.
-- The advisor is read-only. Never ask it to edit files or do the task.
-- Never loop on the advisor: at most one follow-up per checkpoint.
-- If the `advisor-subagent` subagent is unavailable (no Task tool, or a hook denies it), tell the user once and continue without it.
-- To keep this skill in context for a whole session rather than one message, the user can invoke `/advisor` as a Custom Mode (Option+Enter / Alt+Enter). The state file works either way.
+`/advisor off`：刪除 `.cursor/advisor/` 並用一行確認。除非使用者重新啟用模式或明確要求一次性諮詢，否則在本次對話中不要再諮詢。
+
+<a id="guardrails"></a>
+
+## 防護措施
+
+- 切勿在未詢問的情況下啟用顧問模式。「對這個取得第二意見」是一次性諮詢，而非模式變更。
+- 顧問是唯讀的。切勿要求它編輯檔案或執行任務。
+- 切勿對顧問進行迴圈：每個檢查點最多一次後續。
+- 如果 `advisor-subagent` subagent 無法使用（沒有 Task 工具，或 hook 拒絕），請告訴使用者一次並繼續執行而不使用它。
+- 若要讓此 skill 在整個 session 中保持上下文，而非僅限於一條訊息，使用者可以將 `/advisor` 作為 Custom Mode 呼叫（Option+Enter / Alt+Enter）。狀態檔案在兩種情況下都有效。

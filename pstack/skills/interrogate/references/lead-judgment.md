@@ -1,39 +1,55 @@
-# Lead Judgment Framework
+<a id="lead-judgment-framework"></a>
 
-## Filtering Principles
+# 主判決框架
 
-### Nitpick Gravity
+<a id="filtering-principles"></a>
 
-Reviewers, especially adversarial ones, tend to fill their review. If they don't find critical issues, they'll inflate nits to fill the space. If a reviewer's findings are all nits and style preferences, the code is probably fine. Say so.
+## 篩選原則
 
-### Hypothetical vs. Actual
+<a id="nitpick-gravity"></a>
 
-"What if someone passes null here?" is only a finding if the caller can actually pass null. Trace the call site. If the input is validated upstream or the type system prevents it, dismiss the finding. Reviewers working from a diff can't always see the full call chain. You can.
+### 挑剔嚴重程度
 
-### Premature Abstraction Warnings
+審閱者，尤其是對抗式的審閱者，傾向於填滿他們的審閱內容。如果他們找不到關鍵問題，就會放大挑剔意見來填滿空間。如果審閱者的發現全是挑剔和風格偏好，程式碼大概沒問題。請明確說明這一點。
 
-Reviewers often suggest extracting functions, adding interfaces, or creating abstractions. Does this code need to change in a second way? If not, the abstraction is premature. Simple inline code that works beats a clean abstraction that's overkill for the current scope.
+<a id="hypothetical-vs-actual"></a>
 
-### "I Would Have Done It Differently"
+### 假設情境與實際情境
 
-This is the most common false positive in code review. A finding that amounts to "I prefer a different approach" is not a bug, not a design flaw, and not actionable unless the reviewer shows a concrete problem with the current approach. Dismiss these, and say why.
+"如果有人在這裡傳入 null 會怎樣？"只有在呼叫者實際上可以傳入 null 時才算是一個發現。追蹤呼叫位置。如果輸入在上游已驗證，或型別系統阻止了這種情況，則駁回該發現。審閱者從 diff 中無法總是看到完整的呼叫鏈。你可以。
 
-### Missing Context Signals
+<a id="premature-abstraction-warnings"></a>
 
-Watch for findings that reveal the reviewer didn't understand the context:
-- Suggesting changes to code the author didn't write or modify
-- Flagging patterns that are consistent with the rest of the codebase (the reviewer just doesn't know that)
-- Recommending approaches that conflict with constraints you know about
+### 過早抽象警告
 
-These are honest mistakes from reviewers working with limited information. Dismiss them gracefully.
+審閱者經常建議提取函式、新增介面或建立抽象。這段程式碼是否需要以第二種方式變更？如果不是，抽象就是過早的。簡單的內聯程式碼能正常工作，勝過一個對當前範圍過度設計的乾淨抽象。
 
-## When Reviewers Are Right
+<a id="i-would-have-done-it-differently"></a>
 
-Don't dismiss findings just because they're uncomfortable. The whole point of adversarial review is to catch things you'd miss. Signs a finding deserves attention:
+### "我會用不同的方式做"
 
-- Multiple models flag the same issue independently (consensus signal)
-- The finding identifies a concrete execution path, not a hypothetical
-- The finding reveals a gap in your mental model of the code
-- You read the finding and think "...yeah, actually"
+這是程式碼審閱中最常見的假陽性。一個發現等同於"我偏好不同的做法"並非錯誤、並非設計缺陷，除非審閱者展示了當前做法具體的問題，否則不具可執行性。駁回這些發現，並說明原因。
 
-Be especially careful about dismissing security findings and correctness bugs. These deserve more scrutiny even when they come from a single model.
+<a id="missing-context-signals"></a>
+
+### 缺失的上下文訊號
+
+注意那些顯示審閱者不理解上下文的發現：
+- 建議修改作者未撰寫或未修改的程式碼
+- 標記與整個程式碼儲存庫一致的模式（審閱者只是不知道這一點）
+- 推薦與你已知的約束相衝突的做法
+
+這些是審閱者在資訊有限的情況下做出的誠實錯誤。委婉地駁回它們。
+
+<a id="when-reviewers-are-right"></a>
+
+## 當審閱者是正確的
+
+不要因為發現令人不舒服就駁回。對抗式審閱的全部意義就是捕捉你會忽略的事情。值得注意的發現的跡象：
+
+- 多個模型獨立標記同一問題（共識訊號）
+- 發現指出了具體的執行路徑，而非假設情境
+- 發現揭示了你對程式碼心智模型中的缺口
+- 你讀到發現並心想"...確實，實際上"
+
+特別小心駁回安全性發現和正確性錯誤。這些即使來自單一模型也值得更多審視。

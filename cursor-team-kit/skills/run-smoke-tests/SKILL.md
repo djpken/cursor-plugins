@@ -1,22 +1,30 @@
 ---
 name: run-smoke-tests
-description: Run Playwright smoke tests, debug failures, and verify fixes
+description: "執行 Playwright 冒煙測試、偵錯失敗專案並驗證修正"
 ---
 
-# Run smoke tests
+<a id="run-smoke-tests"></a>
 
-## Trigger
+# 執行冒煙測試
 
-Need end-to-end smoke verification before or after changes.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發
 
-1. Build prerequisites for the target app.
-2. Run the relevant smoke suite or a focused test file.
-3. If failing, inspect traces/logs and isolate the root cause.
-4. Apply a minimal fix and rerun until stable.
+在變更前後需要端到端冒煙驗證。
 
-## Example Commands
+<a id="workflow"></a>
+
+## 工作流程
+
+1. 建置目標應用程式的前置條件。
+2. 執行相關的冒煙測試套件或特定的測試檔案。
+3. 如果失敗，檢查追蹤記錄或紀錄並隔離根本原因。
+4. 套用最小修正並重新執行，直到穩定為止。
+
+<a id="example-commands"></a>
+
+## 範例指令
 
 ```bash
 # Run full smoke suite
@@ -29,14 +37,18 @@ npm run smoketest -- path/to/test.spec.ts
 npm run smoketest-no-compile -- path/to/test.spec.ts
 ```
 
-## Guardrails
+<a id="guardrails"></a>
 
-- Prefer deterministic waits and assertions over brittle timeouts.
-- Re-run passing fixes to reduce flaky false positives.
-- Quarantine tests only when explicitly requested and documented.
+## 防護措施
 
-## Output
+- 優先使用確定性的等待和斷言，而非脆弱的逾時設定。
+- 重新執行已透過的修正，以降低不穩定測試造成的誤報。
+- 僅在明確要求並記錄在案時，才將測試隔離。
 
-- Test results summary
-- Root cause and fix
-- Remaining flake risk (if any)
+<a id="output"></a>
+
+## 輸出
+
+- 測試結果摘要
+- 根本原因與修正
+- 剩餘的不穩定風險（如有）

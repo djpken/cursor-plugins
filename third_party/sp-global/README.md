@@ -1,16 +1,18 @@
 # S&P Global
 
-Cursor plugin that connects agents to [S&P Global](https://docs.kensho.com/llmreadyapi/overview) through S&P Global's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 S&P Global 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [S&P Global](https://docs.kensho.com/llmreadyapi/overview)。
 
-Query S&P Capital IQ financials, prices, and transcripts.
+查詢 S&P Capital IQ 的財務資料、價格與會議紀錄。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **S&P Global**.
-3. Click **Install**, then complete the S&P Global sign-in prompt.
+## 安裝
 
-Or run `/add-plugin sp-global` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **S&P Global**。
+3. 點選 **安裝**，然後完成 S&P Global 登入提示。
+
+或在聊天中執行 `/add-plugin sp-global`。
 
 ## MCP
 
@@ -25,36 +27,46 @@ Or run `/add-plugin sp-global` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for S&P Global sign-in when the plugin connects — there is no client ID or personal access token to configure.
+驗證方式為 OAuth。Cursor 會在外掛連線時提示 S&P Global 登入，無需設定客戶端 ID 或個人存取令牌。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need an active S&P Global Market Intelligence subscription or trial for the Kensho LLM-ready API.
+## 連線前
 
-## What agents can do
+您需要有效的 S&P Global Market Intelligence 訂閱或試用，才能使用 Kensho LLM-ready API。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Companies | Resolve companies by ticker, ISIN, or CUSIP and read profiles |
-| Financials | Statements and 200+ line items from S&P Capital IQ |
-| Prices | Historical prices, volumes, market cap, and enterprise value |
-| Research | Earnings call transcripts, business relationships, M&A, and estimates |
+| 公司 | 透過股票程式碼、ISIN 或 CUSIP 解析公司並讀取公司簡介 |
+| 財務資料 | 來自 S&P Capital IQ 的財務報表與超過 200 個專案 |
+| 價格 | 歷史價格、成交量、市值與企業價值 |
+| 研究 | 電話會議紀錄、商業關係、併購與預估值 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱與結構的唯一來源。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run under the S&P Global entitlements of the user who authorizes the connection.
-- Kensho also ships the open-source `kensho-kfinance` package for a local server; this plugin uses the hosted server only.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的使用者的 S&P Global 許可權執行。
+- Kensho 也提供開源的 `kensho-kfinance` 套件，可執行本地伺服器；此外掛僅使用託管伺服器。
 
-- Kensho LLM-ready API: https://docs.kensho.com/llmreadyapi/overview
-- kfinance on GitHub: https://github.com/kensho-technologies/kfinance
-- Server URL: https://kfinance.kensho.com/integrations/mcp
+<a id="docs"></a>
 
-Logo is S&P Global's official mark (black rule over red block), redrawn at 192×192 from the icon published on marketplace.spglobal.com.
+## 檔案
 
-## License
+- Kensho LLM-ready API：https://docs.kensho.com/llmreadyapi/overview
+- GitHub 上的 kfinance：https://github.com/kensho-technologies/kfinance
+- 伺服器 URL：https://kfinance.kensho.com/integrations/mcp
+
+標誌為 S&P Global 官方標誌（黑色條帶覆於紅色方塊），以 192×192 尺寸重新繪製，來源為 marketplace.spglobal.com 發布的圖示。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

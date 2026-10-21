@@ -1,34 +1,46 @@
 ---
 name: create-learning-path
-description: Build a personalized learning roadmap with milestones and practice checkpoints
+description: "建立個人化學習路線圖，包含里程碑與練習檢查點"
 ---
 
-# Create a learning path
+<a id="create-a-learning-path"></a>
 
-## Trigger
+# 建立學習路徑
 
-Building capability in a topic over multiple sessions.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發
 
-1. Assess baseline knowledge and target outcomes.
-2. Sequence topics from fundamentals to applied practice.
-3. Define milestone projects and time-boxed checkpoints.
-4. Add deliberate practice exercises with feedback criteria.
-5. Review progress and adjust pacing.
+在多次會話中逐步建立某個主題的能力。
 
-## Tools
+<a id="workflow"></a>
 
-- Use Ask user tool.
+## 工作流程
 
-## Guardrails
+1. 評估基礎知識與目標成果。
+2. 將主題從基礎排序到應用練習。
+3. 定義里程碑專案與時間限制的檢查點。
+4. 加入刻意練習的練習題，並附上回饋標準。
+5. 檢視進度並調整節奏。
 
-- Keep milestones achievable within the stated schedule.
-- Include practice and reflection in every phase.
-- Avoid resource overload by prioritizing a small set of materials.
+<a id="tools"></a>
 
-## Output
+## 工具
 
-- Week-by-week or milestone-based plan
-- Practice assignments
-- Progress review rubric
+- 使用 Ask user 工具。
+
+<a id="guardrails"></a>
+
+## 防護措施
+
+- 確保里程碑在既定時間內可達成。
+- 每個階段都包含練習與反思。
+- 避免資源過載，優先選用少量教材。
+
+<a id="output"></a>
+
+## 輸出
+
+- 週週或里程碑式計畫
+- 練習作業
+- 進度檢視評量表

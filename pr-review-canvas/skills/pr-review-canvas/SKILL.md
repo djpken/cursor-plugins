@@ -1,66 +1,84 @@
 ---
 name: pr-review-canvas
 description: >-
-  Render a PR diff review as a Cursor Canvas that groups changes by
-  reviewer importance, separates boilerplate from core logic, and
-  highlights tricky or unexpected code. Use when reviewing a pull
-  request, summarizing a diff for review, or when the user asks for a
-  PR review canvas, diff walkthrough, or change-set overview.
+  將 PR diff 審查呈現為 Cursor Canvas，並依
+  審查者的重要性分組變更，區分樣板程式碼與核心邏輯，並
+  標示出複雜或出乎預期的程式碼。適用於審查 pull
+  request、為審查目的摘要 diff，或當使用者要求
+  PR 審查畫布、diff 導覽或變更集總覽時。
 ---
 
-# PR Review Canvas
+<a id="pr-review-canvas"></a>
 
-Build a canvas that presents a PR diff reorganized for reviewer comprehension — not in file-tree order.
+# PR 審查畫布
 
-## Prerequisites
+建立一個畫布，以重新組織 PR diff 來呈現，目的是提升審查者的理解度，而非依檔案樹順序排列。
 
-Read `~/.cursor/skills-cursor/canvas/SKILL.md` first. It contains the generation policy, design guidance, slop rules, self-check, and file-path conventions you must follow. The full component and hook surface is declared in `~/.cursor/skills-cursor/canvas/sdk/index.d.ts` and its sibling `.d.ts` files — read them to discover exact exports and prop shapes rather than guessing.
+<a id="prerequisites"></a>
 
-## Gather the diff
+## 先決條件
 
-Expect a GitHub PR link (a full URL like `https://github.com/<owner>/<repo>/pull/<n>`, or an equivalent `gh`-resolvable reference). Use `gh pr diff <pr>` to collect every file's path, additions, deletions, and hunks.
+請先閱讀 `~/.cursor/skills-cursor/canvas/SKILL.md`。其中包含您必須遵循的生成策略、設計指引、低品質內容規則、自我檢查以及檔案路徑慣例。完整的元件與 hook 介面宣告於 `~/.cursor/skills-cursor/canvas/sdk/index.d.ts` 及其同層級的 `.d.ts` 檔案中，請閱讀這些檔案以發現確切的匯出專案與 prop 結構，而非憑猜測行事。
 
-**If the user didn't provide a PR link, stop and ask.** Do not guess at the current branch, infer from recent history, or fall back to a local `git diff`. Ask the user which diff they want to review — a specific PR URL or number — and wait for their reply before continuing.
+<a id="gather-the-diff"></a>
 
-## Group changes for comprehension
+## 收集 diff
 
-Do **not** present files in alphabetical or tree order. Reorganize into sections ordered by reviewer value:
+預期會收到一個 GitHub PR 連結（例如 `https://github.com/<owner>/<repo>/pull/<n>` 這樣的完整 URL，或等價的 `gh` 可解析參考）。使用 `gh pr diff <pr>` 來收集每個檔案的路徑、新增行數、刪除行數以及 hunks。
 
-1. **Core logic** — New behavior, algorithm changes, state transitions, API surface changes. Show full diffs with surrounding context.
-2. **Wiring & integration** — Route registration, dependency injection, config plumbing that connects the core logic. Condensed — enough to confirm correctness.
-3. **Boilerplate & mechanical** — Import reordering, renames, generated code, formatting, type re-exports. Summarize as a list of file names and stats. No inline diffs unless specifically relevant.
+**如果使用者未提供 PR 連結，請停止並詢問。** 不要猜測目前的分支、從近期歷史推斷，或回退到本地的 `git diff`。請詢問使用者想要審查哪個 diff，例如特定的 PR URL 或編號，並在繼續之前等待使用者的回覆。
 
-Lead with core logic. The reviewer's attention is freshest at the top.
+<a id="group-changes-for-comprehension"></a>
 
-## Distill complex logic into pseudocode
+## 為理解而分組變更
 
-When a core change involves dense or intricate logic — deeply nested conditions, state machines, retry/backoff flows, multi-step transformations — add a short pseudocode summary next to the diff. The pseudocode should strip away language syntax, error handling, and boilerplate to expose the essential algorithm or control flow in a few lines. This lets the reviewer confirm intent before reading the real code.
+請**不要**依字母順序或樹狀順序呈現檔案。請依審查價值重新組織為以下區段：
 
-Only do this when the actual diff is hard to scan. Straightforward changes don't need a pseudocode mirror.
+1. **核心邏輯**：新行為、演演算法變更、狀態轉換、API 介面變更。顯示包含周圍上下文的完整 diff。
+2. **接線與整合**：路由註冊、相依性注入、連線核心邏輯的設定管道。內容精簡，足以確認正確性即可。
+3. **樣板與機械式變更**：匯入重新排序、重新命名、產生的程式碼、格式化、型別重新匯出。以檔案名稱與統計資料的清單形式摘要。除非特別相關，否則不顯示行內 diff。
 
-## Trace tricky logic on a concrete example
+以核心邏輯開頭。審查者在頂部時的注意力最為集中。
 
-Pseudocode shows the shape of the change; an example trace shows it executing. When a hunk changes behavior in a way that's hard to predict from reading it — reordered effects, new short-circuits, altered edge cases — pick a concrete input and walk it through both the old and new code paths side-by-side, highlighting the step where they diverge and what the observable outcome is. Keep the input small and realistic.
+<a id="distill-complex-logic-into-pseudocode"></a>
 
-Use this for genuinely surprising behavior changes, not every core hunk.
+## 將複雜邏輯濃縮為偽程式碼
 
-## Call attention to tricky things
+當核心變更涉及密集或複雜的邏輯（例如深度巢狀條件、狀態機、重試/退避流程、多步驟轉換）時，請在 diff 旁邊新增一段簡短的偽程式碼摘要。偽程式碼應去除語言語法、錯誤處理與樣板程式碼，以幾行程式碼揭露本質的演演算法或控制流程。這能讓審查者在閱讀實際程式碼之前先確認意圖。
 
-When a hunk contains something surprising, risky, or easy to miss, visually separate it from the surrounding diff and pair it with a short tag (e.g. "Subtle", "Breaking", "Race condition", "Perf") and a one-sentence explanation so the reviewer sees the concern and the code together.
+僅在實際 diff 難以快速瀏覽時才執行此步驟。直觀的變更不需要偽程式碼對照。
 
-Reserve these callouts for genuinely tricky items — overuse destroys signal.
+<a id="trace-tricky-logic-on-a-concrete-example"></a>
 
-## Tone and content
+## 以具體範例追蹤複雜邏輯
 
-Write reviewer-facing commentary, not a changelog. Focus on:
-- **Why** something changed, not just what changed.
-- Interactions between files — e.g. "The new validator in `core.ts` is invoked by the route added in `routes.ts`."
-- Anything the diff alone doesn't make obvious.
+偽程式碼展示變更的結構；範例追蹤則展示其執行過程。當某個 hunk 的行為變更難以從閱讀中預測（例如效果重新排序、新的短路邏輯、改變的邊界情況）時，請選擇一個具體的輸入值，並並排追蹤其在舊版與新版程式碼路徑中的執行過程，標示出兩者分歧的步驟以及可觀察的結果。請保持輸入值小巧且符合實際情境。
 
-Keep commentary terse. One or two sentences per note.
+請將此方法用於真正令人驚訝的行為變更，而非每個核心 hunk。
 
-## Be creative
+<a id="call-attention-to-tricky-things"></a>
 
-The sections above are a floor, not a ceiling. The goal is the fastest possible path for the reviewer to understand this specific change — so look at the diff in front of you and ask what representation would actually help. A tiny state diagram, a before/after call graph, a table of input→output pairs, a timeline of commits, a confidence annotation per file, a single large callout with everything else collapsed — whatever fits the change.
+## 標註複雜事項
 
-The canvas SDK has charts, tables, diff views, DAG layout, cards, stats, interactive state, and more. Reach for whichever components best serve the change at hand. A review of a refactor looks different from a review of a bug fix looks different from a review of a new feature — let the canvas reflect that.
+當某個 hunk 包含令人驚訝、有風險或容易忽略的內容時，請在視覺上將其與周圍的 diff 區分開來，並搭配一個短標籤（例如「微妙」、「破壞性」、「競態條件」、「效能」）以及一句話的說明，讓審查者能同時看到關注點與程式碼。
+
+請將這些標註保留給真正複雜的專案，過度使用會削弱其訊號價值。
+
+<a id="tone-and-content"></a>
+
+## 語氣與內容
+
+撰寫面向審查者的評論，而非變更記錄。重點在於：
+- **為什麼**要變更，而不僅僅是變更了什麼。
+- 檔案之間的互動，例如「`core.ts` 中的新驗證器是由 `routes.ts` 中新增的路由呼叫的。」
+- 任何僅憑 diff 無法明顯看出的事項。
+
+保持評論簡潔。每則註解一兩句話即可。
+
+<a id="be-creative"></a>
+
+## 發揮創意
+
+上述區段是基準，而非上限。目標是為審查者提供理解此特定變更的最快路徑，因此請檢視眼前的 diff 並思考哪種呈現方式真正有助於理解。一個小型狀態圖、前後呼叫圖對照、輸入至輸出的表格、commit 時間軸、每個檔案的置信度註記，或一個包含所有內容的大型標註而其餘部分摺疊，任何適合該變更的形式皆可。
+
+Canvas SDK 提供圖表、表格、diff 檢視、DAG 佈局、卡片、統計資料、互動狀態等更多功能。請選用最能服務當前變更的元件。重構的審查、bug 修復的審查與新功能審檢視起來都不同，請讓畫布反映這種差異。

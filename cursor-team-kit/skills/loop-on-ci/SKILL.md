@@ -1,25 +1,33 @@
 ---
 name: loop-on-ci
-description: Monitor PR checks and fix failures until green. Uses gh pr checks as the source of truth for PR-attached checks.
+description: "監控 PR 檢查並修復失敗專案，直到全部透過。使用 gh pr checks 作為 PR 相關檢查的資訊來源。"
 ---
 
-# Loop on CI
+<a id="loop-on-ci"></a>
 
-## Trigger
+# CI 迴圈
 
-Need to watch a branch or pull request and iterate on CI failures until all required checks are green.
+<a id="trigger"></a>
 
-Use `gh pr checks` as the source of truth. It includes all PR-attached checks, while `gh run list` only covers GitHub Actions.
+## 觸發條件
 
-## Workflow
+需要監控某個分支或 pull request，並針對 CI 失敗進行迭代，直到所有必要檢查都透過。
 
-1. Resolve the PR for the current branch.
-2. Inspect current PR checks before waiting.
-3. If checks already failed, diagnose those failures first.
-4. If checks are pending, watch with `gh pr checks --watch --fail-fast`.
-5. After each push, re-check the full PR check set and repeat until green.
+使用 `gh pr checks` 作為資訊來源。它包含所有 PR 相關檢查，而 `gh run list` 僅涵蓋 GitHub Actions。
 
-## Commands
+<a id="workflow"></a>
+
+## 工作流程
+
+1. 解析目前分支對應的 PR。
+2. 在等待之前，先檢查目前的 PR 檢查狀態。
+3. 如果檢查已經失敗，請先診斷這些失敗專案。
+4. 如果檢查仍在進行中，請使用 `gh pr checks --watch --fail-fast` 進行監控。
+5. 每次推送後，重新檢查完整的 PR 檢查集，並重複此過程直到全部透過。
+
+<a id="commands"></a>
+
+## 指令
 
 ```bash
 # Resolve the active PR
@@ -35,16 +43,20 @@ gh pr checks --watch --fail-fast
 gh run view <run-id> --log-failed
 ```
 
-## Guardrails
+<a id="guardrails"></a>
 
-- Keep each fix scoped to a single failure cause when possible.
-- Do not bypass hooks (`--no-verify`) to force progress.
-- If the failure is clearly unrelated to the PR and appears fixed on main, merge latest main instead of bloating the PR with unrelated fixes.
-- If failures are flaky, retry once and report flake evidence.
-- Re-run `gh pr checks --json name,bucket,state,workflow,link` after every push; the check set can change.
+## 限制條件
 
-## Output
+- 在可能的情況下，將每次修復範圍限定在單一失敗原因。
+- 不要繞過 hooks (`--no-verify`) 來強制推進進度。
+- 如果失敗明顯與 PR 無關，且在 main 分支上已修復，請合併最新的 main 分支，而不是用無關的修復來膨脹 PR。
+- 如果失敗是不穩定的，請重試一次並報告不穩定證據。
+- 每次推送後重新執行 `gh pr checks --json name,bucket,state,workflow,link`；檢查集可能會改變。
 
-- Current CI status
-- Failure summary and fixes applied
-- PR URL once checks are green
+<a id="output"></a>
+
+## 輸出
+
+- 目前 CI 狀態
+- 失敗摘要與已套用的修復
+- 檢查透過後的 PR URL

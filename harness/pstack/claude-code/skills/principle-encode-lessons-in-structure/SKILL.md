@@ -1,11 +1,13 @@
 ---
 name: principle-encode-lessons-in-structure
-description: "Apply when you catch yourself writing the same instruction a second time, or notice a recurring correction. Encode the rule as a lint, metadata flag, runtime check, or script instead of more text."
+description: "當你發現自己第二次寫下相同的指令，或注意到一個反覆出現的修正時，請套用此規則。將規則編碼為 lint、metadata 標記、runtime 檢查或 script，而不是增加更多文字。"
 disable-model-invocation: true
 ---
 
-# Encode Lessons in Structure
+<a id="encode-lessons-in-structure"></a>
 
-If the lesson needs judgment and cannot be encoded, make the instruction more prominent and add an example of the failure mode.
+# 將經驗編碼於結構中
 
-**Corollary:** If the fix is structural, only use the structural fix. The instruction is the symptom.
+如果經驗需要判斷且無法編碼，則讓指令更顯眼，並加入一個失敗模式的例子。
+
+**推論：** 如果修正屬於結構性，則僅使用結構性修正。指令本身是症狀。

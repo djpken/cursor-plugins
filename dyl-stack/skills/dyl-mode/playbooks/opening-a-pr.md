@@ -1,11 +1,13 @@
-### Opening a PR (Dylan overlay)
+<a id="opening-a-pr-dylan-overlay"></a>
 
-Read the shared playbook first: pstack `poteto-mode/playbooks/opening-a-pr.md`.
+### 開啟 PR（Dylan 覆蓋層）
 
-Then apply these gates. They win on conflict.
+先閱讀共用操作手冊：pstack `poteto-mode/playbooks/opening-a-pr.md`。
 
-1. Use the repo's PR forge. `origin pr` when the repo lives on Origin, `gh pr` otherwise. Never open the same branch on both.
-2. Update the existing PR when this is follow-up work. Do not open a duplicate.
-3. Never merge or enable auto-merge unless the human authorized it in this turn.
-4. Opening a PR does not start babysit. Post the URL and stop unless asked.
-5. Do not commit scratch artifacts (temp dirs, audit output, local screenshots, throwaway scripts).
+然後套用這些閘門。發生衝突時，這些規則優先。
+
+1. 使用儲存庫的 PR forge。若儲存庫位於 Origin，則使用 `origin pr`；否則使用 `gh pr`。切勿在同一個分支上同時開啟兩者。
+2. 若這是後續工作，請更新現有的 PR。不要開啟重複的 PR。
+3. 除非人類在此輪次中明確授權，否則絕不合併或啟用自動合併。
+4. 開啟 PR 不會啟動監控。發布 URL 後即停止，除非另有要求。
+5. 不要提交暫存產物（暫存目錄、稽核輸出、本機截圖、一次性指令碼）。

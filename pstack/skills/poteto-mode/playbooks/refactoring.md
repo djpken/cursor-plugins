@@ -1,16 +1,18 @@
-### Refactoring
+<a id="refactoring"></a>
 
-**You own the contract. The structure changes. The behavior does not.** Distinct from Feature, which adds behavior, and Bug fix, which corrects it.
+### 重構
 
-If the cleanup reveals a missing feature or a real bug, split it out and ship the structural change first against the pinned contract. A redesign is allowed, but name it and route to Feature. Large or cross-cutting structural work belongs to the **figure-it-out** skill. This playbook is the focused-to-medium change.
+**你擁有契約。結構發生變化。行為不變。** 與功能（新增行為）和缺陷修復（糾正行為）不同。
 
-1. Pin the behavior contract first. Run the **how** skill over the affected subsystem to learn the contract, then write a characterization test, snapshot, or equivalence harness that captures current behavior before any structure moves. If the area has no coverage, write the pin before touching structure. Type check and lint are not a pin.
-2. Name the structure the code is missing per **principle-model-the-domain**. Boring code stays when the shape is already clear and local. The reshape must delete branches or invalid states, not add indirection.
-3. Name the target shape. State what the module layout, types, and call graph should be if built today (**principle-foundational-thinking**, **principle-redesign-from-first-principles**). If the target crosses a function boundary, run the **architect** skill for parallel design exploration of the shape before the move.
-4. Subtract before you add. Delete dead code, collapse one-caller wrappers, drop redundant validators, and remove orphan references before introducing the new shape (**principle-subtract-before-you-add**). The smallest change that reaches the target shape ships (**principle-laziness-protocol**). A speculative cleanup that "might help" gets reverted.
-5. Move in small behavior-preserving steps, each keeping the pin green. For API reshapes, migrate every caller and delete the old API in the same wave (**principle-migrate-callers-then-delete-legacy-apis**). No compatibility shims, no parallel old-and-new paths. Spot-check every rename against the actual files. Renames silently miss usages in strings, prose, and back-references. Delegate the mechanical edits to a subagent using your configured refactoring model (default `grok-4.7-xhigh-fast`) with a specific scope (file paths, the names being moved, the behavior to hold). Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section.
-6. Prove behavior is unchanged on the real artifact, not "it compiles" (**principle-prove-it-works**). For larger reshapes, run an equivalence check: a script that diffs old-vs-new outputs, a recorded baseline replayed against the new code, or a smoke run on the matching surface via the relevant control skill.
-7. Confirm the change is worth keeping. The success measure is reduced reader load (**principle-minimize-reader-load**). If the diff does not lower reader load somewhere, revert it.
-8. Rebase into small ordered commits. A subtraction commit, then the reshape, then any follow-on cleanup. Shape them with the **sequence-verifiable-units** principle skill, so each behavior-preserving slice stays green before the next. Run **Opening a PR**.
+如果清理揭示了缺失的功能或真正的缺陷，將其拆分出來，並首先在固定的契約下交付結構變更。允許重新設計，但需命名並歸類為功能。大型或跨領域的結構工作屬於 **figure-it-out** 技能。此手冊適用於聚焦到中等規模的變更。
 
-**Reply:** the structure that changed, the pin you held it against, the equivalence proof, the reader-load delta, what shipped and what got reverted. No new behavior.
+1. 首先固定行為契約。在受影響子系統上執行 **how** 技能來了解契約，然後編寫表徵測試、快照或等價性測試框架，在任何結構變動之前捕獲當前行為。如果該區域沒有覆蓋，在觸碰結構之前先編寫固定測試。型別檢查和 lint 不是固定測試。
+2. 根據 **principle-model-the-domain** 命名程式碼缺失的結構。當形狀已清晰且區域性時，保留平淡的程式碼。重塑必須刪除分支或無效狀態，而不是增加間接層。
+3. 命名目標形狀。陳述模組佈局、型別和呼叫圖如果今天構建應是什麼樣子（**principle-foundational-thinking**、**principle-redesign-from-first-principles**）。如果目標跨越函式邊界，在移動之前執行 **architect** 技能進行並行設計探索。
+4. 先減法再加法。刪除死程式碼、合併單一呼叫者的包裝器、移除冗餘驗證器，並在引入新形狀之前清除孤立引用（**principle-subtract-before-you-add**）。達到目標形狀的最小變更交付（**principle-laziness-protocol**）。“可能有幫助”的投機清理會被撤銷。
+5. 以小的行為保持步驟移動，每一步保持固定測試綠色。對於 API 重塑，在同一波中遷移所有呼叫者並刪除舊 API（**principle-migrate-callers-then-delete-legacy-apis**）。沒有相容性墊片，沒有新舊並行路徑。對實際檔案抽查每個重新命名。重新命名會靜默遺漏字串、散文和反向引用中的用法。將機械編輯委託給子代理，使用你設定的重構模型（預設 `grok-4.7-xhigh-fast`）和特定範圍（檔案路徑、被移動的名稱、要保持的行為）。根據子代理章節，選擇每個子代理的推理級別和快速或標準速度。
+6. 在真實產物上證明行為不變，而不是“它能編譯”（**principle-prove-it-works**）。對於較大的重塑，執行等價性檢查：一個指令碼對比新舊輸出、一個記錄的基線在新程式碼上重放，或透過相關控制技能在匹配表面上進行冒煙執行。
+7. 確認變更值得保留。成功衡量標準是降低讀者負擔（**principle-minimize-reader-load**）。如果差異沒有在某處降低讀者負擔，則撤銷它。
+8. 重新基到小的有序提交。先減法提交，然後重塑，再後續清理。用 **sequence-verifiable-units** 原則技能塑造它們，使每個行為保持切片在下一個之前保持綠色。執行 **Opening a PR**。
+
+**回覆：** 變更的結構、你固定它所用的契約、等價性證明、讀者負擔差異、交付了什麼以及撤銷了什麼。沒有新行為。

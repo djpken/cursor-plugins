@@ -1,24 +1,26 @@
 ---
 name: principle-model-the-domain
-description: "Apply when writing stateful logic, or when code branches a lot or repeats a shape assumption across files."
+description: "在撰寫有狀態邏輯時，或當程式碼大量分支、或在多個檔案中重複相同的結構假設時，請採用此原則。"
 disable-model-invocation: true
 ---
 
-# Model the Domain
+<a id="model-the-domain"></a>
 
-Encode the real domain in a data structure instead of scattering it across conditionals. A structure that matches the domain makes invalid states unrepresentable and deletes branches. Choosing it at write time is cheap. Recovering it later reads as a refactor and gets deferred.
+# 建模領域
 
-Reach for:
+將真實領域以資料結構來呈現，而不是散落在各種條件判斷中。與領域相符的結構能使無效狀態無法表示，並刪除分支。在撰寫時選擇結構的成本很低。之後再補救則會被視為重構，並往往被延遲處理。
 
-- A state machine instead of scattered booleans, phases, or lifecycle checks.
-- A typed model instead of loose parameters or repeated shape assumptions.
-- A map, registry, lookup table, or discriminated union instead of branching spread across files.
-- A reducer or command/event model instead of ad hoc state mutations.
-- A module organized around one body of domain knowledge instead of a sequence such as load, validate, transform, and save. Execution order is not ownership.
-- A small module boundary that gathers repeated behavior, ownership, or invariants.
-- A queue, cache, index, graph, tree, or normalized collection where the access pattern calls for it.
-- Any other structure that fits. When none fits, work out what the code must never allow and how the data gets read, then find the structure that encodes exactly that.
+可考慮採用：
 
-Do not force an abstraction. Prefer boring code if the current shape is already clear, local, and unlikely to grow. Be skeptical of an abstraction that adds indirection without removing branches, duplicated rules, invalid states, or lifecycle risk.
+- 狀態機，而非散落的布林值、階段或生命週期檢查。
+- 有型別模型，而非鬆散的引數或重複的結構假設。
+- 對映、登錄檔、查詢表或判別聯合，而非跨檔案的分支邏輯。
+- Reducer 或命令/事件模型，而非臨場的狀態變更。
+- 以單一領域知識為核心組織的模組，而非如載入、驗證、轉換、儲存的序列。執行順序不代表擁有權。
+- 小型模組邊界，集中重複行為、擁有權或不變條件。
+- 當存取模式需要時，採用佇列、快取、索引、圖、樹或正規化集合。
+- 任何其他合適的結構。若無合適結構，先確定程式碼絕不可允許什麼，以及資料如何被讀取，然後找出能精確表達這些的結構。
 
-The sign that you skipped this is a new feature that grows an existing if/else chain by one more branch, or a second boolean that must stay in sync with the first. Temporal decomposition is another sign. Phase-named modules repeat the same domain rules across steps.
+不要強加抽象。若現有結構已清晰、區域性且不易擴充套件，則偏好簡單的程式碼。對增加間接層但未移除分支、重複規則、無效狀態或生命週期風險的抽象，應保持懷疑。
+
+若你跳過此原則，其跡象是新功能使現有 if/else 鏈增加一個分支，或新增一個必須與第一個同步的布林值。時間分解也是跡象。以階段命名的模組會在各步驟中重複相同的領域規則。

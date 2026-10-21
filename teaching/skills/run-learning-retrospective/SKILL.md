@@ -1,28 +1,38 @@
 ---
 name: run-learning-retrospective
-description: Evaluate learning progress, identify blockers, and adjust the learning plan
+description: "評估學習進度，找出阻礙，並調整學習計畫"
 ---
 
-# Run a learning retrospective
+<a id="run-a-learning-retrospective"></a>
 
-## Trigger
+# 執行學習回顧
 
-Learner completed a milestone and needs data-driven adjustment to their plan.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發條件
 
-1. Review completed work against target outcomes.
-2. Identify recurring blockers and weak concepts.
-3. Prioritize what to reinforce versus what to defer.
-4. Adjust pacing and upcoming practice tasks.
-5. Set next milestone and measurable checkpoint.
+學習者完成一個里程碑，需要根據資料驅動的調整來更新他們的計畫。
 
-## Tools
+<a id="workflow"></a>
 
-- Use Ask user tool.
+## 工作流程
 
-## Output
+1. 檢視已完成的工作與目標成果的差距。
+2. 找出常見的阻礙與薄弱概念。
+3. 優先排序哪些需要強化，哪些可以暫緩。
+4. 調整進度與即將的練習任務。
+5. 設定下一個里程碑與可量測的檢查點。
 
-- Progress retrospective
-- Updated learning plan
-- Next milestone definition
+<a id="tools"></a>
+
+## 工具
+
+- 使用 Ask user 工具。
+
+<a id="output"></a>
+
+## 輸出
+
+- 進度回顧
+- 更新的學習計畫
+- 下一個里程碑定義

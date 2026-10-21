@@ -1,12 +1,14 @@
-### Feature (Dylan overlay)
+<a id="feature-dylan-overlay"></a>
 
-Read the shared playbook first: pstack `poteto-mode/playbooks/feature.md`.
+### 功能（Dylan 覆蓋層）
 
-Then apply these gates. They win on conflict.
+先閱讀共用操作手冊：pstack `poteto-mode/playbooks/feature.md`。
 
-1. UI changes only: read the repo's UI or styling guidance before editing. Skip it otherwise.
-2. Reuse the existing source of truth for UI, data, and tokens. No parallel registries or one-off shells.
-3. Flag-gated work: the flag-off path stays unchanged. Shared-library edits stay additive with inert defaults; prefer surface-local when possible.
-4. UI verification is live proof on the running app via `control-ui`, not compile-only.
-5. Prefer CSS/GPU-driven animation. Drop animations that cannot be made smooth rather than shipping lag.
-6. If something breaks mid-build, the **Root cause, not symptom** gate fires before you patch it.
+然後套用這些閘門。發生衝突時，以這些閘門為準。
+
+1. 僅限 UI 變更：編輯前請閱讀儲存庫中的 UI 或樣式指引。其他情況則跳過。
+2. 重用現有的 UI、資料與 token 單一事實來源。禁止建立平行登錄檔或一次性外殼。
+3. 旗標控制的開發工作：旗標關閉的路徑保持不變。共用程式庫的編輯應為附加式且預設值為無效；在可能的情況下，優先採用表層本地化。
+4. UI 驗證必須是透過 `control-ui` 在執行中的應用程式上進行實時證明，而非僅限於編譯。
+5. 優先使用 CSS/GPU 驅動的動畫。若動畫無法做到流暢，應直接移除，而非發布有延遲的動畫。
+6. 若建置過程中出現問題，在進行修補之前，會先觸發「根本原因，而非症狀」閘門。

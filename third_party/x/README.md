@@ -1,16 +1,18 @@
 # X
 
-Cursor plugin that connects agents to the [X API](https://docs.x.com) through X's official hosted [Model Context Protocol](https://modelcontextprotocol.io/) server at `https://api.x.com/mcp`.
+Cursor 外掛，透過 X 官方託管的 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器（位於 `https://api.x.com/mcp`）將代理連線到 [X API](https://docs.x.com)。
 
-This plugin signs you in with OAuth as your own X account. It is no longer read-only: alongside searching and reading public X data, agents can manage your lists, bookmarks, blocks, and mutes, call X Chat endpoints, and schedule X calls.
+此外掛透過 OAuth 以您的 X 帳號登入。它不再僅限讀取：除了搜尋和讀取公開的 X 資料之外，代理還可以管理您的列表、書籤、封鎖和靜音，呼叫 X Chat 端點，以及安排 X 電話。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **X**.
-3. Click **Install**, then complete the OAuth sign-in when prompted.
+## 安裝
 
-Or run `/add-plugin x` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **X**。
+3. 點選 **安裝**，然後在提示時完成 OAuth 登入。
+
+或在聊天中執行 `/add-plugin x`。
 
 ## MCP
 
@@ -50,41 +52,49 @@ Or run `/add-plugin x` in chat.
 }
 ```
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-| Category | Capabilities |
+## 代理可以做的事
+
+| 分類 | 功能 |
 | --- | --- |
-| Posts | Fetch posts, see likers / reposters / quoters, recent counts |
-| Search | Full-archive post search, user search, news search |
-| Users | Look up users by id or handle; read a user's posts, timeline, and mentions |
-| News & trends | Get news stories, get trends for a location (WOEID) |
-| Follows & likes | Read your follows and likes |
-| Spaces | Search Spaces (live or scheduled), look them up by id or host, and read posts shared in a Space |
-| Communities | Search communities and read a community's details |
-| Lists | Read lists, their posts, members, and followers, and a user's owned, followed, pinned, and member lists; create, edit, follow, pin, and manage members of your lists |
-| Bookmarks | Read and manage your bookmarks |
-| Blocks & mutes | Read your blocks and mutes; add or remove blocks |
-| Chat | List conversations, fetch events, send messages, typing, and read receipts; list, open, and accept message requests |
-| Calls | List and open scheduled X calls; schedule, update, or cancel one; RSVP to an invitation |
-| Developer account | Read your X developer account settings and credit balance |
+| 帖子 | 取得帖子，檢視喜歡者 / 轉貼者 / 引用者，近期數量 |
+| 搜尋 | 完整存檔帖子搜尋、使用者搜尋、新聞搜尋 |
+| 使用者 | 透過 ID 或帳號查詢使用者；讀取使用者帖子、時間軸和提及 |
+| 新聞與趨勢 | 取得新聞報導，取得某個地點（WOEID）的趨勢 |
+| 追蹤與喜歡 | 讀取您的追蹤和喜歡 |
+| Spaces | 搜尋 Spaces（直播或已排程），透過 ID 或主持人查詢，並讀取在 Space 中分享的帖子 |
+| Communities | 搜尋社群並讀取社群詳細資訊 |
+| 列表 | 讀取列表、其帖子、成員和追蹤者，以及使用者擁有、追蹤、釘選和成員列表；建立、編輯、追蹤、釘選和管理您的列表成員 |
+| 書籤 | 讀取和管理您的書籤 |
+| 封鎖與靜音 | 讀取您的封鎖和靜音；新增或移除封鎖 |
+| Chat | 列出對話、取得事件、傳送訊息、打字和讀取回執；列出、開啟和接受訊息請求 |
+| 電話 | 列出和開啟已排程的 X 電話；排程、更新或取消；回應邀請 |
+| 開發者帳號 | 讀取您的 X 開發者帳號設定和信用餘額 |
 
-Posting is not included: the plugin does not request the `tweet.write` scope, so agents cannot publish posts as you.
+發帖不包含：外掛不請求 `tweet.write` 範圍，因此代理無法以您的身份發布帖子。
 
-## Setup
+<a id="setup"></a>
 
-No token to paste — the plugin ships with X's OAuth client ID and requests the scopes above. On first use, Cursor opens a browser window where you sign in to X and approve access. The `offline.access` scope lets Cursor refresh the session automatically, so you only sign in once.
+## 設定
 
-X tools are included in Grok Bot at no cost.
+不需要貼上任何 token。外掛隨附 X 的 OAuth 客戶端 ID，並請求上述範圍。首次使用時，Cursor 會開啟瀏覽器視窗，讓您登入 X 並核准存取。`offline.access` 範圍讓 Cursor 自動重新整理會話，因此您只需登入一次。
 
-Requests run in your user context, so they count against your account's rate limits. You can revoke access at any time from your X account's connected apps settings.
+X 工具已包含在 Grok Bot，無需額費用。
 
-## Scopes requested
+請求在您的使用者環境中執行，因此會計入您的帳號速率限制。您可以隨時從您的 X 帳號的連線應用設定中撤銷存取。
+
+<a id="scopes-requested"></a>
+
+## 請求的範圍
 
 `tweet.read`, `users.read`, `follows.read`, `space.read`, `mute.read`, `like.read`, `list.read`, `list.write`, `block.read`, `block.write`, `bookmark.read`, `bookmark.write`, `dm.read`, `dm.write`, `calls.read`, `calls.write`, `media.write`, `developer.billing.write`, `developer.write`, `offline.access`
 
-## X documentation search
+<a id="x-documentation-search"></a>
 
-X also hosts an unauthenticated MCP server for its developer docs. Add it alongside this plugin if you want agents to look up endpoint details while they work:
+## X 文件搜尋
+
+X 也託管一個未驗證的 MCP 伺服器，供其開發者文件使用。如果您希望代理在工作時查詢端點詳細資訊，可以將它與此外掛一起加入：
 
 ```json
 {
@@ -96,14 +106,18 @@ X also hosts an unauthenticated MCP server for its developer docs. Add it alongs
 }
 ```
 
-## Docs
+<a id="docs"></a>
 
-- MCP servers for the X API: https://docs.x.com/tools/mcp
-- Authentication overview: https://docs.x.com/fundamentals/authentication/overview
-- X API v2 OpenAPI spec: https://api.x.com/2/openapi.json
+## 文件
 
-Logo is X's official mark from the [X brand toolkit](https://about.x.com/en/who-we-are/brand-toolkit), placed on a black tile matching X's own app icon.
+- X API 的 MCP 伺服器：https://docs.x.com/tools/mcp
+- 驗證概述：https://docs.x.com/fundamentals/authentication/overview
+- X API v2 OpenAPI 規格：https://api.x.com/2/openapi.json
 
-## License
+Logo 是 X 官方標誌，取自 [X 品牌工具包](https://about.x.com/en/who-we-are/brand-toolkit)，放置在黑色底板上，與 X 自己的應用圖示相符。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

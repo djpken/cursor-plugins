@@ -1,49 +1,59 @@
 ---
 name: review-plugin-submission
-description: Audit a Cursor plugin for marketplace readiness. Use when validating manifests, component metadata, discovery paths, and submission quality before publishing.
+description: "稽核 Cursor plugin 是否已準備好上架 marketplace。在發布前，用於驗證 manifest、元件 metadata、發現路徑以及提交品質。"
 ---
 
-# Review plugin submission
+<a id="review-plugin-submission"></a>
 
-## Trigger
+# 檢視 plugin 提交
 
-A plugin is implemented and needs a final quality check before submission or release.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發條件
 
-1. Verify manifest validity:
-   - `.cursor-plugin/plugin.json` exists
-   - `name` is valid lowercase kebab-case
-   - metadata fields are coherent (`description`, `version`, `author`, `license`)
-2. Verify component discoverability:
-   - Skills in `skills/*/SKILL.md`
-   - Rules in `rules/` as `.mdc` or markdown variants
-   - Agents in `agents/` markdown files
-   - Commands in `commands/` markdown or text files
-   - Hooks in `hooks/hooks.json`
-   - MCP config in `mcp.json` (or `mcpServers` override)
-3. Verify component metadata:
-   - Skills include `name` and `description` frontmatter
-   - Rules include valid frontmatter and clear guidance
-   - Agents and commands include `name` and `description`
-4. Verify repository integration:
-   - For marketplace repos, plugin entry exists in `.cursor-plugin/marketplace.json`
-   - `source` resolves to plugin directory and names are unique
-5. Verify documentation quality:
-   - `README.md` states purpose, installation, and component coverage
-   - optional logo path is valid and repository-hosted
+Plugin 已實作完成，需要在提交或發布前進行最終品質檢查。
 
-## Checklist
+<a id="workflow"></a>
 
-- Manifest exists and parses as valid JSON
-- All declared paths exist and are relative
-- No broken file references
-- No missing frontmatter on skills/rules/agents/commands
-- Plugin scope is clear and focused
-- Marketplace registration complete (if multi-plugin repo)
+## 工作流程
 
-## Output
+1. 驗證 manifest 有效性：
+   - `.cursor-plugin/plugin.json` 存在
+   - `name` 為有效的小寫 kebab-case
+   - metadata 欄位一致（`description`、`version`、`author`、`license`）
+2. 驗證元件可發現性：
+   - Skills 位於 `skills/*/SKILL.md`
+   - Rules 位於 `rules/`，格式為 `.mdc` 或 markdown 變體
+   - Agents 位於 `agents/` 的 markdown 檔案
+   - Commands 位於 `commands/` 的 markdown 或文字檔案
+   - Hooks 位於 `hooks/hooks.json`
+   - MCP 設定位於 `mcp.json`（或 `mcpServers` 覆寫）
+3. 驗證元件 metadata：
+   - Skills 包含 `name` 和 `description` frontmatter
+   - Rules 包含有效的 frontmatter 和明確的指引
+   - Agents 和 commands 包含 `name` 和 `description`
+4. 驗證儲存庫整合：
+   - 對於 marketplace 儲存庫，plugin 專案存在於 `.cursor-plugin/marketplace.json`
+   - `source` 解析至 plugin 目錄，且名稱唯一
+5. 驗證檔案品質：
+   - `README.md` 說明用途、安裝方式及元件涵蓋範圍
+   - 選用的 logo 路徑有效且由儲存庫託管
 
-- Pass/fail report by section
-- Prioritized fix list
-- Final submission recommendation
+<a id="checklist"></a>
+
+## 檢查清單
+
+- Manifest 存在且可解析為有效 JSON
+- 所有宣告的路徑均存在且為相對路徑
+- 沒有損壞的檔案參考
+- Skills、Rules、Agents、Commands 沒有遺漏 frontmatter
+- Plugin 範圍明確且專注
+- Marketplace 註冊完成（若為多 plugin 儲存庫）
+
+<a id="output"></a>
+
+## 輸出
+
+- 依章節劃分的透過/失敗報告
+- 優先排序的修復清單
+- 最終提交建議

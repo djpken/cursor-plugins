@@ -1,11 +1,13 @@
-### Bug fix (Dylan overlay)
+<a id="bug-fix-dylan-overlay"></a>
 
-Read the shared playbook first: pstack `poteto-mode/playbooks/bug-fix.md`.
+### 錯誤修正（Dylan 覆蓋層）
 
-Then apply these gates. They win on conflict.
+先閱讀共用操作手冊：pstack `poteto-mode/playbooks/bug-fix.md`。
 
-1. Reproduce on the same surface the human uses (`control-ui` for browser or desktop apps, `control-cli` for CLIs and TUIs). Do not skip to a theory fix.
-2. UI layout, scroll, or animation bugs: measure before coding. Capture before/after bounding boxes or a short recording.
-3. Prove the fix on the live app (reload, screenshot or measure). Unit tests alone are not done.
-4. Flag-gated surfaces: confirm the flag-off path is unchanged.
-5. Keep the app running between iterations so the human can poke it.
+接著套用這些閘門。若發生衝突，以這些閘門為準。
+
+1. 在人類使用的同一介面上重現問題（瀏覽器或桌面應用程式使用 `control-ui`，CLI 和 TUI 使用 `control-cli`）。不要直接跳到理論上的修正。
+2. UI 佈局、捲動或動畫錯誤：在撰寫程式碼前先進行測量。擷取修正前後的邊界框或一段短影片。
+3. 在實際執行的應用程式上證明修正有效（重新載入、截圖或測量）。僅有單元測試不算完成。
+4. 受旗標控制的介面：確認旗標關閉時的路徑未受影響。
+5. 在反覆迭代期間保持應用程式執行中，以便人類可以進行操作。

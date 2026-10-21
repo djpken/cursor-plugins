@@ -1,71 +1,97 @@
-# Epistemics
+<a id="epistemics"></a>
 
-How to reason about confidence when evidence is historical, fragmentary, and sometimes contradictory, and how to tell the user without flattening it into false certainty. Code shows what it does, not *why it exists*. The why lives in commits, PRs, tickets, docs, and conversations, all incomplete, biased, and sometimes missing. Pretending otherwise produces confident-sounding guesses that mislead the user.
+# 知識基礎
 
-## Confidence Tiers
+如何在證據是歷史性、片段性且有時矛盾的情況下推理信心，以及如何向使用者說明，而不將其扁平化為錯誤的確定性。程式碼顯示它做了什麼，而非*為何存在*。為何存在於提交、PR、票證、檔案和對話中，這些都不完全、有偏見，有時甚至缺失。假裝否則會產生看似自信的猜測，誤導使用者。
 
-Every claim in the output must sit in one tier. The tier sets its section and its phrasing.
+<a id="confidence-tiers"></a>
 
-### 1. Direct
+## 信心等級
 
-An explicit, textual citation answers the question: something an author actually *wrote* that says why, not "the code does X so the author must have wanted X." For example, a PR description "this fixes the bug where users with >1000 items couldn't paginate", a ticket "we're adding this because customer Acme requested it in their security review", a code comment "// clamp to 100 because the upstream API rejects larger values", a design doc "we chose option A over option B because we need persistence across restarts", or a chat message from the author "switching to this approach since the old one was flaky in tests".
+輸出中的每個宣告必須屬於一個等級。等級決定其段落和措辭。
 
-Phrasing: confident, present tense, cited. "This exists because X."
+<a id="1-direct"></a>
 
-### 2. Supported
+### 1. 直接
 
-Multiple pieces of indirect evidence converge on one conclusion. No single source states it explicitly, but the pattern across sources makes it likely. For example, the PR title says "improve performance", the ticket is labeled "perf", and the surrounding commits all touch the same hot path. Or several tests added with the change all exercise very large inputs. Or the author's other PRs from the same week all name the same incident.
+明確的文字引用回答了問題：作者實際*寫下*的內容說明為何，而非「程式碼做了X，所以作者必定想要X」。例如，PR描述「這修正了使用者超過1000個專案無法分頁的錯誤」、票證「我們新增這個是因為客戶Acme在其安全審查中要求」、程式碼評論「// 限制為100，因為上游API拒絕更大的值」、設計檔案「我們選擇方案A而非方案B，因為我們需要在重啟後保持永續性」、或作者來自聊天訊息「改用這個方法，因為舊方法在測試中不穩定」。
 
-Phrasing: confident but clearly derived, citing each item. "The evidence points strongly to X: [the specific pieces]."
+措辭：自信、現在時態、引用。「這存在是因為X。」
 
-### 3. Inferred
+<a id="2-supported"></a>
 
-A reasonable reading of the context that nothing explicitly supports. It is *your interpretation*, not a fact from the record. For example, the PR doesn't say why, but the error was happening in production (per the incident channel timing) and the fix was rushed (merged the same day), so it was likely a hotfix. Or the function name suggests retry logic, and its retry count of 3 matches the team's 3-retry convention elsewhere in the codebase.
+### 2. 支援
 
-Phrasing: hedged, with the chain explicit. "Given A and B, C seems likely because D."
+多個間接證據指向一個結論。沒有單一來源明確說明，但跨來源的規律使其很可能。例如，PR標題說「改善效能」、票證標為「效能」、周圍的提交都涉及相同的熱點路徑。或變更中新增的幾個測試都處理非常大的輸入。或作者同一週的其他PR都提到同一事件。
 
-### 4. Speculative
+措辭：自信但明確推導，引用每個專案。「證據強烈指向X：[具體專案]。」
 
-A plausible hypothesis on thin evidence, where other explanations fit equally well. Worth presenting, since the user may know which is right, but mark it as a guess. For example, "This might be a workaround for a browser bug that's since been fixed, but we found no contemporary evidence of that", or "It's possible this threshold was chosen to match an SLA commitment, but no SLA doc references it."
+<a id="3-inferred"></a>
 
-Phrasing: "One possibility is X, but we have no direct evidence." Usually lives in Competing Hypotheses, alongside other possibilities.
+### 3. 推斷
 
-### 5. Unknown
+對上下文合理的解讀，但沒有明確支援。這是*你的解釋*，而非記錄中的事實。例如，PR沒有說明為何，但錯誤在生產環境發生（根據事件通道時間）且修正匆忙（同日合併），因此可能是熱修。或函式名稱暗示重試邏輯，其重試次數3與團隊在程式碼庫其他地方的3次重試慣例相符。
 
-You looked and couldn't find out. A valid, important outcome. Document it.
+措辭：保守，明確連結。「根據A和B，C似乎可能，因為D。」
 
-Phrasing: "We searched X, Y, and Z and found no evidence of why." Be specific about *what* you searched. "We couldn't find out" is less useful than "We searched the ticket tracker with keywords A and B, scanned the 6 PRs that touched this file since 2023, and grep'd the repo for string literals matching the threshold. None surfaced a rationale."
+<a id="4-speculative"></a>
 
-## Phrasing Guide
+### 4. 推測
 
-**Confidence words** imply Direct or Supported evidence and need a citation immediately adjacent. Never use them for inferences: "because", "the reason is", "was designed to" (claims author intent), "fixes" / "addresses" / "solves" (claims the change achieved its goal), "the team decided" (claims a group decision happened).
+在薄弱證據上的合理假設，其他解釋同樣適合。值得呈現，因為使用者可能知道哪個正確，但標為猜測。例如，「這可能是針對一個已修復的瀏覽器錯誤的解決方案，但我們沒有找到當時的證據」或「這個閾值可能為了匹配SLA承諾，但沒有SLA檔案引用它。」
 
-**Hedges** signal interpretation, not report. Use them liberally in What We Can Reasonably Infer: "appears to", "seems to", "likely", "suggests", "is consistent with", "one reading is", "plausibly", "may have been", "the evidence points toward".
+措辭：「一種可能性是X，但我們沒有直接證據。」通常放在競爭假設中，與其他可能性並列。
 
-**Words to avoid:**
+<a id="5-unknown"></a>
 
-- "obviously". If it were obvious, the user wouldn't be asking
-- "clearly". Almost always precedes a claim that isn't clear
-- "of course". Same
-- "just" (as in "it's just X for performance"). Dismissive and usually hides uncertainty
-- "I think" / "I believe". You're synthesizing evidence, not giving a personal opinion. Use "the evidence suggests" instead.
+### 5. 未知
 
-## Avoid Rationalization
+你查詢了但無法確定。這是有效且重要的結果。記錄它。
 
-Code that "makes sense" today may have been written for reasons that no longer apply, or that were wrong at the time. Don't retrofit a clean rationale onto messy history. Don't assume the author did the "right" thing and work backward to justify it. Don't assume a consistent pattern was intentional when it might be copy-paste. Don't turn an absence of evidence into evidence of absence ("no one mentioned security concerns, so it must not have been a concern").
+措辭：「我們搜尋了X、Y和Z，沒有找到為何的證據。」具體說明*你搜尋了什麼*。「我們無法確定」不如「我們用關鍵詞A和B搜尋票證追蹤器，掃描了自2023年以來涉及此檔案的6個PR，並在儲存庫中grep匹配閾值的字串。沒有出現任何理由。」
 
-## The Sycophancy Trap
+<a id="phrasing-guide"></a>
 
-Users often embed a hypothesis: "Why do we do it this way, I assume it's for performance?" Don't simply confirm it. The guess is a prompt for investigation, not a conclusion to validate. Treat it as one candidate among others and check the evidence independently. If the evidence supports it, say so with citations. If not, say so, and present what the evidence *does* support.
+## 措辭指南
 
-## When Evidence Contradicts
+**信心詞**暗示直接或支援證據，需要緊鄰引用。絕不要用於推斷：「因為」、「原因是」、「設計為」（聲稱作者意圖）、「修正」/「處理」/「解決」（聲稱變更達成目標）、「團隊決定」（聲稱發生團隊決策）。
 
-Surface both sources in the output, with citations. Don't pick the one that fits a tidier narrative. For example, the ticket says "we need this for customer X's compliance requirement" and the PR says "cleaning up tech debt in this area". Both may be true (the ticket motivated the work, the PR gave the author's framing), or one may be wrong. Let the user make the call.
+**保守詞**表示解釋而非報告。在「我們能合理推斷」中大量使用：「似乎」、「看起來」、「可能」、「暗示」、「與一致」、「一種解讀是」、「可能」、「可能曾是」、「證據指向」。
 
-## When Evidence Is Missing
+**避免的詞：**
 
-An honest "we don't know" is one of the most valuable outputs. The user learns the answer isn't in the obvious places, that they'll need to ask a human (the original author, the product owner, the team lead), or that they can decide the question isn't worth pursuing further. Failing to mark a gap, and instead filling it with a confident guess, actively harms the user, because they'll act on the guess. Name each gap concretely: the question, the sources searched, what you searched for in each, and what you found (nothing, or only tangential material).
+- 「明顯」。如果明顯，使用者不會問
+- 「清楚」。幾乎總是出現在不清楚的宣告之前
+- 「當然」。同樣
+- 「只是」（如「它只是為了效能」）。輕蔑且通常隱藏不確定性
+- 「我想」/「我相信」。你綜合證據，而非給個人意見。使用「證據暗示」代替。
 
-## Before Finalizing
+<a id="avoid-rationalization"></a>
 
-Before the synthesizer delivers the output, it checks every claim in "What We Found" and "What We Can Reasonably Infer". Each claim has a citation or moves to Inferred or Hypotheses. Its phrasing matches its tier. It doesn't treat code as evidence for its own intent (if it does, remove or reclassify it). The output has a "What We Don't Know" section. If no gaps are mentioned, that's suspicious. Either the evidence was unusually complete or something is being swept under the rug.
+## 避免合理化
+
+今天「合理」的程式碼可能因不再適用或當時錯誤的原因寫成。不要將乾淨的理由套在混亂的歷史上。不要假設作者做了「正確」的事並反向推導來證明。不要假設一致的規律是有意設計，當可能是複製貼上。不要將證據缺失變成證據不存在（「沒有人提到安全問題，所以必定不是問題」）。
+
+<a id="the-sycophancy-trap"></a>
+
+## 迎合陷阱
+
+使用者常嵌入假設：「我們為什麼這樣做，我假設是為了效能？」不要簡單確認。猜測是調查的提示，而非結論來驗證。將其作為一個候選，獨立檢查證據。如果證據支援，用引用說明。如果不支援，說明並呈現證據*確實*支援的內容。
+
+<a id="when-evidence-contradicts"></a>
+
+## 當證據矛盾
+
+在輸出中呈現兩個來源，並引用。不要選擇更符合簡潔敘事的。例如，票證說「我們需要這個為客戶X的合規要求」而PR說「清理此區域的技術債」。兩者可能都真（票證推動工作，PR給作者的框架），或一個可能錯誤。讓使用者決定。
+
+<a id="when-evidence-is-missing"></a>
+
+## 當證據缺失
+
+誠實的「我們不知道」是最有價值的輸出之一。使用者知道答案不在明顯位置，需要問人類（原作者、產品負責人、團隊領導），或可以決定問題不值得進一步追求。未能標出缺口，並用自信猜測填補，會積極傷害使用者，因為他們會根據猜測行動。具體命名每個缺口：問題、搜尋的來源、每個來源中搜尋的內容、以及找到的結果（無，或僅相關材料）。
+
+<a id="before-finalizing"></a>
+
+## 在最終確定之前
+
+在合成器產生輸出之前，它會檢查「我們發現的內容」和「我們可以合理推斷的內容」中的每一項主張。每個主張都有引用，或移至「推斷」或「假設」層級。其措辭與其層級相符。它不會將程式碼視為自身意圖的證據（如果如此，則移除或重新分類）。輸出包含「我們不知道的內容」區段。如果未提及任何缺口，這就令人懷疑。要麼證據異常完整，要麼某些事項被隱藏了。

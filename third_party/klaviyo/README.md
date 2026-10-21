@@ -1,16 +1,18 @@
 # Klaviyo
 
-Cursor plugin that connects agents to [Klaviyo](https://www.klaviyo.com) through Klaviyo's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Klaviyo 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Klaviyo](https://www.klaviyo.com)。
 
-Build segments, draft campaigns and flows, look up profiles and events, and pull reporting from the signed-in Klaviyo account.
+建立區段、草擬活動與流程、查詢個人資料與事件，並從已登入的 Klaviyo 帳戶提取報告。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Klaviyo**.
-3. Click **Install**, then complete the Klaviyo sign-in prompt.
+## 安裝
 
-Or run `/add-plugin klaviyo` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Klaviyo**。
+3. 點選 **安裝**，然後完成 Klaviyo 登入提示。
+
+或在聊天中執行 `/add-plugin klaviyo`。
 
 ## MCP
 
@@ -25,41 +27,51 @@ Or run `/add-plugin klaviyo` in chat.
 }
 ```
 
-Auth is OAuth with Dynamic Client Registration. Cursor registers itself and prompts for Klaviyo sign-in when the plugin connects — there is no API key or client ID to configure.
+驗證採用 OAuth 與 Dynamic Client Registration。Cursor 會自行註冊，並在外掛連線時提示 Klaviyo 登入，無需設定 API 金鑰或客戶 ID。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need the **Owner**, **Admin**, or **Manager** role on the Klaviyo account. Tool calls run with that user's permissions.
+## 連線前
 
-## What agents can do
+您需要 Klaviyo 帳戶的 **Owner**、**Admin** 或 **Manager** 角色。工具呼叫會以該使用者許可權執行。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Profiles & events | Look up and update profiles, push events, and manage consent and data-privacy requests |
-| Lists & segments | Create and query lists and segments, and manage membership |
-| Campaigns & flows | Draft, schedule, and inspect email, SMS, and push campaigns and flows |
-| Templates & catalogs | Manage templates, images, coupons, catalogs, and reviews |
-| Reporting | Campaign, flow, form, and segment performance reporting |
-| Account config | Accounts, brands, tags, sending domains, webhooks, and applications |
+| 個人資料與事件 | 查詢與更新個人資料、推送事件，並管理同意與資料隱私請求 |
+| 列表與區段 | 建立與查詢列表和區段，並管理成員資格 |
+| 活動與流程 | 草擬、排程與檢視電子郵件、SMS 和推送活動與流程 |
+| 模板與商品目錄 | 管理模板、圖片、優惠券、商品目錄與評論 |
+| 報告 | 活動、流程、表單與區段效能報告 |
+| 帳戶設定 | 帳戶、品牌、標籤、寄送域名、Webhook 與應用程式 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱與結構的來源基準。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Klaviyo user who authorizes the connection and cannot exceed that user's permissions.
-- The full catalog is large. Klaviyo supports URL query parameters to trim it — `?core-tools-only=true` for the core set, `?read-only=true` to drop every write tool, and `?toolsets=profiles:read,campaigns:read` to pick specific toolsets. Edit the plugin's server URL if you want a narrower surface.
-- `?disable-tools-with-user-generated-content=true` hides tools that return user-generated content, which is worth setting on shared or sensitive accounts.
-- Add `?company=your-company-slug` to pin a specific account when you belong to more than one.
-- The URL must have no trailing slash.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Klaviyo 使用者身份執行，且不能超過該使用者許可權。
+- 完整目錄很大。Klaviyo 支援 URL 查詢引數來縮減範圍，`?core-tools-only=true` 為核心集合，`?read-only=true` 移除所有寫入工具，`?toolsets=profiles:read,campaigns:read` 選擇特定工具集。若您想要更窄的範圍，可編輯外掛伺服器 URL。
+- `?disable-tools-with-user-generated-content=true` 會隱藏返回使用者生成內容的工具，在共享或敏感帳戶上建議設定此項。
+- 當您屬於多個帳戶時，新增 `?company=your-company-slug` 可固定特定帳戶。
+- URL 不得有尾隨斜線。
 
-- Klaviyo MCP server: https://developers.klaviyo.com/en/docs/klaviyo_mcp_server
-- MCP server guide (help center): https://help.klaviyo.com/hc/en-us/articles/52833598880923
-- Server URL: https://mcp.klaviyo.com/mcp
+<a id="docs"></a>
 
-Logo is Klaviyo's official mark, from the `klaviyo` GitHub organization.
+## 文件
 
-## License
+- Klaviyo MCP 伺服器：https://developers.klaviyo.com/en/docs/klaviyo_mcp_server
+- MCP 伺服器指南（幫助中心）：https://help.klaviyo.com/hc/en-us/articles/52833598880923
+- 伺服器 URL：https://mcp.klaviyo.com/mcp
+
+標誌為 Klaviyo 官方標記，來自 `klaviyo` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

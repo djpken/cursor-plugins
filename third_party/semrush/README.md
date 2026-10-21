@@ -1,16 +1,18 @@
 # Semrush
 
-Cursor plugin that connects agents to [Semrush](https://www.semrush.com) through Semrush's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Semrush 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Semrush](https://www.semrush.com)。
 
-Pull Semrush keyword, backlink, traffic, and competitive-intelligence data into the editor without leaving your work.
+將 Semrush 的關鍵字、反向連結、流量和競爭情報資料直接拉入編輯器，不必離開你的工作環境。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Semrush**.
-3. Click **Install**, then complete the Semrush sign-in prompt.
+## 安裝
 
-Or run `/add-plugin semrush` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Semrush**。
+3. 點選 **安裝**，然後完成 Semrush 登入提示。
+
+或在聊天中執行 `/add-plugin semrush`。
 
 ## MCP
 
@@ -25,38 +27,48 @@ Or run `/add-plugin semrush` in chat.
 }
 ```
 
-Auth is OAuth 2.1 and the client registers itself, so Cursor just prompts for Semrush sign-in when the plugin connects — there is no client ID to configure.
+驗證採用 OAuth 2.1，且客戶端會自行註冊，因此當外掛連線時，Cursor 只會提示 Semrush 登入，不需要設定客戶端 ID。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need a Semrush plan that includes API units. MCP calls draw down the same API unit balance as the REST APIs, and Trends data additionally depends on your Trends subscription level.
+## 連線前
 
-## What agents can do
+你需要一個包含 API 單元的 Semrush 方案。MCP 呼叫會消耗與 REST API 相同的 API 單元餘額，而 Trends 資料則額外依賴你的 Trends 訂閱等級。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Keywords | Keyword overview, difficulty, related terms, and search volume by database |
-| Domains | Domain overview, organic and paid competitors, and traffic estimates |
-| Backlinks | Backlink profiles, referring domains, and anchor analysis |
-| Trends | Traffic and market data, gated by your Trends subscription level |
-| Projects | Read-only access to Projects API v3 |
+| 關鍵字 | 關鍵字概覽、難度、相關詞彙，以及各資料庫的搜尋量 |
+| 域名 | 域名概覽、自然與付費競爭對手，以及流量估計 |
+| 反向連結 | 反向連結檔案、來源域名，以及錨點分析 |
+| Trends | 流量與市場資料，依你的 Trends 訂閱等級限制 |
+| 專案 | 對 Projects API v3 的唯讀存取 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱與結構的來源真相。
 
-## Notes
+<a id="notes"></a>
 
-- Access is read-only — the server does not write back to Semrush.
-- Streamable HTTP is the only supported transport.
-- Every call consumes API units from the account's balance, so prefer specific queries over broad crawls.
-- `https://mcp.semrush.com/v1/mcp` is a stale URL that still circulates on aggregator sites. The current endpoint is `/v2/mcp`.
+## 注意事項
 
-## Docs
+- 存取為唯讀，伺服器不會寫回 Semrush。
+- Streamable HTTP 是唯一支援的傳輸方式。
+- 每次呼叫都會消耗帳戶餘額中的 API 單元，因此請優先使用特定查詢，而非廣泛爬取。
+- `https://mcp.semrush.com/v1/mcp` 是一個過時的 URL，仍在聚合網站上流通。目前的端點是 `/v2/mcp`。
+
+<a id="docs"></a>
+
+## 檔案
 
 - Semrush MCP: https://developer.semrush.com/api/v4/introduction/semrush-mcp/
-- Server URL: https://mcp.semrush.com/v2/mcp
+- 伺服器 URL: https://mcp.semrush.com/v2/mcp
 
-Logo is Semrush's official mark, from the `semrush` GitHub organization.
+標誌是 Semrush 的官方標記，來自 `semrush` GitHub 組織。
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

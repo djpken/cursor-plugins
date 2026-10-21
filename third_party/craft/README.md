@@ -1,16 +1,20 @@
-# Craft
+<a id="craft"></a>
 
-Cursor plugin that connects agents to [Craft](https://www.craft.do) through Craft's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+# 製作
 
-Search, read, create, and update documents, daily notes, tasks, and collections in a connected Craft space.
+Cursor 外掛，透過 Craft 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Craft](https://www.craft.do)。
 
-## Install
+在已連線的 Craft 空間中搜尋、讀取、建立和更新檔案、每日筆記、任務和集合。
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Craft**.
-3. Click **Install**, then complete the Craft sign-in prompt.
+<a id="install"></a>
 
-Or run `/add-plugin craft` in chat.
+## 安裝
+
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Craft**。
+3. 點選 **安裝**，然後完成 Craft 登入提示。
+
+或在聊天中執行 `/add-plugin craft`。
 
 ## MCP
 
@@ -25,39 +29,49 @@ Or run `/add-plugin craft` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for Craft sign-in when the plugin connects, and you pick which space to grant access to on the authorization screen.
+驗證採用 OAuth。當外掛連線時，Cursor 會提示 Craft 登入，並在授權畫面中選擇要授予存取權的空間。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-Create an MCP connection inside the Craft app first — open the **Connections** area in the sidebar. The endpoint will not authorize until that connection exists.
+## 連線前
 
-## What agents can do
+請先在 Craft 應用中建立 MCP 連線。開啟側邊欄中的 **連線** 區域。在該連線存在之前，端點不會授權。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 分類 | 功能 |
 | --- | --- |
-| Search | Cross-document search with tag, date, and regex filters |
-| Documents | Create, read, update, and delete documents |
-| Daily notes & tasks | Work with daily notes and task items |
-| Collections | Manage collections, including schema edits |
+| 搜尋 | 跨檔案搜尋，支援標籤、日期和正規表示式篩選 |
+| 檔案 | 建立、讀取、更新和刪除檔案 |
+| 每日筆記與任務 | 處理每日筆記和任務專案 |
+| 集合 | 管理集合，包括結構編輯 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱和結構的來源。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls are scoped to the Craft space selected during authorization.
-- The endpoint URL is the same for everyone — `https://mcp.craft.do/my/mcp`. Per-space scoping happens during OAuth approval, not in the URL.
-- Because a connection is bound to one space, working across several spaces means adding one server entry per space.
-- `stimmt/craft-mcp` on Packagist is an unrelated Craft **CMS** plugin.
+## 注意事項
 
-## Docs
+- 工具呼叫範圍限定於授權期間選定的 Craft 空間。
+- 端點 URL 對所有人相同：`https://mcp.craft.do/my/mcp`。每個空間的範圍設定是在 OAuth 批准期間進行，而非在 URL 中。
+- 因為一個連線繫結一個空間，跨多個空間工作意味著每個空間需新增一個伺服器專案。
+- Packagist 上的 `stimmt/craft-mcp` 是一個不相關的 Craft **CMS** 外掛。
 
-- Craft MCP guide: https://www.craft.do/imagine/guide/mcp
-- Connect Craft to Cursor: https://www.craft.do/imagine/guide/mcp/cursor
-- MCP support article: https://support.craft.do/en/integrate/mcp
-- Server URL: https://mcp.craft.do/my/mcp
+<a id="docs"></a>
 
-Logo is Craft's official mark, from the `craftdocs` GitHub organization.
+## 檔案
 
-## License
+- Craft MCP 指南：https://www.craft.do/imagine/guide/mcp
+- 連線 Craft 到 Cursor：https://www.craft.do/imagine/guide/mcp/cursor
+- MCP 支援文章：https://support.craft.do/en/integrate/mcp
+- 伺服器 URL：https://mcp.craft.do/my/mcp
+
+標誌是 Craft 官方標記，來自 `craftdocs` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

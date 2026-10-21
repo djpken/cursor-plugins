@@ -1,44 +1,58 @@
 ---
 name: setup-pstack
-description: Configure which models pstack uses per role and at what reasoning budget. Detects your available models and writes an always-applied rule that overrides the skill defaults. Use for /setup-pstack, "configure pstack models", "pstack budget", or changing pstack's model choices.
+description: "設定 pstack 每個角色使用的模型及推理預算。偵測您可用的模型並寫入一個始終套用的規則，覆蓋技能預設值。適用於 /setup-pstack、\"設定 pstack 模型\"、\"pstack 預算\"或更改 pstack 的模型選擇。"
 ---
 
-# Setup pstack
+<a id="setup-pstack"></a>
+
+# 設定 pstack
 
 In Claude Code, read [the Claude Code adapter](../../docs/harness/claude-code.md) once per session before you follow this skill. It maps the Cursor names in pstack skills to Claude Code.
 
-Write `~/.cursor/rules/pstack-models.mdc`, an always-applied rule that sets pstack's model per role.
+寫入 `~/.cursor/rules/pstack-models.mdc`，一個始終套用的規則，設定 pstack 每個角色的模型。
 
-## Steps
+<a id="steps"></a>
 
-### 1. Detect available models
+## 步驟
 
-Enumerate the model slugs you can pass to a `Task` subagent in this session. That is the dependable source. If Cursor also exposes a models API or CLI that lists the user's entitled models, prefer it for completeness. If you cannot detect any, ask the user to paste the slugs they have access to. Never write a real slug you have not confirmed is available. The aliases `inherit-parent` and `auto` are always valid even though they are not detected slugs.
+<a id="1-detect-available-models"></a>
 
-### 2. Load current state
+### 1. 偵測可用模型
 
-The default role-to-model mapping is the rule shape shown in step 5 below. If `~/.cursor/rules/pstack-models.mdc` already exists, read it and treat its `# budget` line and its role values as the current choices. Otherwise start from those defaults. A line whose role is not in step 5, such as `how critics`, is from a retired role. Drop it.
+列出您在此會話中可傳遞給 `Task` 子代理的模型 slug。這是可靠的來源。如果 Cursor 也提供列出使用者有權模型的 API 或 CLI，優先使用它以求完整。若無法偵測任何模型，請要求使用者貼上他們可使用的 slug。切勿寫入未確認可使用的真實 slug。別名 `inherit-parent` 和 `auto` 始終有效，即使它們不是偵測到的 slug。
 
-### 3. Budget, map, and confirm
+<a id="2-load-current-state"></a>
 
-**(a) Ask for a budget.** Prefer AskQuestion over free text. Offer these four options with these exact labels, and name the current budget when the rule records one. With no rule, say that `large` matches the skill defaults.
+### 2. 載入當前狀態
+
+預設的角色對模型對映是步驟 5 所示的規則形狀。如果 `~/.cursor/rules/pstack-models.mdc` 已存在，讀取它並將其 `# budget` 行及角色值視為當前選擇。否則從這些預設開始。角色不在步驟 5 中的行，如 `how critics`，來自已退役的角色。刪除它。
+
+<a id="3-budget-map-and-confirm"></a>
+
+### 3. 預算、對映與確認
+
+**(a) 詢問預算。** 優先使用 AskQuestion 而非自由文字。提供以下四個選項，使用這些確切標籤，並在規則記錄預算時命名當前預算。無規則時，說明 `large` 符合技能預設。
 
 - `unlimited — max reasoning`
 - `large — xhigh reasoning`
 - `medium — high reasoning`
 - `small — medium reasoning`
 
-**(b) Apply it.** Build the working table from the skill defaults, and on a re-run keep any role you changed by family, list, or alias (`inherit-parent`, `auto`). `unlimited`, `large`, `medium`, and `small` set the effort token of every real slug, panel entries included, to `max`, `xhigh`, `high`, or `medium`. The effort token is the last token, or the one before a trailing `fast`, on the ladder `max` > `xhigh` > `high` > `medium` > `low`. If the result is not a detected slug, use the same family's detected slug with the highest effort at or below the target, else mark the role as needing a choice. `inherit-parent` and `auto` do not change. So `unlimited` turns `claude-opus-5-5-xhigh` into `claude-opus-5-5-max`. Grok slugs top out at `xhigh`, so under `unlimited` the fallback puts Grok at `xhigh` and keeps `grok-4.7-xhigh-fast` as it is. `large` keeps both defaults. `small` turns them into `claude-opus-5-5-medium` and `grok-4.7-medium-fast`.
+**(b) 套用。** 從技能預設建立工作表格，在重新執行時保留您按家族、列表或別名更改的任何角色（`inherit-parent`、`auto`）。`unlimited`、`large`、`medium` 和 `small` 將每個真實 slug 的 effort token（包括面板條目）設定為 `max`、`xhigh`、`high` 或 `medium`。effort token 是最後一個 token，或是在尾隨 `fast` 之前的一個，位於階梯 `max` > `xhigh` > `high` > `medium` > `low`。如果結果不是偵測到的 slug，使用同一家族中偵測到的 slug，其 effort 在目標以下最高，否則標記該角色為需要選擇。`inherit-parent` 和 `auto` 不變。因此 `unlimited` 將 `claude-opus-5-5-xhigh` 轉為 `claude-opus-5-5-max`。Grok slug 最高為 `xhigh`，所以在 `unlimited` 下，fallback 將 Grok 放在 `xhigh` 並保持 `grok-4.7-xhigh-fast` 不變。`large` 保持兩個預設。`small` 將它們轉為 `claude-opus-5-5-medium` 和 `grok-4.7-medium-fast`。
 
-**(c) Show the roles and confirm.** Show every role with its model, marking any real slug not in the detected set as needing a choice. Also list each line step 2 dropped. Ask whether to accept as-is or change specific roles, offering the detected models plus `inherit-parent` and `auto` (both mean: this role runs on the parent chat model, which is how Auto users stay on Auto) as the options. Prefer AskQuestion over free text. For panel roles (arena runners, architect runners, interrogate reviewers) the value is a list, and one subagent runs per entry, alias entries included, so the list length sets the count. `arena cross-judge pool` is also a list, but Arena selects one value from it whose model family differs from the parent's when possible. `swarm workers` is the default model for every worker unless a race or comparison assigns another model per arm.
+**(c) 顯示角色並確認。** 顯示每個角色及其模型，標記任何不在偵測集合中的真實 slug為需要選擇。也列出步驟 2 刪除的每一行。詢問是否接受現狀或更改特定角色，提供偵測到的模型加上 `inherit-parent` 和 `auto`（兩者均表示：此角色執行在父聊天模型上，這是 Auto 使用者保持在 Auto 的方式）作為選項。優先使用 AskQuestion 而非自由文字。對於面板角色（arena 執行者、architect 執行者、interrogate 審閱者），值是一個列表，每個條目執行一個子代理，包括別名條目，因此列表長度設定數量。`arena cross-judge pool` 也是列表，但 Arena 從其中選擇一個值，其模型家族在可能時與父模型不同。`swarm workers` 是每個 worker 的預設模型，除非競賽或比較為每個臂指派另一個模型。
 
-### 4. Validate
+<a id="4-validate"></a>
 
-Every real slug written must be in the detected set. `inherit-parent` and `auto` always pass. If a chosen real slug is not available, stop and ask again.
+### 4. 驗證
 
-### 5. Write the rule
+每個寫入的實際 slug必須在偵測集合中。`inherit-parent` 和 `auto` 始終透過。如果選擇的實際 slug不可用，停止並再次詢問。
 
-Write `~/.cursor/rules/pstack-models.mdc` with `alwaysApply: true`, a `# budget` line with the chosen label and its target effort, and one line per role, using the same labels poteto-mode uses. Overwrite the whole file so re-runs stay idempotent. Shape:
+<a id="5-write-the-rule"></a>
+
+### 5. 寫入規則
+
+寫入 `~/.cursor/rules/pstack-models.mdc` 包含 `alwaysApply: true`、一個 `# budget` 行帶有選擇的標籤及其目標 effort，以及每個角色一行，使用 poteto-mode 使用的相同標籤。覆寫整個檔案，使重新執行保持冪等。形狀：
 
 ```
 ---
@@ -67,14 +81,20 @@ architect runners: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
 interrogate reviewers: claude-opus-5-5-xhigh, grok-4.7-xhigh-fast
 ```
 
-### 6. Confirm
+<a id="6-confirm"></a>
 
-Tell the user the rule was written and that it applies to new sessions. Re-running this skill updates it.
+### 6. 確認
 
-### 7. Offer a verification skill (optional)
+告知使用者規則已寫入並適用於新會話。重新執行此技能會更新它。
 
-Check whether the project has a way to drive the real app for proof (a `verify-*` skill, or an existing harness). If not, offer once: "want a project-local verification skill, so agents can drive the app the way a user does and prove changes work? I can generate one with /create-verification-skill." On yes, invoke `/create-verification-skill` (resolves wherever pstack is installed: workspace, user, or plugin). On no, move on without pushing.
+<a id="7-offer-a-verification-skill-optional"></a>
 
-### 8. Offer a formal verification skill (optional)
+### 7. 提供驗證技能（可選）
 
-Check whether the project already has a formal verification skill (a project skill that runs a model checker, a proof, or another verifier against the code). If not, offer once: "want a formal verification skill, so agents can prove a key property of your code holds in every case in scope, not only the cases tests reach? I can generate one with /create-formal-verification-skill." On yes, invoke `/create-formal-verification-skill` (resolves wherever pstack is installed: workspace, user, or plugin). On no, move on without pushing.
+檢查專案是否有驅動真實應用進行證明的方式（`verify-*` 技能或現有 harness）。如果沒有，提供一次："想要一個專案本地驗證技能，讓代理能以使用者方式驅動應用並證明更改有效？我可以用 /create-verification-skill. 生成一個" 若同意，呼叫 `/create-verification-skill`（在 pstack 安裝位置解析：workspace、user 或 plugin）。若不同意，繼續而不推。
+
+<a id="8-offer-a-formal-verification-skill-optional"></a>
+
+### 8. 提供正式驗證技能（可選）
+
+檢查專案是否已有正式驗證技能（一個專案技能執行模型檢查器、證明或其他驗證器對程式碼）。如果沒有，提供一次："想要一個正式驗證技能，讓代理能證明程式碼的關鍵屬性在範圍內每個案例成立，不僅測試達到的案例？我可以用 /create-formal-verification-skill. 生成一個" 若同意，呼叫 `/create-formal-verification-skill`（在 pstack 安裝位置解析：workspace、user 或 plugin）。若不同意，繼續而不推。

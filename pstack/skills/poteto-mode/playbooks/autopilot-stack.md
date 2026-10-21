@@ -1,12 +1,12 @@
 ### Autopilot-stack
 
-**You own the stack, never the landing. Hand the operator one linear stack of base-chained PRs to review and land.** **Autopilot-full** holds except for how verified work leaves. Each tick re-reads both playbooks from trunk, and this one wins where they differ.
+**你擁有整個堆疊，而非最終落地。交給操作者一個線性的堆疊，由基礎連結的 PR 組成，供其審閱並落地。** **Autopilot-full** 的規則適用，但驗證完成的工作如何離開有所不同。每個週期從主幹重新讀取兩個操作手冊，當它們有差異時，此規則優先。
 
-1. **Run Autopilot-full's owners, minus the landing.** Owners report STACK-READY in place of merge-ready. They never rebase onto another branch, trunk included, and never retarget, merge, close a PR, or arm auto-merge, because the root owns the chain's topology and the operator owns the landing. When an item depends on another, its owner branches from that item's branch, not from trunk.
-2. **Give the topology one writer.** Owners push only their own branches and report each tip and its intended parent. Only you rebase or retarget a link, because two writers on one chain undo each other. Append each clean PR in dependency order, with its base set to its parent's branch (`origin pr edit <pr> --base <parent-branch>` or `gh pr edit <pr> --base <parent-branch>`). Never require `gt`. An owner takes your push as its new base and lease, and on a conflict resolves its own slice for you to push.
-3. **Absorb drift at the root.** Until landing starts, apply Autopilot-full step 5's test to each link and rebase the chain bottom-up where it calls for one. Then apply the patch-id rule link by link, since a link's base is its parent.
-4. **Deliver the chain, then keep your hands off it.** Each link carries its verdict in its PR. Once landing starts, nobody writes to the chain except the post-merge retarget that `playbooks/shipping.md` sanctions, because a second writer breaks a landing in flight. A mid-landing problem goes through you to the operator, and any fix waits for the operator's go.
+1. **執行 Autopilot-full 的擁有者規則，但不包括落地。** 擁有者報告 STACK-READY 而非 merge-ready。他們絕不重新基底到另一個分支，包括主幹，也絕不重新設定目標、合併、關閉 PR，或啟動自動合併，因為根擁有鏈的拓撲結構，操作者擁有落地。當一個專案依賴另一個專案時，其擁有者從該專案的分支分支，而非從主幹。
+2. **給拓撲結構一個寫者。** 擁有者僅推送自己的分支，並報告每個尖端及其預定的父分支。只有你重新基底或重新設定連結目標，因為一個鏈上的兩個寫者會互相抵消。按依賴順序追加每個乾淨的 PR，將其基底設為父分支（`origin pr edit <pr> --base <parent-branch>` 或 `gh pr edit <pr> --base <parent-branch>`）。絕不要求 `gt`。擁有者將你的推送作為新的基底和租約，在衝突時解決自己的部分以供你推送。
+3. **在根吸收漂移。** 直到落地開始，對每個連結應用 Autopilot-full 步驟 5 的測試，並在需要時從底部向上重新基底鏈。然後逐連結應用 patch-id 規則，因為連結的基底是其父分支。
+4. **交付鏈，然後保持不干涉。** 每個連結在其 PR 中攜帶其判定。一旦落地開始，除了 `playbooks/shipping.md` 允許的 post-merge 重新設定目標外，無人寫入鏈，因為第二個寫者會破壞正在進行中的落地。落地中途的問題透過你傳給操作者，任何修正等待操作者的指示。
 
-**Choosing between the autopilots.** Autopilot-full when the PRs are independent and landing authority is granted. Autopilot-stack when the operator wants review before landing, the work is sequenced or coupled, or merge authority is withheld.
+**選擇自動駕駛模式。** 當 PR 獨立且落地權已授予時，使用 Autopilot-full。當操作者希望在落地前審閱、工作是有序或耦合的，或合併權被保留時，使用 Autopilot-stack。
 
-**Reply:** catch the operator up per the **ketchup** skill, with links to the stack root and tip, a one-line verdict per link, and anything parked or excluded with the reason.
+**回覆：** 根據 **ketchup** 技能讓操作者跟上情況，提供鏈根和尖端的連結，每個連結一行判定，以及任何暫停或排除專案及其原因。

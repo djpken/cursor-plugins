@@ -1,23 +1,25 @@
 ---
 name: principle-build-the-lever
-description: "Apply to any non-trivial work, not just bulk work: edits, migrations, analyses, checks. Build the tool that does it or proves it (codemod, script, generator, or a skill your subagents follow) instead of working by hand. The tool is the artifact a reviewer can rerun."
+description: "適用於任何非瑣碎的工作，不只是大量工作：編輯、遷移、分析、檢查。建立能完成或證明該工作的工具（codemod、指令碼、生成器，或你的子代理遵循的技能），而不是手工處理。工具是審閱者可以重新執行的一個成品。"
 disable-model-invocation: true
 ---
-# Build the Lever
+<a id="build-the-lever"></a>
 
-When the work isn't trivial, build the tool that does it instead of doing it by hand.
+# 建立槓桿
 
-A codemod, generator, or script does the work the same way every time and reruns for free. The tool is one artifact a reviewer can read and rerun to check the work. Hand-done changes can only be re-verified by redoing them. A deterministic script turns "trust me" into "run this".
+當工作不是瑣碎時，建立能完成該工作的工具，而不是手工處理。
 
-Default to building the lever. Skip it only when the task is trivial, a couple of obvious edits you can see at a glance.
+codemod、生成器或指令碼每次都以相同方式完成工作，並可免費重新執行。工具是審閱者可以閱讀並重新執行來檢查工作的一個成品。手工變更只能透過重新執行來重新驗證。一個確定性的指令碼將「相信我」轉為「執行這個」。
 
-- Do the first unit by hand to learn the recipe, then build the tool. Prove it by rerunning it on that unit and diffing against your hand-done version. Make the lever safe to rerun.
-- Codemod or script for edits, generator for repetitive files, a dump-to-sqlite query for analysis, a rerunnable check for verification.
-- A deterministic lever beats fan-out. If the tool can process every unit in one pass, run it yourself. Don't fan out delegates to hand-apply what a script can do.
-- When you fan work out to subagents, write the lever as a skill they all read: the recipe, the verification contract, and the do-not-touch fences in one artifact. Keep it outside the delegates' write scope so they can't quietly edit the contract.
-- Applying this principle produces a file. If you cited it and there is no codemod, script, generator, or delegate skill in the diff, you didn't apply it.
-- Commit the lever when the work outlives the session.
+預設建立槓桿。僅當任務是瑣碎、幾個一眼可見的明顯編輯時，才跳過它。
 
-The bar is triviality, not repetition. A one-off still earns a lever when the lever is what makes the work checkable. Per the [Laziness Protocol](../principle-laziness-protocol/SKILL.md), build the smallest script that does or proves the job, never a framework.
+- 先手工完成第一個單位來學習配方，然後建立工具。透過在該單位上重新執行工具並與手工版本進行差異比較來證明它。讓槓桿安全地重新執行。
+- 編輯使用 codemod 或指令碼，重複檔案使用生成器，分析使用 dump-to-sqlite 查詢，驗證使用可重新執行檢查。
+- 確定性的槓桿勝過分散處理。如果工具可以在一次執行中處理所有單位，請自行執行。不要分散委派給子代理手工應用指令碼能做的事。
+- 當你將工作分散給子代理時，將槓桿寫成他們都閱讀的技能：配方、驗證契約和不可觸碰的圍欄，全部在一個成品中。將其保持在委派者的寫入範圍之外，以免他們悄悄修改契約。
+- 應用此原則會產生一個檔案。如果你引用它，但差異中沒有 codemod、指令碼、生成器或委派技能，則你未應用它。
+- 當工作超出當前會話時，提交槓桿。
 
-Distinct from [Encode Lessons in Structure](../principle-encode-lessons-in-structure/SKILL.md), which makes a recurring instruction a durable guardrail. This is throughput and reviewability on the work in front of you. For scripting the verification itself, see [Prove It Works](../principle-prove-it-works/SKILL.md).
+標準是瑣碎性，而非重複性。一次性工作仍值得建立槓桿，當槓桿是使工作可檢查的因素。根據 [Laziness Protocol](../principle-laziness-protocol/SKILL.md)，建立最小的指令碼來完成或證明工作，絕不建立框架。
+
+與 [Encode Lessons in Structure](../principle-encode-lessons-in-structure/SKILL.md) 不同，該原則將重複指令變成持久防護欄。這是在眼前工作的吞吐量和可審閱性。關於指令碼化驗證本身，請參見 [Prove It Works](../principle-prove-it-works/SKILL.md)。

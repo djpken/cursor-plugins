@@ -1,169 +1,193 @@
-# Control-adapter contract
+<a id="control-adapter-contract"></a>
 
-Benny does not know how to start or drive every app. The user must configure one control skill or adapter that implements this contract for the target app.
+# 控制介面卡合約
 
-Set its skill name in `control.skill_name`.
+Benny 不知道如何啟動或操作每個應用程式。使用者必須設定一個控制 skill 或介面卡，以針對目標應用程式實作此合約。
 
-Set the completed user-facing feature map path in `control.feature_map_path`. Copy and fill [`feature-map.example.md`](./feature-map.example.md) outside `.cursor/automations/benny/` instead of editing the copied example.
+在 `control.skill_name` 中設定其 skill 名稱。
 
-If the skill, feature map, or a required capability is absent, ambiguous, or incomplete, repro and fix work must fail closed.
+在 `control.feature_map_path` 中設定已完成的使用者端功能地圖路徑。請複製並填寫 [`feature-map.example.md`](./feature-map.example.md)，而不是在 `.cursor/automations/benny/` 中編輯複製的範例。
 
-## Required capabilities
+如果 skill、功能地圖或必要功能缺失、含糊不清或不完整，重現與修復工作必須失敗並關閉（fail closed）。
 
-### Bring up
+<a id="required-capabilities"></a>
 
-Start the requested app revision in the requested test environment.
+## 必要功能
 
-Input:
+<a id="bring-up"></a>
 
-- Repository and revision
-- Build or start mode
-- Workspace, account, fixture, and feature-state requirements
-- Artifact directory
-- Completed feature-map path
+### 啟動
 
-Return:
+在指定的測試環境中啟動所要求的應用程式版本。
 
-- Session identifier
-- How the adapter confirmed the correct app and environment
-- Stable app markers
-- Running process or target details needed by later calls
-- Any missing capability
+輸入：
 
-The adapter must distinguish the target app from a similar window, shell, or production instance.
+- 儲存庫與版本
+- 建置或啟動模式
+- 工作區、帳戶、測試資料（fixture）與功能狀態需求
+- 產物目錄
+- 已完成的功能地圖路徑
 
-### Drive UI
+回傳：
 
-Perform real user actions:
+- 工作階段識別碼
+- 介面卡如何確認正確的應用程式與環境
+- 穩定的應用程式標記
+- 後續呼叫所需的執行中程式或目標詳細資訊
+- 任何缺失的功能
 
-- Click
-- Type
-- Press keys
-- Scroll
-- Drag
-- Resize
-- Navigate through app controls
+介面卡必須將目標應用程式與相似的視窗、shell 或生產環境執行個體區分開來。
 
-Prefer roles, labels, and stable selectors. Use coordinates only after a fresh screenshot.
+<a id="drive-ui"></a>
 
-Return each action and the observed state change.
+### 操作 UI
 
-Do not set internal state, call hidden app methods, write directly to storage, or inject DOM changes to create the symptom.
+執行真實的使用者動作：
 
-### Drive mapped features and states
+- 點選
+- 輸入
+- 按下鍵盤鍵
+- 捲動
+- 拖曳
+- 調整大小
+- 透過應用程式控制項導覽
 
-Read the relevant feature-map section before driving the app.
+優先使用角色、標籤與穩定的選擇器。僅在取得新截圖後才使用座標。
 
-The adapter must expose ways to:
+回傳每個動作及觀察到的狀態變化。
 
-- Navigate every mapped feature through the user-visible path.
-- Invoke the adapter action names listed for that feature.
-- Interact with default, hover, focus-visible, active, disabled, loading, empty, error, selected, open, expanded, and feature-specific states when they apply.
-- Arrange a state through safe fixture data, permissions, flags, service responses, or supported test controls.
-- Reset the feature for a second independent repro attempt.
-- Capture the screenshot, video, and read-only cross-check named by the feature map.
+不要設定內部狀態、呼叫隱藏的應用程式方法、直接寫入儲存空間，或注入 DOM 變更來製造症狀。
 
-Use roles, accessible names, ARIA relationships, stable component markers, and purpose-named data attributes. Never use generated CSS or StyleX classes, dynamic hashes, child indexes, or brittle DOM position.
+<a id="drive-mapped-features-and-states"></a>
 
-Arranging a precondition is not permission to inject the reported symptom. The repro itself must still come from real user interaction.
+### 操作已對映的功能與狀態
 
-### Inspect state
+在操作應用程式之前，先閱讀相關的功能地圖章節。
 
-Read state to confirm what the UI shows.
+介面卡必須提供以下方式：
 
-Examples:
+- 透過使用者可見的路徑導覽每個已對映的功能。
+- 呼叫該功能所列出的介面卡動作名稱。
+- 在適用時，與預設、懸停、焦點可見、啟用、停用、載入中、空值、錯誤、選取、開啟、展開以及特定功能的狀態進行互動。
+- 透過安全的測試資料、許可權、旗標、服務回應或支援的測試控制項來安排狀態。
+- 為第二次獨立的重現嘗試重置該功能。
+- 擷取功能地圖指定的截圖、影片與唯讀交叉檢查。
 
-- Accessibility tree
-- DOM or view hierarchy
-- Process state
-- Local logs
-- Network request status
-- App-exposed debug state
+使用角色、可存取名稱、ARIA 關係、穩定的元件標記以及具目的性的 data 屬性。切勿使用產生的 CSS 或 StyleX 類別、動態雜湊、子元素索引或脆弱的 DOM 位置。
 
-Inspection is read-only. If a query changes state, it belongs in `drive UI` and must represent a real user action.
+安排前置條件不等於允許注入所報告的症狀。重現本身仍必須來自真實的使用者互動。
 
-### Screenshot
+<a id="inspect-state"></a>
 
-Capture the current app state to a requested path.
+### 檢查狀態
 
-Return:
+讀取狀態以確認 UI 顯示的內容。
 
-- File path
-- Capture time
-- App marker or window title
-- Short description of what should be visible
+範例：
 
-The screenshot must show enough app chrome to prove that the correct app is under test.
+- 可存取性樹狀結構
+- DOM 或檢視階層
+- 程式狀態
+- 本機記錄
+- 網路請求狀態
+- 應用程式公開的除錯狀態
 
-### Recording
+檢查是唯讀的。如果查詢會變更狀態，它應屬於 `drive UI`，且必須代表真實的使用者動作。
 
-Start and stop a screen recording around the full repro path.
+<a id="screenshot"></a>
 
-Return:
+### 截圖
 
-- File path
-- Start and stop times
-- Captured window or region
-- Whether audio or sensitive overlays were omitted
+將目前的應用程式狀態擷取到指定的路徑。
 
-The recording must show the discriminating final state, not only setup or a loading screen.
+回傳：
 
-### Cleanup
+- 檔案路徑
+- 擷取時間
+- 應用程式標記或視窗標題
+- 應顯示內容的簡短描述
 
-Stop processes and sessions created by the adapter.
+截圖必須顯示足夠的應用程式外框（chrome），以證明正在測試正確的應用程式。
 
-Remove disposable:
+<a id="recording"></a>
 
-- Browser or app profiles
-- Temporary workspaces
-- Test accounts or fixtures when the adapter created them
-- Debug ports and tunnels
-- Captures past their retention window
+### 錄製
 
-Return what was stopped, removed, retained, or left for a person.
+在完整的重現路徑周圍開始並停止螢幕錄製。
 
-Cleanup must not delete user work.
+回傳：
 
-## Adapter behavior
+- 檔案路徑
+- 開始與停止時間
+- 擷取的視窗或區域
+- 是否省略了音訊或敏感疊加層
 
-The adapter must:
+錄製必須顯示具有鑑別力的最終狀態，而不僅僅是設定或載入畫面。
 
-- Report capabilities before the repro starts.
-- Report which feature-map sections it can drive and which are blocked.
-- Use the same environment inputs for baseline and patched builds.
-- Surface startup failures as failures.
-- Bound retries.
-- Keep secrets out of logs and artifacts.
-- Keep captures outside the repository.
-- Support a fresh or reset state between the two repro attempts.
-- Avoid production changes unless the user explicitly configured a safe test action.
+<a id="cleanup"></a>
 
-## Environment translation
+### 清理
 
-Before declaring an environment block, restate the defect without platform-specific nouns and ask whether the same behavior can be tested safely in the available environment.
+停止由介面卡建立的程式與工作階段。
 
-Examples:
+移除可拋棄的專案：
 
-- A named browser may mean any external browser.
-- A named key may mean the configured shortcut.
-- A named remote host may mean a delayed or disconnected remote target.
+- 瀏覽器或應用程式設定檔
+- 暫時性工作區
+- 測試帳戶或測試資料（若由介面卡建立）
+- 除錯埠與隧道
+- 超過保留期限的擷取檔案
 
-Use a translated attempt only when it tests the same underlying behavior. Label it as translated evidence. Do not call it an exact repro when the missing environment is part of the defect.
+回傳已停止、已移除、已保留或留給人員處理的專案。
 
-Hardware prompts, operating-system permission dialogs, device-only APIs, and unavailable account states may be real blocks.
+清理不得刪除使用者的工作成果。
 
-## Setup check
+<a id="adapter-behavior"></a>
 
-Before enabling the repro automation, run one harmless adapter check:
+## 介面卡行為
 
-1. Bring up the app.
-2. Confirm the stable app marker.
-3. Load one completed feature-map section.
-4. Navigate to that feature through its user path.
-5. Exercise one disposable state through mapped adapter actions.
-6. Inspect the resulting state.
-7. Capture a screenshot.
-8. Record a short clip.
-9. Clean up.
+介面卡必須：
 
-Enable repro work only when all nine steps succeed and no source-channel Slack post is involved.
+- 在重現開始前報告功能。
+- 報告它可以操作哪些功能地圖章節，以及哪些被阻擋。
+- 對基準與修補後的建置使用相同的環境輸入。
+- 將啟動失敗呈現為失敗。
+- 限制重試次數。
+- 將機密資訊排除在記錄與產物之外。
+- 將擷取檔案儲存在儲存庫之外。
+- 支援在兩次重現嘗試之間使用全新或重置的狀態。
+- 除非使用者明確設定了安全的測試動作，否則避免對生產環境進行變更。
+
+<a id="environment-translation"></a>
+
+## 環境轉換
+
+在宣告環境阻擋之前，請在不使用平臺特定名詞的情況下重述缺陷，並詢問是否可以在可用的環境中安全地測試相同的行為。
+
+範例：
+
+- 指定的瀏覽器可能意指任何外部瀏覽器。
+- 指定的鍵盤鍵可能意指已設定的快捷鍵。
+- 指定的遠端主機可能意指延遲或斷線的遠端目標。
+
+僅當轉換後的嘗試測試的是相同的底層行為時，才使用轉換後的嘗試。將其標記為轉換後的證據。如果缺失的環境是缺陷的一部分，請勿將其稱為精確重現。
+
+硬體提示、作業系統許可權對話方塊、僅限裝置的 API 以及無法使用的帳戶狀態可能是真實的阻擋。
+
+<a id="setup-check"></a>
+
+## 設定檢查
+
+在啟用重現自動化之前，執行一次無害的介面卡檢查：
+
+1. 啟動應用程式。
+2. 確認穩定的應用程式標記。
+3. 載入一個已完成的功能地圖章節。
+4. 透過其使用者路徑導覽至該功能。
+5. 透過已對映的介面卡動作執行一個可拋棄的狀態。
+6. 檢查產生的狀態。
+7. 擷取截圖。
+8. 錄製一段短影片。
+9. 清理。
+
+僅當所有九個步驟都成功且未涉及來源通道的 Slack 貼文時，才啟用重現工作。

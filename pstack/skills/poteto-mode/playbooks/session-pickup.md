@@ -1,11 +1,13 @@
-### Session pickup
+<a id="session-pickup"></a>
 
-**You own the resume point. Read the prior trail, don't redo it.**
+### 會話接續
 
-1. Locate the prior trail. A local transcript under the active workspace's `agent-transcripts/` directory (the system prompt names the path. Do not glob across `~/.cursor/projects/*/`, that crosses workspace boundaries and reads private chats from unrelated projects), a cloud-agent URL, or a pushed branch. Read the metadata overview and last messages first, then scan back for the decision points. Parse a long transcript in a subagent and keep the reduced timeline in the main thread (the **principle-guard-the-context-window** skill). Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section.
-2. Reconstruct operational state. The branch and worktree, what already landed (`git log`, `git diff` against the base), the open todos, the decisions made. The prior trail is authoritative input. Resist the bias to re-derive it.
-3. Diff done vs pending. Compare what shipped against what was planned, name the resume point, do not re-run the prior repro or redo completed work. A "let me verify from scratch" pass means you're treating the trail as untrustworthy when it's authoritative.
-4. Route the remaining work to the matching playbook and pick the verdict: continue the execution, ship a finished recommendation, ratify or override a prior conclusion, or postmortem a failed run. The pickup playbook ends here. The routed playbook owns the rest.
-5. Verify the inherited claims against the original goal on the real artifact (the **principle-prove-it-works** skill). A passing prior self-report is not the proof.
+**您擁有簡歷要點。閱讀先前軌跡，不要重做它。**
 
-**Reply:** where the prior agent stopped, what you inherited vs redid (ideally nothing redone), the resume point, and the outcome.
+1. 定位先前軌跡。在活動工作區的 `agent-transcripts/` 目錄下的本地轉錄（系統提示命名路徑。不要跨 `~/.cursor/projects/*/` 搜尋，這會跨越工作區邊界並讀取無關專案的私人聊天）、雲代理 URL 或推送的分支。首先閱讀後設資料概覽和最後訊息，然後回溯決策點。在子代理中解析長轉錄，並在主執行緒中保留縮減的時間線（**原則-守護上下文視窗**技能）。根據子代理章節，為每個子代理選擇推理級別和快速或標準速度以適應任務。
+2. 重建操作狀態。分支和工作樹，已落地的內容（`git log`、`git diff` 相對於基線），未完成的待辦事項，做出的決策。先前軌跡是權威輸入。抵制重新推導它的偏見。
+3. 區分已完成與待辦。對比已交付與計劃的內容，命名接續點，不要重新執行先前重現或重做已完成的工作。"讓我從頭驗證"的步驟意味著您將軌跡視為不可信任，而它是權威的。
+4. 將剩餘工作路由到匹配的劇本並選擇結論：繼續執行、交付完成的建議、批准或推翻先前結論，或對失敗執行進行事後分析。接續劇本在此結束。路由劇本負責其餘部分。
+5. 驗證繼承的宣告與原始目標在真實工件上（**原則-證明它工作**技能）。先前透過的自我報告不是證明。
+
+**回覆：**先前代理停止的位置，您繼承與重做的內容（理想情況下沒有重做），接續點，以及結果。

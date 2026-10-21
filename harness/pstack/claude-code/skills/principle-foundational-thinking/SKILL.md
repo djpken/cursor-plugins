@@ -1,21 +1,23 @@
 ---
 name: principle-foundational-thinking
-description: "Apply before writing logic: choosing core types and data structures, sequencing scaffold-vs-feature work, asking what concurrent actors share. Get the data structures right so downstream code becomes obvious."
+description: "在寫邏輯之前先應用：選擇核心型別與資料結構、安排骨架與功能工作的順序、詢問哪些並行actor會共享。先讓資料結構正確，讓後續的程式碼變得明確。"
 disable-model-invocation: true
 ---
 
-# Foundational Thinking
+<a id="foundational-thinking"></a>
 
-**Structural decisions** protect option value. **Code-level decisions** protect simplicity.
+# 基礎思考
 
-**Data structures first.** Get the data shape right before writing logic. Define core types early, trace every access pattern, and choose structures that match the dominant paths.
+**結構性決策**保護選項價值。**程式碼層級決策**保護簡潔性。
 
-At code level, DRY the structure, not every line. Types and data models should converge. Three similar statements still beat a premature abstraction. Prefer explicit over clever. Test behavior and edge cases, not line counts.
+**資料結構優先。** 在寫邏輯之前先讓資料形態正確。早期定義核心型別，追蹤每個存取模式，並選擇與主要路徑相符的結構。
 
-**Concurrency corollary.** Before sharing state between actors, ask "what happens if another actor modifies this concurrently?" If not "nothing", isolate.
+在程式碼層級，對結構進行DRY，而非每一行。型別與資料模型應趨於一致。三個相似的語句仍勝過過早的抽象。偏好明確勝於巧妙。測試行為與邊界情況，而非行數。
 
-**Scaffold first.** If something helps every later phase, do it first. Ask "does every subsequent phase benefit from this existing?" CI, linting, test infrastructure, and shared types are scaffold. Sequence for option value: setup before features, tests before fixes. Keep commits small and single-purpose.
+**並行推論。** 在共享狀態於actor之間之前，詢問「如果另一個actor同時修改這個會發生什麼？」如果不是「無事」，則隔離。
 
-Each increment should land a coherent abstraction or deepen one that exists. Do not spread a new capability across callers as special-case coordination.
+**骨架優先。** 如果某事物對每個後續階段都有幫助，先做它。詢問「每個後續階段是否都受益於此存在？」CI、linting、測試基礎設施與共享型別是骨架。按選項價值排序：設定先於功能，測試先於修正。保持commit小而單一目的。
 
-Subtraction comes before scaffolding. Remove dead code first, then lay foundations.
+每個增量應落地一個一致的抽象或深化一個已有的抽象。不要將新能力分散到呼叫者作為特殊案例協調。
+
+減除先於骨架。先移除死程式碼，然後鋪設基礎。

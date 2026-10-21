@@ -1,16 +1,18 @@
 # Google Docs
 
-Cursor plugin that connects agents to [Google Docs](https://docs.google.com) through Cursor's remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Cursor 的遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Google Docs](https://docs.google.com)。
 
-Read document structure and text, create documents, insert and replace text, delete content ranges, and apply paragraph styles.
+讀取檔案結構與文字、建立檔案、插入與取代文字、刪除內容範圍，並套用段落樣式。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Google Docs**.
-3. Click **Install**, then complete the Google sign-in prompt.
+## 安裝
 
-Or run `/add-plugin google-docs` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Google Docs**。
+3. 點選 **安裝**，然後完成 Google 登入提示。
+
+或在聊天中執行 `/add-plugin google-docs`。
 
 ## MCP
 
@@ -25,19 +27,25 @@ Or run `/add-plugin google-docs` in chat.
 }
 ```
 
-Auth is OAuth 2.0 against Google. Cursor prompts for Google sign-in when the plugin connects.
+驗證採用 OAuth 2.0 對 Google 進行。Cursor 會在外掛連線時提示 Google 登入。
 
-## Skill
+<a id="skill"></a>
 
-The bundled `google-docs` skill teaches agents document-authoring conventions: the index contract for safe edits, character and paragraph styling, lists, tables, and images.
+## 技能
 
-## Docs
+隨附的 `google-docs` 技能會教導代理檔案撰寫慣例：安全編輯的索引契約、字元與段落樣式、列表、表格與圖片。
 
-- Google Docs API: https://developers.google.com/workspace/docs/api/reference/rest
-- Google Workspace overview: https://developers.google.com/workspace
+<a id="docs"></a>
 
-Logo is the official Google Docs product icon, placed on a white tile with padding so it reads well in the Cursor UI.
+## 檔案
 
-## License
+- Google Docs API：https://developers.google.com/workspace/docs/api/reference/rest
+- Google Workspace 概覽：https://developers.google.com/workspace
+
+標誌為官方 Google Docs 產品圖示，放置在白色底板上並留有邊距，以便在 Cursor 介面中清晰呈現。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

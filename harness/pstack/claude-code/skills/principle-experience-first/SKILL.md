@@ -1,19 +1,21 @@
 ---
 name: principle-experience-first
-description: "Apply when product, UX, or feature-scope tradeoffs come up. Choose user delight over implementation convenience; ship fewer polished features over more rough ones."
+description: "在產品、UX 或功能範圍的取捨出現時應用此原則。選擇使用者滿意度而非實現便利性；推出較少但精緻的功能，而非更多粗糙的功能。"
 disable-model-invocation: true
 ---
 
-# Experience First
+<a id="experience-first"></a>
 
-When implementation convenience conflicts with user delight, choose delight.
+# 體驗優先
 
-- Every feature, control, and option must be justified
-- Ship less, ship better (polished experience with three features beats rough one with ten)
-- Prototype before committing (design decisions are cheaper in throwaway HTML than production code)
-- Get the details right (transitions, alignment, spacing, feedback, error states)
-- Tighten the core loop (every feature should serve the central workflow or get out of the way)
+當實現便利性與使用者滿意度衝突時，選擇滿意度。
 
-The user is whoever consumes the work. For a UI that is the end user. For a library or an internal API it is the colleague who imports it. The engineer who maintains the code next is a user too. Weigh their experience the same way, and explain impact from their perspective.
+- 每個功能、控制項和選項都必須有其理由
+- 推出較少但更好的產品（三個精緻功能勝過十個粗糙功能）
+- 先做原型再投入（設計決策在可拋棄的 HTML 中比在正式程式碼中更便宜）
+- 細節正確（轉場、對齊、間距、反饋、錯誤狀態）
+- 強化核心迴圈（每個功能應服務核心流程，或避免干擾）
 
-Foundations should serve the experience. Foundational thinking governs the *sequence* of work. This principle governs the *target*.
+使用者是消費該成果的人。對於 UI，使用者是終端使用者。對於庫或內部 API，使用者是匯入它的同事。接下來維護程式碼的工程師也是使用者。以同樣方式衡量他們的體驗，並從他們的角度解釋影響。
+
+基礎應服務體驗。基礎思考支配工作的*順序*。此原則支配*目標*。

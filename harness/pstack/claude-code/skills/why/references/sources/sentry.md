@@ -1,66 +1,72 @@
-# Sentry Error History
+<a id="sentry-error-history"></a>
 
-## How to search it
+# Sentry 錯誤歷史
 
-Use the Sentry MCP.
+<a id="how-to-search-it"></a>
 
-1. **Orient.** If you don't know the project slug and organization:
+## 如何搜尋
+
+使用 Sentry MCP。
+
+1. **定位。** 如果您不知道專案 slug 和組織：
 
    ```
    find_organizations
    find_projects
    ```
 
-2. **Search for issues related to the target.**
+2. **搜尋與目標相關的問題。**
 
    ```
    search_issues (natural language, e.g., "errors in PaymentService timeout", "unhandled exceptions in uploadFile")
    ```
 
-   Build queries from the exception class names the target handles, its function or class name, the error message strings it checks for, and its file path.
+   從目標處理的例外類別名稱、其函式或類別名稱、其檢查的錯誤訊息字串，以及其檔案路徑來建立查詢。
 
-3. **Narrow by release and time window.**
+3. **以發布版本和時間範圍縮小範圍。**
 
    ```
    search_issue_events (filter by release, time, environment, trace ID, tags)
    get_issue_tag_values (for an issue, see distribution across versions, users, environments)
    ```
 
-   For a suspected issue, check **first seen** and **last seen** (does the stop line up with the target's ship date?), the **affected releases** (which saw it, and which was the fix?), and the **frequency trajectory** (did it spike, then get resolved?).
+   對於疑似問題，檢查**首次出現**和**最後出現**（停止時間是否與目標的發布日期吻合？）、**受影響的發布版本**（哪些版本出現此問題，哪個版本是修正？），以及**頻率趨勢**（是否先激增，然後解決？）。
 
-4. **Pull the full event for context.**
+4. **取得完整事件以獲得上下文。**
 
    ```
    get_sentry_resource (pass a Sentry URL or type+ID)
    ```
 
-   Does the stack trace pass through the target code? Do the tags and breadcrumbs match the conditions the target defends against?
+   堆疊追蹤是否經過目標程式碼？標籤和 breadcrumbs 是否符合目標防禦的條件？
 
-5. **Check releases that landed near the target.**
+5. **檢查在目標附近發布的版本。**
 
    ```
    find_releases (around the commit date of the target)
    ```
 
-   Cross-reference release version with the PR's merge date.
+   將發布版本與 PR 的合併日期交叉參考。
 
-6. **Use Seer sparingly.**
+6. **謹慎使用 Seer。**
 
    ```
    analyze_issue_with_seer
    ```
 
-   Seer's AI root-cause analyses are a hypothesis generator. Treat them as inference, not authoritative. The actual events and stack traces are the primary evidence.
+   Seer 的 AI 根因分析是假說生成器。將其視為推論，而非權威。實際事件和堆疊追蹤是主要證據。
 
-## What to return
+<a id="what-to-return"></a>
 
-For each relevant issue:
-- Issue ID and title
-- Project and organization
-- First seen / last seen timestamps
-- Event count (and sampling rate if known)
-- Affected releases
-- A representative stack trace snippet showing relevance to the target (verbatim excerpt, not summary)
-- First/last-seen correlation with the target's ship date
-- Link to the issue
-- Any author comments or resolution notes
+## 回傳內容
+
+對於每個相關問題：
+- 問題 ID 和標題
+- 專案和組織
+- 首次出現 / 最後出現時間戳
+- 事件數量（若已知則包含抽樣率）
+- 受影響的發布版本
+- 顯示與目標相關性的代表性堆疊追蹤片段（逐字摘錄，而非摘要）
+- 首次/最後出現與目標發布日期的相關性
+- 問題連結
+- 任何作者評論或解決說明

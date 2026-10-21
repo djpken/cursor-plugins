@@ -1,60 +1,70 @@
 ---
 name: maintain-formal-verification-skill
-description: "Bring a project's formal verification back in line with the code after the code changes: find the commits that touched verified code, update the model, harness, or properties to describe the code as it is now, rerun, and say whether each failure is drift in the verification or a bug in the code. Use for /maintain-formal-verification-skill, \"is the model still true to the code\", or after merges and refactors that touched verified code without rechecking it."
+description: "在程式碼變動後，將專案的正式驗證重新與程式碼保持一致：找出影響已驗證程式碼的提交，更新模型、測試環境或屬性以描述目前的程式碼，重新執行，並判斷每個失敗是驗證的偏差還是程式碼的錯誤。適用於 /maintain-formal-verification-skill、\\\"模型是否仍符合程式碼\\\"，或在合併與重構後影響已驗證程式碼而未重新檢查的情況。"
 disable-model-invocation: true
 ---
 
-# Maintain a formal verification skill
+<a id="maintain-a-formal-verification-skill"></a>
+
+# 維護正式驗證技能
 
 In Claude Code, read [the Claude Code adapter](../../docs/harness/claude-code.md) once per session before you follow this skill. It maps the Cursor names in pstack skills to Claude Code.
 
-A formal check proves a property of what it describes. When the code changes and the verification does not, the check can keep passing while it describes code that no longer exists. That pass is the dangerous case, because it looks like a proof. This skill is the upkeep loop for a verify skill that `/create-formal-verification-skill` generated, or for any project-local skill that runs a model checker, prover, or code-level verifier against named code. The project-local skill handles a change that an agent makes while it uses that skill. This skill handles the changes that skipped it: merges, edits made without the skill, and drift that builds up across many commits.
+正式檢查證明其所描述內容的屬性。當程式碼變動而驗證未更新時，檢查可能持續透過，卻描述已不存在之程式碼。這種透過是危險情況，因為它看起來像是證明。此技能是 verify 技能的維護迴圈，適用於 `/create-formal-verification-skill` 產出的技能，或任何專案內技能執行模型檢查器、證明器或程式碼層級驗證器對指定程式碼。專案內技能處理使用者使用該技能時所做的變動。此技能處理未使用該技能的變動：合併、未使用技能所做的編輯，以及跨多個提交累積的偏差。
 
-## Outcomes
+<a id="outcomes"></a>
 
-Give each check one outcome, and say which:
+## 結果
 
-- **in sync**: no change since the last sync alters what the check describes, and the check passes.
-- **updated**: the code changed, the verification now describes the new code, and the check passes.
-- **bug**: the verification describes the current code, and the code breaks the property. This is a finding about the code. It is not drift.
-- **blocked**: the check could not be brought back in line or could not run. Say exactly why.
+每個檢查給一個結果，並說明是哪一個：
 
-A check can be both updated and bug: the update makes the verification describe the code again, and then the property fails on it.
+- **同步**：自上次同步以來，沒有變動改變檢查所描述的內容，且檢查透過。
+- **已更新**：程式碼變動，驗證現在描述新程式碼，且檢查透過。
+- **錯誤**：驗證描述當前程式碼，且程式碼違反屬性。這是關於程式碼的發現，不是偏差。
+- **受阻**：檢查無法重新同步或無法執行。明確說明原因。
 
-## Edit scope
+一個檢查可以同時是已更新和錯誤：更新使驗證再次描述程式碼，然後屬性在該程式碼上失敗。
 
-Edit only the verification: models, harnesses, property files, and the verify skill itself. Never edit product code during a run, unless the user asks you to. When a property fails on the current code, do not weaken the property or the model to make it pass. Report the failure.
+<a id="edit-scope"></a>
 
-## Pass
+## 編輯範圍
 
-1. **Find the checks.** A verify skill has no fixed name, so find it by what it does: a project skill that runs a model checker, a prover, or another verifier against named code. Read each one you find, or the one the user named. For each check, collect the property, the code it covers, the bounds and assumptions, the command that runs it, and the commit where it was last confirmed to describe the code. If no verify skill exists, stop and point at `/create-formal-verification-skill`. If the skill does not record a sync commit, use the last commit that changed the verification files, and say that you did.
+僅編輯驗證：模型、測試環境、屬性檔案和 verify 技能本身。執行期間絕不編輯產品程式碼，除非使用者要求。當屬性在當前程式碼上失敗時，不要削弱屬性或模型使其透過。報告失敗。
 
-2. **Run it as it is.** Run each check once before you change anything, and record the result. A pass here does not tell you that the code is correct. It tells you that the old description still holds. A failure here can be drift or a bug. Do not decide which until step 5.
+<a id="pass"></a>
 
-3. **Read every change to covered code.** Diff the covered files from the sync commit to the current commit, and read each commit message. Also look for code that moved: a covered function that is renamed, split, or moved to another file is still covered code. Also look for new code that touches the state that a check guards, such as a new function that writes the same fields. For each change, decide which of these it is:
-   - **No effect.** The change does not alter anything the verification describes, such as formatting, comments, or code paths that the verification does not cover. Check this against the model or harness, not against the commit message.
-   - **The verification no longer describes the code.** A step that was one indivisible action is now two, a branch was added or removed, a check moved, a new path reaches the guarded state, or a value now has a different range. The model or harness must change.
-   - **The promise changed on purpose.** The change alters what the code promises, and evidence in the change says that this is intended: the doc comment, the tests, the changelog, or the commit message. The property must change, and you must cite that evidence.
-   - **The promise may be broken.** The code changed, and no evidence says that the promise changed. Treat a failure that follows as a bug candidate.
+## 流程
 
-4. **Update from the code, not from the result.** Change the model or harness so that each changed part again points to code that a reviewer can open, and keep one indivisible step in the code as one step in the verification. Write the update from the code before you rerun, and do not shape it by what makes the check pass. Change a property only for a promise that changed on purpose. Write down the old wording, the new wording, and the evidence. Keep the bounds unless the change makes them wrong. If you must reduce a bound, say so in the report.
+1. **找出檢查。** verify 技能沒有固定名稱，因此透過其功能來尋找：專案技能執行模型檢查器、證明器或其他驗證器對指定程式碼。閱讀每個找到的技能，或使用者指定的技能。對每個檢查，收集屬性、其涵蓋的程式碼、界限與假設、執行命令，以及上次確認描述程式碼的提交。若沒有 verify 技能，停止並指向 `/create-formal-verification-skill`。若技能未記錄同步提交，使用最後一次變動驗證檔案的提交，並說明你做了此事。
 
-5. **Rerun and judge each result.**
-   - **Pass:** the check can now pass on a description that has lost the ability to fail. Break the new code the way the property guards against, such as removing a new check or reordering a new step, and confirm that the check catches it. Then drop the break.
-   - **Fail:** replay the counterexample against the real code, step by step. If a step cannot happen in the code, the verification is wrong. Fix the verification, and say what was wrong. If every step can happen, it is a bug. Name the commit that introduced it, tell the counterexample as a sequence of steps in the code's own words, and state the harm in one sentence. If a cheap test or reproduction against the real code shows the bug, add it to the report as evidence. Do not commit it to the product code.
+2. **以現狀執行。** 在變動任何東西之前，執行每個檢查一次，並記錄結果。此處的透過不代表程式碼正確，而是舊描述仍成立。此處的失敗可能是偏差或錯誤，直到步驟 5 才決定。
 
-6. **Update the verify skill.** Update the code that each check covers, the commands, the bounds, the assumptions, and the sync commit. Set the sync commit to the commit that you checked. Do not move the sync commit for a blocked check, and say so in the report. Then follow the verify skill once as the next agent would, so that you know its steps still run.
+3. **閱讀涵蓋程式碼的每個變動。** 從同步提交到當前提交，對涵蓋檔案進行差異，並閱讀每個提交訊息。也尋找移動的程式碼：被重新命名、拆分或移至其他檔案的涵蓋函式仍是涵蓋程式碼。也尋找新程式碼影響檢查保護的狀態，例如新函式寫入相同欄位。對每個變動，判斷屬於以下哪類：
+   - **無影響。** 變動不改變驗證描述的任何內容，例如格式化、評論或驗證未涵蓋的程式碼路徑。以模型或測試環境檢查，而非提交訊息。
+   - **驗證不再描述程式碼。** 原本一個不可分割動作現在變成兩個，分支新增或移除，檢查移動，新路徑到達保護狀態，或值現在有不同的範圍。模型或測試環境必須變動。
+   - **承諾有意變動。** 變動改變程式碼的承諾，且變動中的證據表明這是有意：文件評論、測試、變更記錄或提交訊息。屬性必須變動，且必須引用該證據。
+   - **承諾可能被破壞。** 程式碼變動，且無證據表明承諾變動。將隨後失敗視為錯誤候選。
 
-## Report
+4. **從程式碼更新，而非從結果。** 變動模型或測試環境，使每個變動部分再次指向審閱者可開啟的程式碼，並保持程式碼中一個不可分割步驟為驗證中一個步驟。從程式碼寫更新後再重新執行，不要以使檢查透過來塑造更新。僅對有意變動的承諾變動屬性。記錄舊措辭、新措辭和證據。保持界限，除非變動使其錯誤。若必須減少界限，在報告中說明。
 
-Tell the user, for each check:
+5. **重新執行並判斷每個結果。**
+   - **透過：** 檢查現在可在失去失敗能力的描述上透過。以屬性保護的方式破壞新程式碼，例如移除新檢查或重新排序新步驟，並確認檢查能捕捉。然後移除破壞。
+   - **失敗：** 對真實程式碼逐步重播反例。若某步驟無法在程式碼中發生，驗證錯誤。修正驗證，並說明錯誤之處。若每個步驟都能發生，這是錯誤。指出引入該錯誤的提交，以程式碼自身語言描述反例為步驟序列，並以一句話說明危害。若對真實程式碼的簡單測試或重現顯示錯誤，將其加入報告作為證據。不要將其提交至產品程式碼。
 
-- the outcome, and the commits that you read;
-- what changed in the verification and why, with a short reason for each change: the code changed shape, or the promise changed on purpose (with the evidence);
-- the rerun result, and the break that you used to show the updated check can still fail;
-- each bug, in plain words: the counterexample as steps in the code's words, the harm, and the commit that introduced it;
-- what the verification still does not cover, including new code that it should cover and does not.
+6. **更新 verify 技能。** 更新每個檢查涵蓋的程式碼、命令、界限、假設和同步提交。設定同步提交為你檢查的提交。對受阻檢查不要移動同步提交，並在報告中說明。然後以下一個使用者方式執行 verify 技能一次，確保其步驟仍可執行。
 
-Say outright which failures were drift in the verification and which were bugs in the code. For a check that passed before you updated it and fails after, say that the old pass was on a stale description.
+<a id="report"></a>
 
-Put the verification updates in a change of their own, separate from any product fix.
+## 報告
+
+對使用者說明每個檢查：
+
+- 結果，以及你閱讀的提交；
+- 驗證中變動的內容與原因，每個變動給簡短理由：程式碼變動形狀，或承諾有意變動（附證據）；
+- 重新執行結果，以及你用來證明更新檢查仍可失敗的破壞；
+- 每個錯誤，以簡單語言：反例為程式碼語言的步驟、危害，以及引入該錯誤的提交；
+- 驗證仍未涵蓋的內容，包括應涵蓋但未涵蓋的新程式碼。
+
+直接說明哪些失敗是驗證中的漂移，哪些是程式碼中的錯誤。對於在更新之前透過、更新之後失敗的檢查，說明舊的透過是基於過時的描述。
+
+將驗證更新放在獨立變更中，與任何產品修正分開。

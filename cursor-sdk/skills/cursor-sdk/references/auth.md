@@ -1,32 +1,40 @@
-# Authentication
+<a id="authentication"></a>
 
-The short version: `export CURSOR_API_KEY=cursor_...` and `Agent.create({ apiKey: process.env.CURSOR_API_KEY! })`. Everything else in this page is what you read when that doesn't work.
+# 驗證
 
-## Key types
+簡短版本：`export CURSOR_API_KEY=cursor_...` 和 `Agent.create({ apiKey: process.env.CURSOR_API_KEY! })`。如果這些方法不起作用，本頁其餘內容就是您需要閱讀的資訊。
 
-The SDK accepts two key kinds; both work for local and cloud.
+<a id="key-types"></a>
+
+## 金鑰型別
+
+SDK 接受兩種金鑰型別；兩者皆適用於本機和雲端。
 
 
-| Key kind                 | Minted at                                                                              | When you'd use it                                                         |
+| 金鑰型別                 | 簽發位置                                                                              | 使用時機                                                         |
 | ------------------------ | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
-| User API key             | [https://cursor.com/dashboard/cloud-agents](https://cursor.com/dashboard/cloud-agents) | Dev tools, personal scripts, running as a specific user                   |
-| Team service-account key | Team Settings → Service accounts                                                       | Shared CI, backend services, anywhere a real person shouldn't own the key |
+| 使用者 API 金鑰             | [https://cursor.com/dashboard/cloud-agents](https://cursor.com/dashboard/cloud-agents) | 開發工具、個人指令碼、以特定使用者身分執行                   |
+| 團隊服務帳戶金鑰 | 團隊設定 → 服務帳戶                                                       | 共用 CI、後端服務、任何不應該由真實人員持有金鑰的地方 |
 
 
-Both sit in the same `apiKey` / `CURSOR_API_KEY` slot — no second-class citizen. The token format is the same; you can't tell them apart by inspection.
+兩者都放在相同的 `apiKey` / `CURSOR_API_KEY` 位置，沒有二等公民之說。Token 格式相同；您無法透過檢查來區分它們。
 
-## How the SDK finds the key
+<a id="how-the-sdk-finds-the-key"></a>
 
-Priority order:
+## SDK 如何找到金鑰
 
-1. `apiKey` passed to the options object (`Agent.create`, `Agent.prompt`, `Agent.resume`, `Agent.get`, etc.)
+優先順序：
+
+1. 傳遞給選項物件的 `apiKey`（`Agent.create`、`Agent.prompt`、`Agent.resume`、`Agent.get` 等）
 2. `process.env.CURSOR_API_KEY`
 
-That's it — there's no config file, no keychain integration in the SDK itself. For shared infrastructure code, **always pass `apiKey` explicitly** rather than relying on the env var, so the credential dependency is obvious at the call site.
+就是這樣，SDK 本身沒有設定檔，也沒有金鑰串整合。對於共用基礎架構程式碼，**請務必明確傳遞 `apiKey`**，而不是依賴環境變數，這樣憑證依賴關係在呼叫點才會一目瞭然。
 
-Some cloud-only helpers (`Agent.archive`, `Agent.delete`, `Cursor.me`, `Cursor.models.list`, `Cursor.repositories.list`) accept `apiKey` as a named option too. When they don't receive one, they fall back to `CURSOR_API_KEY`.
+某些僅限雲端的輔助函式（`Agent.archive`、`Agent.delete`、`Cursor.me`、`Cursor.models.list`、`Cursor.repositories.list`）也接受 `apiKey` 作為具名選項。當它們未收到該選項時，會回退到 `CURSOR_API_KEY`。
 
-## Minimum viable setup
+<a id="minimum-viable-setup"></a>
+
+## 最小可行設定
 
 ```bash
 export CURSOR_API_KEY="cursor_..."
@@ -42,9 +50,9 @@ const agent = Agent.create({
 });
 ```
 
-The non-null assertion (`!`) is a readable way to say "fail loudly if the env var is missing" — otherwise the SDK will throw an auth error later and the stack trace won't point at the env var.
+非 null 斷言（`!`）是一種可讀的方式，用來表示「如果缺少環境變數就大聲失敗」，否則 SDK 稍後會丟擲驗證錯誤，而堆疊追蹤不會指向環境變數。
 
-A slightly more polite pattern:
+稍微禮貌一點的模式：
 
 ```typescript
 const apiKey = process.env.CURSOR_API_KEY;
@@ -54,66 +62,79 @@ if (!apiKey) {
 }
 ```
 
-## Symptoms of bad auth
+<a id="symptoms-of-bad-auth"></a>
+
+## 驗證失敗的症狀
 
 
-| Symptom                                                  | Diagnosis                                                                      |
+| 症狀                                                  | 診斷                                                                      |
 | -------------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `AuthenticationError: ...` on first `send()`             | Key missing, expired, or malformed (including whitespace)                      |
-| `ConfigurationError: BAD_USER_API_KEY`                   | Key is syntactically invalid                                                   |
-| `AuthenticationError` only on cloud, local works         | Key can't reach the cloud agents surface — could be a permissions issue        |
-| Cloud run errors with `ERROR_GITHUB_NO_USER_CREDENTIALS` | Caller doesn't have a GitHub connection to the target repo                     |
-| Works locally, 401s in CI                                | Env var isn't making it into the CI job (quoting, secret scoping, scope, etc.) |
-| Intermittent 401s                                        | Almost always a key rotation issue or two conflicting `CURSOR_API_KEY` values  |
+| 首次 `send()` 時出現 `AuthenticationError: ...`             | 金鑰缺失、過期或格式錯誤（包括空白字元）                      |
+| `ConfigurationError: BAD_USER_API_KEY`                   | 金鑰在語法上無效                                                   |
+| 僅在雲端出現 `AuthenticationError`，本機正常         | 金鑰無法存取雲端代理介面，可能是許可權問題        |
+| 雲端執行錯誤，出現 `ERROR_GITHUB_NO_USER_CREDENTIALS` | 呼叫者沒有與目標儲存庫的 GitHub 連線                     |
+| 本機正常，CI 中出現 401                                | 環境變數未進入 CI 工作（引號、秘密範圍、作用域等） |
+| 間歇性 401                                        | 幾乎總是金鑰輪換問題，或兩個衝突的 `CURSOR_API_KEY` 值  |
 
 
-### `ERROR_GITHUB_NO_USER_CREDENTIALS` is not a code bug
+<a id="error_github_no_user_credentials-is-not-a-code-bug"></a>
 
-Cloud runs clone the target repo using the caller's GitHub credentials. If the user behind `CURSOR_API_KEY` has never connected GitHub in the Cursor dashboard, the cloud agent can't access the repo and the run fails immediately. Fix: caller links GitHub in the dashboard. No code change.
+### `ERROR_GITHUB_NO_USER_CREDENTIALS` 不是程式碼錯誤
 
-For service-account keys, the service account needs GitHub access configured just like a user would.
+雲端執行會使用呼叫者的 GitHub 憑證來複製目標儲存庫。如果 `CURSOR_API_KEY` 後方的使用者從未在 Cursor 儀錶板中連線 GitHub，雲端代理無法存取儲存庫，執行會立即失敗。解決方法：呼叫者在儀錶板中連結 GitHub。無需變更程式碼。
 
-## Rotating keys
+對於服務帳戶金鑰，服務帳戶需要像使用者一樣設定 GitHub 存取許可權。
 
-- Rotate on a schedule for production workloads; don't bake a key into an image.
-- When a key leaks, revoke in the dashboard first, then mint a new one. The SDK picks up new env values on next process start.
-- Prefer per-environment keys (staging, prod) over one global key so revocations are scoped.
+<a id="rotating-keys"></a>
 
-## Multiple keys in one process
+## 輪換金鑰
 
-Totally supported — each `Agent.create` / `Agent.prompt` call is independent. Pass `apiKey` explicitly so you don't accidentally fall back to an env var the caller wasn't thinking about:
+- 對於生產工作負載，請定期輪換金鑰；不要將金鑰嵌入映像檔中。
+- 當金鑰洩漏時，請先在儀錶板中撤銷，然後簽發新的金鑰。SDK 會在下一個程式啟動時讀取新的環境值。
+- 建議使用每個環境的金鑰（staging、prod），而不是單一全域金鑰，以便撤銷範圍明確。
+
+<a id="multiple-keys-in-one-process"></a>
+
+## 同一個程式中的多個金鑰
+
+完全支援，每個 `Agent.create` / `Agent.prompt` 呼叫都是獨立的。請明確傳遞 `apiKey`，以免意外回退到呼叫者未考慮到的環境變數：
 
 ```typescript
 const userAgent  = Agent.create({ apiKey: userKey,  /* ... */ });
 const botAgent   = Agent.create({ apiKey: botKey,   /* ... */ });
 ```
 
-## Local development
+<a id="local-development"></a>
 
-If you're developing integrations and iterating fast, keep your key in a `.env` file that's gitignored and loaded via something like `dotenv`:
+## 本機開發
+
+如果您正在開發整合並快速迭代，請將金鑰放在已 gitignore 的 `.env` 檔案中，並透過類似 `dotenv` 的方式載入：
 
 ```typescript
 import "dotenv/config";
 // Now process.env.CURSOR_API_KEY is populated.
 ```
 
-Don't commit `.env`. The SDK does not read `.env` itself.
+不要提交 `.env`。SDK 本身不會讀取 `.env`。
 
-## CI checklist
+<a id="ci-checklist"></a>
 
-- Put the key in the secrets store, not a workflow file.
-- Scope the secret to the specific job/workflow that needs it.
-- For GitHub Actions, use repo-level or environment-level secrets (environment gives you approval gates too).
-- Print only a key-prefix (first 6 chars) to logs if you need to confirm which key is in use, never the full value.
-- Fail fast if the key is missing — don't let the job run for 10 minutes and 401 at the end.
+## CI 檢查清單
 
-## Service accounts for production integrations
+- 將金鑰放在秘密儲存庫中，而不是工作流檔案中。
+- 將秘密的範圍限定在需要它的特定工作/工作流。
+- 對於 GitHub Actions，請使用儲存庫層級或環境層級的秘密（環境層級還提供核准閘門）。
+- 如果需要確認使用的是哪個金鑰，請僅在紀錄中列印金鑰字首（前 6 個字元），切勿列印完整值。
+- 如果金鑰缺失，請快速失敗，不要讓工作執行 10 分鐘後才在最後出現 401。
 
-For anything that isn't a personal dev script:
+<a id="service-accounts-for-production-integrations"></a>
 
-1. Create a team service account in Team Settings.
-2. Give it only the permissions it needs.
-3. Mint a key for it and store the key in your secrets manager.
-4. If the integration spawns cloud agents, link GitHub for the service account (not the operator's personal account).
-5. Monitor usage against the service account — per-caller attribution is what you lose if everything is running under one key.
+## 用於生產整合的服務帳戶
 
+對於任何不是個人開發指令碼的情況：
+
+1. 在團隊設定中建立團隊服務帳戶。
+2. 只授予它所需的許可權。
+3. 為它簽發金鑰，並將金鑰儲存在您的秘密管理器中。
+4. 如果整合會啟動雲端代理，請為服務帳戶連結 GitHub（而不是操作人員的個人帳戶）。
+5. 監控服務帳戶的使用情況，如果所有操作都在單一金鑰下執行，您將失去按呼叫者歸屬的能力。

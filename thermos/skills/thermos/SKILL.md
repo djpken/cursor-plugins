@@ -1,21 +1,25 @@
 ---
 name: thermos
-description: "Launch both thermo-nuclear review subagents in parallel, then synthesize their findings. Use for thermos, double thermo review, or combined bug/security and code-quality branch audits."
+description: "同時啟動兩個熱核審查子代理，然後綜合他們的發現。適用於熱水瓶、雙熱審查，或結合的漏洞/安全與程式品質分支審查。"
 disable-model-invocation: true
 ---
 
-# Thermos
+<a id="thermos"></a>
 
-Run the two thermo review passes as async background subagents in parallel, then synthesize their results.
+# 熱水瓶
 
-## Workflow
+將兩個熱審查流程作為非同步背景子代理並行執行，然後綜合他們的結果。
 
-1. Determine the review scope from the user request, PR, current branch, or relevant changed files.
-2. Gather the diff and any file/context excerpts needed for reviewers to evaluate the change without guessing.
-3. Launch both subagents in the same message with `run_in_background: true`:
-   - `subagent_type: "thermo-nuclear-review-subagent"` for bugs, breakages, security, devex regressions, feature-flag leaks, and other branch-audit risks.
-   - `subagent_type: "thermo-nuclear-code-quality-review-subagent"` for maintainability, structure, file-size growth, spaghetti, abstractions, and codebase-health risks.
-4. Pass each subagent the same scoped diff/file context and ask it to return prioritized findings with file references and evidence.
-5. After both finish, synthesize the results with findings first, deduplicated across reviewers. Weight overlapping findings more heavily, resolve disagreements with your own judgment, and keep summaries brief.
+<a id="workflow"></a>
 
-If individual background summaries are already visible to the user, do not restate them wholesale. Surface the unified verdict, the highest-signal findings, and any remaining uncertainty.
+## 工作流程
+
+1. 從使用者請求、PR、當前分支或相關變更檔案中確定審查範圍。
+2. 收集差異和任何檔案/上下文摘錄，讓審查者評估變更時不需猜測。
+3. 在同一訊息中啟動兩個子代理，使用 `run_in_background: true`：
+   - `subagent_type: "thermo-nuclear-review-subagent"` 針對漏洞、破壞、安全性、開發體驗退化、功能標旗洩漏及其他分支審查風險。
+   - `subagent_type: "thermo-nuclear-code-quality-review-subagent"` 針對可維護性、結構、檔案大小增長、義大利麵條式程式碼、抽象及程式碼庫健康風險。
+4. 將相同的範圍差異/檔案上下文傳給每個子代理，並要求返回優先排序的發現，附檔案參考和證據。
+5. 兩者完成後，綜合結果，先列出發現，跨審查者去重。重疊的發現加重權重，用自己的判斷解決分歧，保持摘要簡短。
+
+如果個別背景摘要已可見於使用者，不要重述它們。呈現統一結論、最高訊號發現及任何剩餘不確定性。

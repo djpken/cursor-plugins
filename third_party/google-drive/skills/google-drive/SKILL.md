@@ -1,97 +1,115 @@
 ---
 name: google-drive
-description: Work with Google Drive through its MCP tools - search, read, create, organize, share, comment, and export files. Use when creating files in specific folders, moving or renaming, converting Markdown/CSV into Docs/Sheets, managing comments, or exporting a rendered PDF.
+description: "透過其 MCP 工具與 Google Drive 協作：搜尋、讀取、建立、整理、分享、留言及匯出檔案。適用於在特定資料夾中建立檔案、移動或重新命名、將 Markdown/CSV 轉換為 Docs/Sheets、管理留言，或匯出渲染的 PDF。"
 ---
 
-# Google Drive files
+<a id="google-drive-files"></a>
 
-## Ids come from search, never guesses
+# Google Drive 檔案
 
-Every tool takes Drive file ids. Get them from `search` (or
-`list_folder` for a known folder,
-`list_recent_files` for "what was I just working on"), or from
-the id in a URL the user pasted. `exact_name` beats `query` for a known
-filename; add `mime_type_filter` to cut noise. Never invent an id or reuse
-one from a stale conversation - re-search first.
+<a id="ids-come-from-search-never-guesses"></a>
 
-## Folder targeting
+## ID 來自搜尋，絕不臆測
 
-- `create_folder` takes `parent_folder_id`; without it the
-  folder lands in My Drive root. When the user names a destination folder,
-  resolve its id and pass it - a file created in root when a folder was
-  specified is a wrong result even if the content is perfect.
-- `create_file` also takes `parent_folder_id`, so create files
-  directly where they belong instead of creating then moving.
-- The Docs/Sheets/Slides providers' own create tools CANNOT target a folder
-  (their APIs have no parent parameter). When placement matters, either
-  create the artifact there with `create_file` (Markdown to
-  Doc, CSV to Sheet), or create it and then `move_or_rename`
-  with `destination_folder_id`.
-- `move_or_rename` does either or both in one call; renaming
-  does not change the id.
-- `update_file` is the same rename/move with the hosted Drive tool's
-  argument names (`fileId`; `title` renames, `parentId` moves by replacing
-  the current parent); it exists on both the translator and hosted
-  surfaces, so prefer it in guidance that must work on either.
-- Grant limits: this app's grant is `drive.file`, so moving into or writing
-  files/folders this app never created (and the user never picked) can 403.
-  That 403 is a permission fact, not a transient error; do not retry it.
+每個工具都需要 Drive 檔案 ID。請從 `search`（或
+`list_folder` 取得已知資料夾，
+`list_recent_files` 取得「我最近處理的內容」），或從
+使用者貼上的 URL 中的 ID。`exact_name` 勝過 `query` 對於已知的
+檔案名稱；加入 `mime_type_filter` 來減少雜訊。切勿自行臆造 ID 或重用
+過時對話中的 ID：請先重新搜尋。
 
-## Markdown and CSV conversion
+<a id="folder-targeting"></a>
 
-`create_file` with `target_mime_type:
-application/vnd.google-apps.document` converts Markdown (headings, lists,
-tables) into a real Google Doc in one call; `...spreadsheet` converts CSV
-into a Sheet. This is the fastest correct way to produce a formatted Doc:
-prefer it over create-then-insert when the content is known up front.
-`update_file_content` converts in place the same way.
+## 資料夾定位
 
-## Copying, metadata, and sharing
+- `create_folder` 需要 `parent_folder_id`；若未提供，
+  資料夾會落在 My Drive 根目錄。當使用者指定目的地資料夾，
+  請解析其 ID 並傳入：若指定資料夾卻在根目錄建立檔案，
+  即使內容正確也是錯誤結果。
+- `create_file` 也需要 `parent_folder_id`，因此請直接
+  在正確位置建立檔案，而非建立後再移動。
+- Docs/Sheets/Slides 供應商自身的建立工具無法指定資料夾
+  （其 API 沒有 parent 引數）。當位置很重要時，
+  請使用 `create_file` 直接在目標位置建立檔案（Markdown 轉
+  Doc、CSV 轉 Sheet），或建立後再使用 `move_or_rename`
+  搭配 `destination_folder_id`。
+- `move_or_rename` 可在一次呼叫中執行任一或兩者；重新命名
+  不會改變 ID。
+- `update_file` 是相同的重新命名/移動操作，使用託管 Drive 工具的
+  引數名稱（`fileId`；`title` 重新命名，`parentId` 移動並取代
+  當前 parent）；它同時存在於翻譯器和託管
+  介面，因此在必須適用於任一介面的指引中，請優先使用它。
+- 授許可權制：此應用程式授權為 `drive.file`，因此移動或寫入
+  此應用程式未曾建立（且使用者未曾選取）的檔案/資料夾可能導致 403。
+  該 403 是許可權事實，而非暫時錯誤；請勿重試。
 
-- `copy_file` duplicates a file (optionally into a folder) -
-  the right way to instantiate a template without touching the original.
-- `get_file_metadata` returns the full record (mime type,
-  parents, size, owners, modified time); use it to confirm a move landed.
-- `get_file_permissions` lists who has access;
-  `share_file` grants a role to an email. Share only when the
-  user asked; report the link rather than widening access speculatively.
-- `download_file` returns the raw bytes base64-encoded for
-  non-Google files (images, PDFs, plain text).
+<a id="markdown-and-csv-conversion"></a>
 
-## Reading and exporting
+## Markdown 與 CSV 轉換
 
-- `read_file` returns text: Docs as Markdown, Sheets as CSV per
-  tab, Slides as plain text. Use it to verify content after writes.
-- `export_file` returns rendered bytes base64-encoded: `pdf`
-  for Docs/Sheets/Slides (Sheets PDF renders every tab, charts included),
-  `png`/`svg` for Drawings, plus office formats (docx/xlsx/pptx). Use PDF
-  when the user wants to see the final look; exports cap at 10 MB.
-- For one slide as PNG use the google-slides `get_slide_thumbnail` tool, not
-  Drive export.
+`create_file` 搭配 `target_mime_type:
+application/vnd.google-apps.document` 可在一次呼叫中將 Markdown（標題、列表、
+表格）轉換為真正的 Google Doc；`...spreadsheet` 將 CSV 轉換
+為 Sheet。這是產生格式化 Doc 的最快正確方式：
+當內容事先已知時，請優先使用此方式而非建立後插入。
+`update_file_content` 以相同方式就地轉換。
 
-## Comments
+<a id="copying-metadata-and-sharing"></a>
 
-Comments live on the Drive file, so one tool set covers Docs, Sheets, and
-Slides alike:
+## 複製、metadata 與分享
 
-- `list_comments` returns each comment's text, quoted document
-  text, resolved state, and replies; it pages, so follow `nextPageToken`
-  before concluding a thread does not exist.
-- `add_comment` adds a file-level comment (no text anchor).
-- `reply_to_comment` replies by comment id, and its
-  `action: "resolve"` (content optional) is the ONLY way to resolve a
-  thread; editing document text near a comment never resolves it. Leave
-  already-resolved threads alone.
+- `copy_file` 複製檔案（可選擇複製到資料夾）：
+  這是在不修改原始檔案的情況下建立模板的正確方式。
+- `get_file_metadata` 返回完整記錄（mime type、
+  parents、size、owners、modified time）；請用它確認移動已完成。
+- `get_file_permissions` 列出誰有存取權；
+  `share_file` 授予角色給電子郵件。僅在
+  使用者要求時分享；請報告連結而非臆測性地擴大存取範圍。
+- `download_file` 返回 base64 編碼的原始 bytes
+  適用於非 Google 檔案（圖片、PDF、純文字）。
 
-## Deleting
+<a id="reading-and-exporting"></a>
 
-`trash_file` is recoverable (~30 days) and works on files and
-folders (a trashed folder takes its contents). Permanent deletion is
-deliberately not available; never promise it.
+## 讀取與匯出
 
-## Verify your work
+- `read_file` 返回文字：Docs 為 Markdown、Sheets 為 CSV 每個
+  tab、Slides 為純文字。請用它驗證寫入後的內容。
+- `export_file` 返回 base64 編碼的渲染 bytes：`pdf`
+  適用於 Docs/Sheets/Slides（Sheets PDF 渲染每個 tab，包含圖表）、
+  `png`/`svg` 適用於 Drawings，加上 office 格式（docx/xlsx/pptx）。當使用者想看到最終外觀時請使用 PDF；匯出上限為 10 MB。
+  當使用者想要檢視最終效果時；匯出上限為 10 MB。
+- 若要將單張投影片作為 PNG，請使用 google-slides 的 `get_slide_thumbnail` 工具，而非
+  留言
 
-After creates and moves, confirm placement with `list_folder`
-on the destination or `get_file_metadata` (check `parents`).
-After content writes, `read_file` is the ground truth for text
-and `export_file` (pdf) for the rendered result.
+<a id="comments"></a>
+
+## 留言位於 Drive 檔案上，因此一套工具即可涵蓋 Docs、Sheets 和
+
+Slides：
+Slides 類似：
+
+- 文字、已解決狀態和回覆；它會分頁，因此請先遵循 `list_comments`
+  文字、已解決狀態和回覆；它會分頁，因此請遵循 `nextPageToken`
+  在判定一個討論串不存在之前。
+- `add_comment` 以留言 ID 回覆，其
+- `reply_to_comment`（內容可省略）是唯一
+  `action: "resolve"`（內容可選）是唯一能解決
+  不要處理已解決的討論串。
+  刪除
+
+<a id="deleting"></a>
+
+## 刪除
+
+`trash_file` 是可恢復的（約 30 天），並適用於檔案和
+刻意不提供；切勿承諾。
+驗證你的工作
+
+<a id="verify-your-work"></a>
+
+## 驗證你的工作
+
+在建立和移動之後，請用 `list_folder` 確認放置位置
+在目的地或 `get_file_metadata`（檢查 `parents`）。
+而 `read_file`（pdf）是渲染結果的真實來源。
+以及 `export_file`（PDF）來檢視渲染結果。

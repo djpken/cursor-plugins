@@ -1,16 +1,18 @@
 ---
 name: principle-separate-before-serializing-shared-state
-description: "Apply when concurrent actors might write to the same file, branch, key, or state object. Eliminate the sharing first; serialize structurally only when one shared writer is a real invariant."
+description: "當並行執行者可能寫入同一檔案、分支、鍵或狀態物件時，適用此規則。先消除共享；僅當單一共享寫入者是真實的不變條件時，才以結構方式進行序列化。"
 disable-model-invocation: true
 ---
 
-# Separate Before Serializing Shared State
+<a id="separate-before-serializing-shared-state"></a>
 
-When concurrent actors might share mutable state, first ask whether they need the same mutable object. If not, eliminate the sharing. When sharing is real, enforce serialization structurally: lockfiles, sequential phases, exclusive ownership. Instructions and conventions are not concurrency control.
+# 先分離共享狀態，再序列化
 
-**Why:** Concurrent writes to shared state create race conditions that are intermittent, hard to reproduce, and expensive to debug.
+當並行執行者可能共享可變狀態時，首先詢問他們是否需要相同的可變物件。如果不是，則消除共享。當共享是真實的，則以結構方式強制序列化：鎖檔案、循序階段、獨佔擁有權。指令與慣例並非並行控制。
 
-**Pattern:**
-1. **Identify shared mutable state** (files both read and write, branches both push to, APIs both define and consume).
-2. **Default: eliminate the shared write target.** Ask: do these actors need one canonical object, or are they publishing independent facts? Give each actor its own owned file, key, branch, or state directory, and merge only at the read/reporting boundary. Two workers writing their own `lastX` field into one `state.json` is still shared mutation. `indexer-state.json` + `metrics-state.json` is not.
-3. **Only when one shared write target is a real invariant, serialize access structurally** (lockfiles, sequential phases, single-writer actor, or atomic compare-and-swap). Treat "we need a lock" as a design smell to check, not as the default answer.
+**原因：** 對共享狀態的並行寫入會產生競態條件，這些條件是間歇性的、難以重現，且修復成本高昂。
+
+**模式：**
+1. **識別共享的可變狀態**（檔案同時讀寫、分支同時推送、API同時定義與消費）。
+2. **預設：消除共享寫入目標。** 詢問：這些執行者需要一個標準物件，還是發布獨立事實？給每個執行者自己的擁有檔案、鍵、分支或狀態資料夾，並僅在讀取或報告邊界進行合併。兩個工作者寫入自己的 `lastX` 欄位到一個 `state.json` 仍然是共享變動。`indexer-state.json` 加上 `metrics-state.json` 則不是。
+3. **僅當單一共享寫入目標是真實的不變條件時，以結構方式序列化存取**（鎖檔案、循序階段、單一寫入者執行者，或原子比較並交換）。將「我們需要鎖」視為需要檢查的設計疑點，而非預設答案。

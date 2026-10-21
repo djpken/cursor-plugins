@@ -1,16 +1,18 @@
 # Todoist
 
-Cursor plugin that connects agents to [Todoist](https://www.todoist.com) through Todoist's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Todoist 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Todoist](https://www.todoist.com)。
 
-Create, find, update, and complete tasks, and manage projects, sections, labels, and due dates in the signed-in Todoist account.
+在已登入的 Todoist 帳戶中，建立、尋找、更新和完成任務，並管理專案、區段、標籤和截止日期。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Todoist**.
-3. Click **Install**, then complete the Todoist sign-in prompt.
+## 安裝
 
-Or run `/add-plugin todoist` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Todoist**。
+3. 點選 **安裝**，然後完成 Todoist 登入提示。
+
+或在聊天中執行 `/add-plugin todoist`。
 
 ## MCP
 
@@ -25,33 +27,41 @@ Or run `/add-plugin todoist` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for Todoist sign-in on the first tool call — there is no API key to configure.
+驗證方式為 OAuth。Cursor 會在第一次工具呼叫時提示 Todoist 登入，不需要設定 API 金鑰。
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-| Category | Capabilities |
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Tasks | Create, update, complete, and reopen tasks, including due dates and reminders |
-| Projects | Manage projects, sections, and labels |
-| Search | `search` and `fetch` tools for finding tasks and pulling their details |
-| Comments | Read and add comments on tasks and projects |
+| 任務 | 建立、更新、完成和重新開啟任務，包括截止日期和提醒 |
+| 專案 | 管理專案、區段和標籤 |
+| 搜尋 | `search` 和 `fetch` 工具，用於尋找任務並取得其詳細資訊 |
+| 留言 | 在任務和專案上讀取和新增留言 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱和結構的來源真相。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Todoist user who authorizes the connection.
-- Doist also publishes an official local server, `@doist/todoist-mcp`, which authenticates with a `TODOIST_API_KEY`. It is worth switching to if you hit session disconnections on the hosted endpoint.
-- No Todoist plan tier is required. The paid-plan requirements in Todoist's help articles apply to the AI client, not to Todoist.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Todoist 使用者身份執行。
+- Doist 也發布了官方本地伺服器 `@doist/todoist-mcp`，使用 `TODOIST_API_KEY` 進行驗證。如果您在託管端點遇到連線斷開的情況，建議改用此伺服器。
+- 不需要任何 Todoist 方案等級。Todoist 說明文章中的付費方案要求適用於 AI 客戶端，而非 Todoist。
 
-- Todoist MCP server: https://github.com/Doist/todoist-mcp
-- Use Todoist MCP: https://www.todoist.com/help/articles/use-chatgpt-with-todoist-mcp-WEeLx9d8h
-- Server URL: https://ai.todoist.net/mcp
+<a id="docs"></a>
 
-Logo is Todoist's official mark, from https://todoist.com.
+## 檔案
 
-## License
+- Todoist MCP 伺服器：https://github.com/Doist/todoist-mcp
+- 使用 Todoist MCP：https://www.todoist.com/help/articles/use-chatgpt-with-todoist-mcp-WEeLx9d8h
+- 伺服器 URL：https://ai.todoist.net/mcp
+
+標誌是 Todoist 的官方標記，來自 https://todoist.com.
+
+<a id="license"></a>
+
+## 授權
 
 MIT

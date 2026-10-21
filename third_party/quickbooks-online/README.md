@@ -1,16 +1,18 @@
 # QuickBooks Online
 
-Cursor plugin that connects agents to [QuickBooks Online](https://quickbooks.intuit.com) — Intuit's cloud accounting product — through Intuit's remote [Model Context Protocol](https://modelcontextprotocol.io/) server, which Cursor credentials for you.
+Cursor 外掛，透過 Intuit 的遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [QuickBooks Online](https://quickbooks.intuit.com)，Intuit 的雲端會計產品，Cursor 會自動處理您的憑證。
 
-Read a company file's accounting data: invoices, bills, expenses, payments, customers and vendors, the chart of accounts, journal entries, and the standard financial reports.
+讀取公司檔案中的會計資料：發票、帳單、費用、付款、客戶與供應商、科目表、日記帳分錄，以及標準財務報表。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **QuickBooks Online**.
-3. Click **Install**, then sign in to Intuit when Cursor prompts you.
+## 安裝
 
-Or run `/add-plugin quickbooks-online` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **QuickBooks Online**。
+3. 點選 **安裝**，然後在 Cursor 提示時登入 Intuit。
+
+或在聊天中執行 `/add-plugin quickbooks-online`。
 
 ## MCP
 
@@ -25,43 +27,53 @@ Or run `/add-plugin quickbooks-online` in chat.
 }
 ```
 
-Intuit hosts the server. Auth is OAuth against Intuit, which Cursor runs when the plugin connects — there is no command to run, and no API key or client secret to paste.
+Intuit 託管伺服器。驗證是針對 Intuit 的 OAuth，Cursor 在外掛連線時執行，沒有需要執行指令，也沒有需要貼上的 API 金鑰或客戶金鑰。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-Nothing to prepare. Cursor owns the OAuth client, so you do not need an Intuit developer account or an app of your own.
+## 連線前
 
-You will be asked to sign in to Intuit and pick a company. Authorization is per company file — connect once per company you want agents to reach, and grant only the ones you intend to expose.
+不需要準備任何事項。Cursor 擁有 OAuth 客戶端，因此您不需要 Intuit 開發者帳戶或自己的應用程式。
 
-## What agents can do
+您會被要求登入 Intuit 並選擇一個公司。授權是針對每個公司檔案，每個您希望代理能訪問的公司都需要連線一次，並僅授予您打算公開的公司。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理能做的事
+
+| 類別 | 功能 |
 | --- | --- |
-| Accounts | Chart of accounts and company information |
-| Contacts | Customers, vendors, and employees |
-| Sales | Invoices, credit memos, and payments received |
-| Purchases | Bills, expenses, purchase orders, and payments made |
-| Banking | Bank transactions and journal entries |
-| Items | Products, services, and tracking categories |
-| Reports | Profit and loss, balance sheet, and cash flow statement |
+| 帳戶 | 科目表與公司資訊 |
+| 聯絡人 | 客戶、供應商與員工 |
+| 銷售 | 發票、信用憑單與已收付款 |
+| 採購 | 帳單、費用、採購訂單與已付付款 |
+| 銀行 | 銀行交易與日記帳分錄 |
+| 專案 | 產品、服務與追蹤類別 |
+| 報表 | 損益表、資產負債表與現金流量表 |
 
-The server is the source of truth for tool names and schemas.
+伺服器是工具名稱與 schema 的來源真相。
 
-## Notes
+<a id="notes"></a>
 
-- Access follows whatever the signed-in Intuit user can see. The connector cannot reach a company file that user has no access to.
-- QuickBooks Online and QuickBooks Desktop are different products. This connector is for QuickBooks Online.
-- Disconnecting is two independent steps: uninstalling the plugin stops Cursor from offering the server, and revoking the connection in Intuit's account settings ends Cursor's access to your data.
+## 注意事項
 
-## Docs
+- 訪問範圍遵循登入的 Intuit 使用者所能看到的內容。聯結器無法訪問該使用者沒有許可權的公司檔案。
+- QuickBooks Online 與 QuickBooks Desktop 是不同的產品。此聯結器適用於 QuickBooks Online。
+- 斷開連線是兩個獨立步驟：解除安裝外掛會停止 Cursor 提供伺服器，而在 Intuit 帳戶設定中撤銷連線會結束 Cursor 對您的資料的訪問。
+
+<a id="docs"></a>
+
+## 文件
 
 - QuickBooks Online: https://quickbooks.intuit.com
 - Intuit Developer: https://developer.intuit.com
 - Model Context Protocol: https://modelcontextprotocol.io
-- Server URL: https://mcp-e2e.quickbooks.intuit.com/mcp
+- 伺服器 URL: https://mcp-e2e.quickbooks.intuit.com/mcp
 
-Logo is QuickBooks' official mark, from `quickbooks.intuit.com`.
+標誌是 QuickBooks 的官方標記，來自 `quickbooks.intuit.com`。
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

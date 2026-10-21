@@ -1,16 +1,18 @@
 # Intercom
 
-Cursor plugin that connects agents to [Intercom](https://www.intercom.com) through Intercom's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Intercom 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Intercom](https://www.intercom.com)。
 
-Search conversations and contacts, look up companies, and list, search, create, or update Help Center articles in the signed-in Intercom workspace.
+搜尋對話和聯絡人、查詢公司，以及在已登入的 Intercom 工作區中列出、搜尋、建立或更新 Help Center 文章。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Intercom**.
-3. Click **Install**, then complete the Intercom sign-in prompt.
+## 安裝
 
-Or run `/add-plugin intercom` in chat.
+1. 開啟 **Cursor Settings → Plugins**。
+2. 搜尋 **Intercom**。
+3. 點選 **Install**，然後完成 Intercom 登入提示。
+
+或在聊天中執行 `/add-plugin intercom`。
 
 ## MCP
 
@@ -25,32 +27,40 @@ Or run `/add-plugin intercom` in chat.
 }
 ```
 
-Auth is OAuth 2.0 against Intercom with Dynamic Client Registration (DCR) and PKCE. Cursor registers itself and prompts for Intercom sign-in when the plugin connects — there is no API key or client ID to configure.
+驗證方式為針對 Intercom 的 OAuth 2.0，使用 Dynamic Client Registration (DCR) 和 PKCE。Cursor 會自行註冊，並在外掛連線時提示 Intercom 登入，不需要設定 API 金鑰或客戶 ID。
 
-## Regions
+<a id="regions"></a>
 
-This plugin points at the US endpoint. Intercom MCP is available for US and EU hosted workspaces; AU is not supported yet.
+## 區域
 
-| Region | Workspace URL | MCP URL |
+此外掛指向美國端點。Intercom MCP 適用於美國和歐洲託管的工作區；澳洲目前尚未支援。
+
+| 區域 | 工作區 URL | MCP URL |
 | --- | --- | --- |
-| US | `app.intercom.com` | `https://mcp.intercom.com/mcp` |
-| EU | `app.eu.intercom.com` | `https://mcp.eu.intercom.com/mcp` |
+| 美國 | `app.intercom.com` | `https://mcp.intercom.com/mcp` |
+| 歐洲 | `app.eu.intercom.com` | `https://mcp.eu.intercom.com/mcp` |
 
-If your workspace is EU-hosted, change the `url` in `mcp.json` to `https://mcp.eu.intercom.com/mcp` after install.
+如果你的工作區為歐洲託管，請在安裝後將 `mcp.json` 中的 `url` 更改為 `https://mcp.eu.intercom.com/mcp`。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Intercom user who authorizes the connection and cannot exceed that user's permissions.
-- Needed Intercom permissions include reading users/companies and conversations, plus read/write articles for Help Center tools.
-- Bearer-token auth is also supported by Intercom's server, but this plugin uses the recommended OAuth flow.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Intercom 使用者身份執行，且不能超出該使用者許可權。
+- 所需的 Intercom 許可權包括讀取使用者/公司和對話，以及 Help Center 工具的讀取/寫入文章許可權。
+- Intercom 伺服器也支援 Bearer-token 驗證，但此外掛使用建議的 OAuth 流程。
 
-- Intercom MCP guide: https://developers.intercom.com/docs/guides/mcp
-- Server URL (US): https://mcp.intercom.com/mcp
+<a id="docs"></a>
 
-Logo is Intercom's brand mark (Simple Icons) on a white tile, using Intercom blue `#1F8FFF`.
+## 檔案
 
-## License
+- Intercom MCP 指南：https://developers.intercom.com/docs/guides/mcp
+- 伺服器 URL（美國）：https://mcp.intercom.com/mcp
+
+標誌為 Intercom 的品牌標記（Simple Icons）位於白色圖塊上，使用 Intercom 藍色 `#1F8FFF`。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

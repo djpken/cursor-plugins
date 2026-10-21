@@ -1,70 +1,84 @@
-# benny automation intent
+<a id="benny-automation-intent"></a>
 
-## what i want to automate
+# benny 自動化意圖
 
-i want two cursor automations that work together in one slack issue channel.
+<a id="what-i-want-to-automate"></a>
 
-### automation 1: triage issue reports
+## 我想要自動化的內容
 
-- trigger: when someone posts a new top-level report in my configured source slack channel, i want this automation to start on that report and keep its original thread coordinates.
-- behavior: i want it to read the thread and attachments, classify the report as a bug or performance issue, feature request, question or feedback, or reroute, and trace the likely owning layer before routing.
-- tracker: i want it to search my configured tracker for duplicates, update a confident duplicate, and create a ticket only for a clear net-new bug.
-- tools: i want slack thread read and reply access, my configured tracker integration, and my optional routing map.
-- outcome: i want exactly one reply in the source thread with a short verdict and `[benny:bug]`, `[benny:performance]`, or `[benny:other]`. a bug or performance marker may include the tracker url.
-- boundary: i never want this automation to post a root message in the source channel.
+我想要兩個 Cursor 自動化流程，它們在同一個 Slack 問題頻道中協同運作。
 
-### automation 2: reproduce and fix confirmed bugs
+<a id="automation-1-triage-issue-reports"></a>
 
-- trigger: i want this automation to start from the same new top-level report, or another supported trigger chosen during setup, then wait for the trusted triage marker in the original thread.
-- gates: i want it to stop when someone clearly owns the fix. if an existing pull request or merged commit may fix the report, i want verification instead of a competing change.
-- behavior: i want it to use my configured control adapter and feature map, reproduce the exact symptom twice through the real ui, and capture screenshots, video, and a read-only state cross-check.
-- fix: i want it to verify existing pull requests without authoring over them. after a confirmed repro, it may attempt one bounded root-cause fix, use tdd when the test is cheap, smoke the blast radius, and open a draft pull request only when before-and-after proof passes.
-- tools: i want slack thread read and reply access, repository and history access, draft pull request creation, my configured tracker, and my control adapter.
-- outcome: i want evidence and a verified result in the source or optional operations threads, plus an optional draft pull request. updates should be concise.
-- boundary: i never want this automation to post a root message in the source channel.
+### 自動化 1：分發問題報告
 
-### shared rules
+- 觸發條件：當有人在設定的來源 Slack 頻道中發布新的頂層報告時，我希望此自動化流程針對該報告啟動，並保留其原始執行緒座標。
+- 行為：我希望它讀取執行緒和附件，將報告分類為錯誤或效能問題、功能請求、問題或回饋，或重新路由，並在路由前追蹤可能的負責層級。
+- 追蹤器：我希望它在設定的追蹤器中搜尋重複專案，更新確定的重複專案，並僅為明確的全新錯誤建立工單。
+- 工具：我需要 Slack 執行緒讀取和回覆存取許可權、設定的追蹤器整合，以及選用的路由地圖。
+- 結果：我希望在來源執行緒中恰好有一則回覆，包含簡短的判定結果以及 `[benny:bug]`、`[benny:performance]` 或 `[benny:other]`。錯誤或效能標記可以包含追蹤器 URL。
+- 邊界：我絕不希望此自動化流程在來源頻道中發布根訊息。
 
-- i want the source channel and root thread coordinates to stay immutable for the whole run.
-- i treat utility and debug bots as evidence, not delegation or fix ownership.
-- i allow subagents to help, but they cannot post to slack or receive slack credentials.
-- i want this entire pack committed at `.cursor/automations/benny/` in the target repository. its `SKILL.md` files are direct automation instructions, not registered plugin skills.
-- i want pstack enabled through the target repository's committed `.cursor/settings.json` only for shared dependencies such as `how`, `why`, `tdd`, `unslop`, and the required principle skills.
-- i want each live automation prompt to read its committed operational file directly. i do not want plugin cache paths, copied excerpts, or slash-skill discovery.
-- i keep user-owned configuration, feature maps, routing maps, and secrets outside `.cursor/automations/benny/` so pack refreshes cannot overwrite them.
-- i want both automations to fail closed when channel coordinates, tracker access, the control adapter, or the feature map are missing or uncertain.
-- i want draft pull requests only. do not merge or deploy.
+<a id="automation-2-reproduce-and-fix-confirmed-bugs"></a>
 
-### my configuration
+### 自動化 2：重現並修復已確認的錯誤
 
-- source slack channel: `<channel>`
-- optional operations channel: `<channel or none>`
-- repository and default branch: `<repo>`, `<branch>`
-- tracker: `<type, team, project, labels, intake status>`
-- routing map: `<path or none>`
-- triage identity: `<slack identity>`
-- control skill: `<configured skill or adapter>`
-- feature map: `<committed same-repo path outside the copied pack, or behavior to paraphrase>`
-- models: `<triage, reproduce, code, media review>`
-- status emoji strings: `<seen, reproducing, reproduced, blocked, fixing, failed, pull request opened>`
-- budgets: `<polling, verdict wait, follow-up, repro, rejection, fix>`
-- optional bot token capability: `<none, file download, or editable operations status>`
+- 觸發條件：我希望此自動化流程從相同的新頂層報告開始，或從設定期間選擇的其他支援觸發條件開始，然後等待原始執行緒中的可信分發標記。
+- 閘門：我希望當有人明確負責修復時停止。如果現有的 pull request 或已合併的 commit 可能修復該報告，我希望進行驗證，而不是進行競爭性的變更。
+- 行為：我希望它使用設定的控制介面卡和功能地圖，透過真實 UI 兩次重現確切的症狀，並擷取螢幕截圖、影片和唯讀狀態交叉檢查。
+- 修復：我希望它驗證現有的 pull request，而不對其進行覆寫。在確認重現後，它可以嘗試一次有邊界的根本原因修復，在測試成本低時使用 TDD，測試影響範圍，並僅在修復前後證明透過時開啟草稿 pull request。
+- 工具：我需要 Slack 執行緒讀取和回覆存取許可權、儲存庫和歷史記錄存取許可權、草稿 pull request 建立功能、設定的追蹤器，以及我的控制介面卡。
+- 結果：我希望在來源或選用的操作執行緒中有證據和驗證結果，外加選用的草稿 pull request。更新應簡潔。
+- 邊界：我絕不希望此自動化流程在來源頻道中發布根訊息。
 
-start from [`configuration.example.yaml`](./templates/configuration.example.yaml) and [`feature-map.example.md`](./skills/reproduce-and-fix-issues/references/feature-map.example.md). copy and fill them outside this pack, for example under `.cursor/benny/`. keep secret values in a secret manager or environment.
+<a id="shared-rules"></a>
 
-## for the agent
+### 共用規則
 
-the human enters setup by pointing cursor at this file. do not look for or invoke a discovered benny slash skill.
+- 我希望來源頻道和根執行緒座標在整個執行期間保持不變。
+- 我將公用程式和除錯機器人視為證據，而非委派或修復所有權。
+- 我允許 subagents 協助，但它們不能發布到 Slack 或接收 Slack 憑證。
+- 我希望整個套件在目標儲存庫中提交於 `.cursor/automations/benny/`。其 `SKILL.md` 檔案是直接的自動化指令，而非已註冊的 plugin skills。
+- 我希望透過目標儲存庫中已提交的 `.cursor/settings.json` 啟用 pstack，僅限於 `how`、`why`、`tdd`、`unslop` 等共用依賴項，以及所需的原則 skills。
+- 我希望每個實時自動化提示直接讀取其已提交的操作性檔案。我不希望使用 plugin 快取路徑、複製的摘要或斜線 skill 發現。
+- 我將使用者擁有的設定、功能地圖、路由地圖和金鑰保留在 `.cursor/automations/benny/` 之外，以便套件更新不會覆蓋它們。
+- 我希望當頻道座標、追蹤器存取許可權、控制介面卡或功能地圖缺失或不確定時，兩個自動化流程都失敗關閉。
+- 我只希望有草稿 pull request。不要合併或部署。
 
-1. ask which repository will run the automations.
-2. treat the directory containing this `FOR_AGENTS.md` as the source pack.
-3. merge the entire source pack into `<target-repository>/.cursor/automations/benny/`.
-4. preserve every destination-only file. never delete unrelated files or overwrite user-owned configuration, feature maps, or routing maps.
-5. when an existing destination file at a source-managed path differs, review the diff and merge without discarding local edits. if ownership is ambiguous, stop and ask before replacing it.
-6. verify that the copied `FOR_AGENTS.md` and `skills/setup-benny/SKILL.md` exist in the target repository.
-7. read and follow `.cursor/automations/benny/skills/setup-benny/SKILL.md` directly from the target repository.
+<a id="my-configuration"></a>
 
-i want you to merge this entry into the target repository's `.cursor/settings.json`:
+### 我的設定
+
+- 來源 Slack 頻道：`<channel>`
+- 選用的操作頻道：`<channel or none>`
+- 儲存庫和預設分支：`<repo>`, `<branch>`
+- 追蹤器：`<type, team, project, labels, intake status>`
+- 路由地圖：`<path or none>`
+- 分發身分：`<slack identity>`
+- 控制 skill：`<configured skill or adapter>`
+- 功能地圖：`<committed same-repo path outside the copied pack, or behavior to paraphrase>`
+- 模型：`<triage, reproduce, code, media review>`
+- 狀態 emoji 字串：`<seen, reproducing, reproduced, blocked, fixing, failed, pull request opened>`
+- 預算：`<polling, verdict wait, follow-up, repro, rejection, fix>`
+- 選用的 bot token 功能：`<none, file download, or editable operations status>`
+
+從 [`configuration.example.yaml`](./templates/configuration.example.yaml) 和 [`feature-map.example.md`](./skills/reproduce-and-fix-issues/references/feature-map.example.md) 開始。在套件外部複製並填寫它們，例如在 `.cursor/benny/` 下。將金鑰值保留在金鑰管理器或環境中。
+
+<a id="for-the-agent"></a>
+
+## 給 agent 的說明
+
+人類透過將 Cursor 指向此檔案來進入設定。不要尋找或呼叫已發現的 benny 斜線 skill。
+
+1. 詢問哪個儲存庫將執行自動化流程。
+2. 將包含此 `FOR_AGENTS.md` 的目錄視為來源套件。
+3. 將整個來源套件合併到 `<target-repository>/.cursor/automations/benny/`。
+4. 保留每個僅存在於目標的檔案。絕不刪除無關檔案或覆蓋使用者擁有的設定、功能地圖或路由地圖。
+5. 當來源管理路徑上的現有目標檔案有差異時，檢視 diff 並合併，而不丟棄本地編輯。如果所有權不明確，停止並詢問後再替換。
+6. 驗證複製的 `FOR_AGENTS.md` 和 `skills/setup-benny/SKILL.md` 是否存在於目標儲存庫中。
+7. 直接從目標儲存庫讀取並遵循 `.cursor/automations/benny/skills/setup-benny/SKILL.md`。
+
+我希望你將此條目合併到目標儲存庫的 `.cursor/settings.json`：
 
 ```json
 {
@@ -74,16 +88,16 @@ i want you to merge this entry into the target repository's `.cursor/settings.js
 }
 ```
 
-preserve every unrelated setting and plugin. preserve comments and valid jsonc syntax when the existing file uses jsonc.
+保留每個無關的設定和 plugin。當現有檔案使用 jsonc 時，保留註解和有效的 jsonc 語法。
 
-i want verification from a fresh agent rooted in the target repository. confirm that pstack's `how`, `why`, `tdd`, `unslop`, and the principle skills used by benny resolve in project scope. do not count skills loaded from the current session or a user-scoped install.
+我希望從根植於目標儲存庫的新 agent 進行驗證。確認 pstack 的 `how`、`why`、`tdd`、`unslop` 以及 benny 使用的原則 skills 在專案範圍內解析。不要計算從目前 session 或使用者範圍安裝中載入的 skills。
 
-if project-scoped plugins are unavailable or any shared dependency does not resolve, stop and explain what failed. do not add `.cursor/automations/benny/skills/` to a plugin manifest or expect its files to appear in the slash-skill list.
+如果專案範圍的 plugins 不可用或任何共用依賴項無法解析，停止並解釋失敗原因。不要將 `.cursor/automations/benny/skills/` 新增到 plugin 清單，也不要預期其檔案出現在斜線 skill 清單中。
 
-tell me that `.cursor/settings.json`, `.cursor/automations/benny/`, and any referenced secret-free configuration must be committed before either automation is enabled. do not create or update an automation until i explicitly ask.
+告訴我 `.cursor/settings.json`、`.cursor/automations/benny/` 以及任何引用的無金鑰設定必須在啟用任何自動化流程之前提交。在我明確要求之前，不要建立或更新自動化流程。
 
-for first-time creation, use built-in `/automate` once for triage and once for repro and fix. complete the draft review, approval, readiness check, and Automations editor handoff for the first automation before starting the second.
+對於首次建立，使用內建的 `/automate` 一次用於分發，一次用於重現和修復。在開始第二個之前，完成第一個自動化流程的草稿審查、核准、就緒檢查和 Automations 編輯器交接。
 
-paraphrase this intent and the finished configuration into each draft. the triage prompt must read and follow `.cursor/automations/benny/skills/triage-issue-reports/SKILL.md`. the repro prompt must read and follow `.cursor/automations/benny/skills/reproduce-and-fix-issues/SKILL.md`. use these repo-relative paths only after `/automate` confirms they are committed in the repository where the automation will run.
+將此意圖和完成的設定改寫到每個草稿中。分發提示必須讀取並遵循 `.cursor/automations/benny/skills/triage-issue-reports/SKILL.md`。重現提示必須讀取並遵循 `.cursor/automations/benny/skills/reproduce-and-fix-issues/SKILL.md`。僅在 `/automate` 確認這些 repo 相對路徑已在自動化流程將執行的儲存庫中提交後，才使用這些路徑。
 
-for existing automations, do not use `/automate` to inspect or update them. validate the configuration, then use the concise field checklist in the copied setup file so i can edit each automation directly in its editor. do not create duplicates.
+對於現有的自動化流程，不要使用 `/automate` 來檢查或更新它們。驗證設定，然後使用複製的設定檔案中的簡潔欄位清單，以便我可以直接在編輯器中編輯每個自動化流程。不要建立重複專案。

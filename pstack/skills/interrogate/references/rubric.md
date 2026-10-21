@@ -1,77 +1,91 @@
-# Review Rubric
+<a id="review-rubric"></a>
 
-Review through whichever lenses are relevant. Not every lens applies to every change.
+# 審查標準
 
-## Correctness
+透過相關的視角進行審查。並非每個視角都適用於每一項變更。
 
-Does the code actually do what the intent says it should?
+<a id="correctness"></a>
 
-- Edge cases: empty inputs, nil/undefined, boundary values, concurrent access
-- Error handling: are errors caught, propagated, or silently swallowed?
-- Off-by-one, type coercion, integer overflow, string encoding
-- State management: race conditions, stale closures, dangling references
-- Do both the happy path and the sad path work?
-- Idempotency: what happens if this operation runs twice, or if a previous run crashed halfway? If the answer is "it depends on what state was left behind," a reconciliation step is missing.
-- Concurrency: if multiple actors can touch the same mutable state (files, branches, shared data), is access serialized structurally (locks, sequential phases, exclusive ownership), or by conventions that won't hold?
+## 正確性
 
-When you find a potential bug, trace the execution path. Don't just flag "this could be nil". Show the call chain that makes it nil.
+程式碼是否確實執行其意圖所描述的行為？
 
-## Root Causes vs. Symptoms
+- 邊界情況：空輸入、nil/undefined、邊界值、並行存取
+- 錯誤處理：錯誤是被捕獲、傳播，還是被靜默吞沒？
+- 差一錯誤、型別強制轉換、整數溢位、字串編碼
+- 狀態管理：競態條件、過期閉包、懸掛參考
+- 正常路徑與異常路徑是否都能正常運作？
+- 冪等性：如果此操作執行兩次，或前一次執行在中途崩潰，會發生什麼情況？如果答案是「取決於剩餘的狀態」，則缺少協調步驟。
+- 並行性：如果多個執行者可以存取相同的可變狀態（檔案、分支、共用資料），存取是否在結構上被序列化（鎖、順序階段、排他擁有權），還是依賴無法維持的慣例？
 
-Is the code fixing the actual problem or papering over a symptom?
+當發現潛在的 bug 時，追蹤執行路徑。不要只標記「這可能是 nil」。展示使其變為 nil 的呼叫鏈。
 
-Answering this often requires looking beyond the changed files. Read the surrounding code (callers, callees, type definitions, sibling modules) and understand the architecture the change lives in. Use the tools available to you (Read, Grep, Glob) to follow the call chain, read the types, and understand why the code exists before judging whether the change addresses the right layer.
+<a id="root-causes-vs-symptoms"></a>
 
-- Guard clauses that mask a deeper invariant violation
-- Retry logic that hides a broken contract
-- Type casts that silence a modeling error
-- A workaround: why is it needed? What would a proper fix look like?
-- A fix in module A that should really be a fix in module B's contract
-- Instructions where structure would be better: if the fix is a comment saying "don't do X" or a convention someone has to remember, ask whether it could instead be a type constraint, a lint rule, or a runtime check that makes the wrong thing impossible
+## 根本原因與症狀
 
-## Structural Integrity
+程式碼是在解決實際問題，還是在掩蓋症狀？
 
-Does the code fit well into the system it's part of?
+回答這個問題通常需要檢視變更檔案以外的內容。閱讀周圍的程式碼（呼叫者、被呼叫者、型別定義、同級模組），並理解該變更所在的架構。使用可用的工具（Read、Grep、Glob）來追蹤呼叫鏈、閱讀型別，並在判斷變更是否針對正確的層級之前，理解程式碼存在的原因。
 
-- Boundary discipline: is validation at system boundaries, or scattered through business logic? Validate data once where it enters the system, then trust it internally.
-- Abstraction level: is the code mixing high-level orchestration with low-level detail?
-- Coupling: does this change introduce dependencies that will make future changes harder?
-- Data model fit: do the data structures match the actual access patterns?
-- Bolted-on vs. integrated: if the new requirement had been known from the start, would the code look like this, or does the change feel patched onto the existing design?
-- Legacy dual-paths: does the change introduce a new API while keeping the old one alive? If there are no external consumers, migrate callers and delete the old path in the same wave. Don't leave compatibility layers that will become permanent.
+- 掩蓋更深層不變數違規的保護子句
+- 隱藏損壞合約的重試邏輯
+- 靜默建模錯誤的型別強制轉換
+- 權宜之計：為什麼需要它？適當的修復看起來會是什麼樣子？
+- 在模組 A 中的修復，實際上應該是模組 B 合約中的修復
+- 結構優於指令：如果修復是一條說「不要做 X」的註解，或是一個某人必須記得的慣例，請考慮是否可以改為型別約束、lint 規則或執行時檢查，使錯誤的事情變得無法發生
 
-Don't penalize simple code for lacking abstraction. Premature abstraction is worse than duplication.
+<a id="structural-integrity"></a>
 
-## Verification
+## 結構完整性
 
-Can you tell that this code works from reading it?
+程式碼是否良好地融入其所屬的系統？
 
-- Are there tests? Do they test behavior or implementation details?
-- Are there assertions/invariants that would catch regressions?
-- If this is a bug fix: is there a test for the bug?
-- If this touches an integration boundary: is the full path tested?
-- Check the real thing, not a proxy. If the code checks liveness via file mtime or cached state instead of reading the actual value, that's a verification gap.
-- For delegated or async work: does the code verify actual output artifacts, or does it trust self-reports and summaries?
+- 邊界紀律：驗證是在系統邊界進行，還是散佈在業務邏輯中？在資料進入系統時驗證一次，然後在內部信任它。
+- 抽象層級：程式碼是否混合了高層級編排與低層級細節？
+- 耦合：此變更是否引入了會使未來變更更困難的依賴關係？
+- 資料模型契合度：資料結構是否與實際的存取模式相符？
+- 附加式 vs. 整合式：如果新需求從一開始就已知，程式碼會長這樣，還是變更感覺像是補丁貼在現有設計上？
+- 遺留雙路徑：變更是否在保留舊 API 的同時引入了新 API？如果沒有外部使用者，請在同一波次中遷移呼叫者並刪除舊路徑。不要留下會變成永久性的相容性層。
 
-## Complexity Budget
+不要因為簡單程式碼缺乏抽象而扣分。過早的抽象比重複更糟。
 
-Is the complexity justified by what the code accomplishes?
+<a id="verification"></a>
 
-- Code that could be simpler without losing correctness or clarity
-- Abstractions that serve only one call site
-- Configuration or parameterization for cases that don't exist yet
-- Dead code, unused imports, vestigial parameters
-- Over-engineering: "just in case" code paths with no current callers
-- Obsolete compatibility paths kept alive for transitional stability that's no longer needed. If the migration is done, delete the scaffolding
-- Does the user experience justify the complexity? Every feature, control, and option should earn its place. Half-finished features are worse than missing ones.
+## **驗證。** 將驗證規模調整至單位規模。當 VERIFY 是單一低成本指令時，worker 執行並報告輸出，協調者抽查收據。專用 verifier 代理（使用與 worker 不同的模型家族）適用於驗證成本高昂、需判斷或高影響範圍的單位。一個 verifier 代理的整個產物僅是重跑一個指令，那是儀式而非驗證。
 
-Simpler is better unless simpler is wrong.
+閱讀程式碼時，你能看出它運作正常嗎？
 
-## Security
+- 是否有測試？它們測試的是行為還是實作細節？
+- 是否有斷言/不變數可以捕捉回歸？
+- 如果這是 bug 修復：是否有針對該 bug 的測試？
+- 如果這涉及整合邊界：是否測試了完整路徑？
+- 檢查真實事物，而非代理。如果程式碼透過檔案 mtime 或快取狀態來檢查存活狀態，而不是讀取實際值，那就是驗證缺口。
+- 對於委派或非同步工作：程式碼是否驗證實際的輸出產物，還是信任自我報告和摘要？
 
-For each security finding, trace the input path through the code and show it.
+<a id="complexity-budget"></a>
 
-- User input flowing to dangerous sinks (SQL, shell, eval, innerHTML) without sanitization
-- Authentication/authorization gaps in new endpoints
-- Secrets in code, logs, or error messages
-- TOCTOU (time-of-check-time-of-use) in security-critical paths
+## 複雜度預算
+
+複雜度是否由程式碼所完成的事項證明其合理性？
+
+- 可以簡化而不失去正確性或清晰度的程式碼
+- 僅服務於單一呼叫點的抽象
+- 針對尚不存在的案例進行設定或引數化
+- 死程式碼、未使用的匯入、殘餘引數
+- 過度設計：沒有目前呼叫者的「以防萬一」程式碼路徑
+- 為不再需要的過渡穩定性而保留的過時相容路徑。如果遷移已完成，請刪除腳手架
+- 使用者體驗是否證明複雜度的合理性？每個功能、控制和選項都應證明其存在的價值。未完成的功能比缺失的功能更糟。
+
+除非簡單是錯誤的，否則簡單更好。
+
+<a id="security"></a>
+
+## 安全性
+
+對於每個安全性發現，追蹤輸入路徑並展示它。
+
+- 使用者輸入未經消毒即流向危險匯流排（SQL、shell、eval、innerHTML）
+- 新端點中的驗證/授權缺口
+- 程式碼、紀錄或錯誤訊息中的機密資訊
+- 安全性關鍵路徑中的 TOCTOU（檢查時與使用時的時間差）

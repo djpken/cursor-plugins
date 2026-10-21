@@ -1,18 +1,20 @@
 # Trello
 
-Cursor plugin that connects agents to [Trello](https://trello.com) through Atlassian's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server for Trello.
+Cursor 外掛，透過 Atlassian 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Trello](https://trello.com)。
 
-Browse and create boards, view and move lists, create, update, move, archive, and complete cards with labels and due dates, manage checklists, capture cards in your Inbox, schedule Planner focus time, and search across your workspace.
+瀏覽和建立看板、檢視和移動列表、建立、更新、移動、封存和完成卡片並設定標籤和截止日期、管理檢查列表、將卡片捕捉到您的收件匣、安排 Planner 專注時間，並在整個工作區中搜尋。
 
-This is Trello's own MCP server and covers Trello data only. It is separate from Cursor's built-in Atlassian server, which covers Jira and Confluence; install both if you use Trello alongside those products.
+這是 Trello 自己的 MCP 伺服器，僅涵蓋 Trello 資料。它與 Cursor 內建的 Atlassian 伺服器（涵蓋 Jira 和 Confluence）是分開的；如果您同時使用 Trello 與這些產品，請安裝兩者。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Trello**.
-3. Click **Install**, then complete the Atlassian sign-in prompt and choose the Trello workspace to authorise.
+## 安裝
 
-Or run `/add-plugin trello` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Trello**。
+3. 點選 **安裝**，然後完成 Atlassian 登入提示並選擇要授權的 Trello 工作區。
+
+或在聊天中執行 `/add-plugin trello`。
 
 ## MCP
 
@@ -27,43 +29,53 @@ Or run `/add-plugin trello` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for Atlassian sign-in when the plugin connects — there is no client ID or API key to configure. Each user signs in with their own Atlassian account, picks one Trello workspace on the consent screen, and approves the Read, Write, and Search permissions the connection may use.
+驗證方式是 OAuth。Cursor 會在外掛連線時提示 Atlassian 登入，因此沒有需要設定的客戶 ID 或 API 金鑰。每個使用者以自己的 Atlassian 帳戶登入，在同意畫面選擇一個 Trello 工作區，並批准連線可能使用的讀取、寫入和搜尋許可權。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need a Trello account on any plan. Each connection is scoped to a single Trello workspace at launch; disconnect and reconnect to switch workspaces or to grant a permission you skipped. Creating Planner focus-time events requires Trello Premium or Enterprise, and Inbox and Planner permissions may be unavailable for workspaces outside your own organization. Enterprise admins can allow or block the server and its Read/Write permissions from Atlassian Administration.
+## 連線前
 
-## What agents can do
+您需要任何方案的 Trello 帳戶。每個連線在啟動時僅限於一個 Trello 工作區；斷開並重新連線以切換工作區或授予您略過的許可權。建立 Planner 專注時間事件需要 Trello Premium 或 Enterprise，而收件匣和 Planner 許可權可能無法適用於您自己組織以外的工作區。Enterprise 管理員可以在 Atlassian Administration 中允許或阻止伺服器及其讀取/寫入許可權。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可以做的事
+
+| 類別 | 能力 |
 | --- | --- |
-| Member | `trelloReadMember` returns the signed-in user's profile and defaults, including the timezone used to resolve relative due dates |
-| Boards | `trelloReadBoard` gets a board by URL or id, lists boards, and lists boards by workspace with visibility filters and cursor pagination, including the board's labels; `trelloWriteBoard` creates boards |
-| Lists | `trelloWriteList` creates lists on a board and moves them, with `pos` for ordered creation |
-| Cards | `trelloReadCard` gets a card by URL or id; `trelloWriteCard` creates, updates, moves, archives, and marks cards done, sets due dates, and attaches or detaches labels |
-| Checklists | `trelloWriteChecklist` creates and updates checklists on a card and adds or updates checklist items |
-| Inbox | `trelloReadInbox` and `trelloWriteInbox` view, create, update, and archive cards in your personal Inbox, which is separate from boards |
-| Planner | `trelloReadPlanner` reads calendar events from a connected Google or Outlook calendar; `trelloWritePlanner` creates focus-time events and links or unlinks cards to them |
-| Search | `trelloSearch` finds cards and boards by keyword, with qualifiers such as `due:` |
+| 成員 | `trelloReadMember` 返回登入使用者のプロフィールと預設，包括用來解析相對截止日期的時區 |
+| 看板 | `trelloReadBoard` 透過 URL 或 id 取得看板，列出看板，並透過工作區列出看板並帶有可見性濾器和遊標分頁，包括看板的標籤；`trelloWriteBoard` 建立看板 |
+| 列表 | `trelloWriteList` 在看板上建立列表並移動它們，`pos` 用於有序建立 |
+| 卡片 | `trelloReadCard` 透過 URL 或 id 取得卡片；`trelloWriteCard` 建立、更新、移動、封存和標記卡片完成，設定截止日期，並附加或移除標籤 |
+| 檢查列表 | `trelloWriteChecklist` 在卡片上建立和更新檢查列表並新增或更新檢查列表專案 |
+| 收件匣 | `trelloReadInbox` 和 `trelloWriteInbox` 檢視、建立、更新和封存您個人收件匣中的卡片，這與看板是分開的 |
+| Planner | `trelloReadPlanner` 從連線的 Google 或 Outlook 日曆讀取日曆事件；`trelloWritePlanner` 建立專注時間事件並將卡片連結或解除連結到它們 |
+| 搜尋 | `trelloSearch` 透過關鍵字尋找卡片和看板，並可使用限定詞如 `due:` |
 
-Tools are action-dispatched: each takes an `action` parameter that selects the operation. Every id is an Atlassian Resource Identifier (`ari:cloud:trello::card/workspace/<workspaceId>/<cardId>`) returned by a read tool, not a raw Trello id or short link. The hosted runtime is the source of truth for tool names and schemas.
+工具是動作分派的：每個工具接受一個 `action` 引數來選擇操作。每個 id 是 Atlassian Resource Identifier（`ari:cloud:trello::card/workspace/<workspaceId>/<cardId>`），由讀取工具返回，不是原始 Trello id 或短連結。託管執行環境是工具名稱和結構的來源真相。
 
-## Notes
+<a id="notes"></a>
 
-- Writes land on real boards that your teammates see. Ask the agent to confirm before bulk moves, archives, or Inbox clean-ups.
-- The server has no permanent delete; cards and lists can only be archived.
-- Comments, attachments, custom fields, card members, label management, and board editing are not exposed yet. Atlassian lists them as planned in the server's README.
-- Due dates and Planner times are UTC ISO 8601; the agent should read the member's timezone first when you give relative times such as "tomorrow at 1pm".
+## 注意事項
 
-## Docs
+- 寫入會落在真實看板上，您的團隊成員可以看到。請在批次移動、封存或收件匣清理之前要求代理確認。
+- 伺服器沒有永久刪除；卡片和列表只能封存。
+- 評論、附件、自定義欄位、卡片成員、標籤管理和看板編輯尚未公開。Atlassian 在伺服器的 README 中列出這些為計劃專案。
+- 截止日期和 Planner 時間是 UTC ISO 8601；當您提供相對時間如「明天下午 1 點」時，代理應先讀取成員的時區。
 
-- Trello MCP server README: https://github.com/atlassian/trello-mcp-server
-- Trello support article: https://support.atlassian.com/trello/docs/connect-trello-to-ai-assistants-with-trello-mcp/
-- Agent skill for calling the tools correctly: https://github.com/atlassian/trello-mcp-server/blob/main/skills/trello-use/SKILL.md
-- Server URL: https://mcp.trello.com/v1
+<a id="docs"></a>
 
-Logo is Trello's official mark.
+## 文件
 
-## License
+- Trello MCP 伺服器 README：https://github.com/atlassian/trello-mcp-server
+- Trello 支援文章：https://support.atlassian.com/trello/docs/connect-trello-to-ai-assistants-with-trello-mcp/
+- 正確呼叫工具的代理技能：https://github.com/atlassian/trello-mcp-server/blob/main/skills/trello-use/SKILL.md
+- 伺服器 URL：https://mcp.trello.com/v1
+
+標誌是 Trello 的官方標記。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

@@ -1,16 +1,18 @@
 # Google Slides
 
-Cursor plugin that connects agents to [Google Slides](https://slides.google.com) through Cursor's remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Cursor 的遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Google Slides](https://slides.google.com)。
 
-Read presentation structure and text, create presentations, add and reorder slides, insert text boxes, shapes, images, and tables, style text and backgrounds, and render any slide as a PNG thumbnail.
+讀取簡報結構和文字、建立簡報、新增和重新排序投影片、插入文字框、圖形、圖片和表格、設定文字和背景樣式，以及將任何投影片渲染為 PNG 縮圖。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Google Slides**.
-3. Click **Install**, then complete the Google sign-in prompt.
+## 安裝
 
-Or run `/add-plugin google-slides` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Google Slides**。
+3. 點選 **安裝**，然後完成 Google 登入提示。
+
+或在聊天中執行 `/add-plugin google-slides`。
 
 ## MCP
 
@@ -25,19 +27,25 @@ Or run `/add-plugin google-slides` in chat.
 }
 ```
 
-Auth is OAuth 2.0 against Google. Cursor prompts for Google sign-in when the plugin connects.
+驗證是針對 Google 的 OAuth 2.0。當外掛連線時，Cursor 會提示 Google 登入。
 
-## Skill
+<a id="skill"></a>
 
-The bundled `google-slides` skill teaches agents deck-building conventions: object handles and point geometry, layout that avoids clipped images, palette and text styling, and per-slide PNG verification.
+## 技能
 
-## Docs
+隨附的 `google-slides` 技能會教導代理簡報製作慣例：物件手柄和點座標、避免裁剪圖片的版面、色板和文字樣式，以及每個投影片的 PNG 驗證。
 
-- Google Slides API: https://developers.google.com/workspace/slides/api/reference/rest
-- Google Workspace overview: https://developers.google.com/workspace
+<a id="docs"></a>
 
-Logo is the official Google Slides product icon, placed on a white tile with padding so it reads well in the Cursor UI.
+## 文件
 
-## License
+- Google Slides API：https://developers.google.com/workspace/slides/api/reference/rest
+- Google Workspace 概覽：https://developers.google.com/workspace
+
+標誌是官方 Google Slides 產品圖示，放置在白色底板上並留有邊距，以便在 Cursor 介面中清晰呈現。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

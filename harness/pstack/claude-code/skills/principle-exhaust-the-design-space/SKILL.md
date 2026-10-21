@@ -1,9 +1,11 @@
 ---
 name: principle-exhaust-the-design-space
-description: "Apply when facing a novel UI interaction or architectural decision with no precedent in the codebase. Build 2-3 competing prototypes and compare side by side before committing."
+description: "在面對全新的 UI 互動或架構決策，且程式庫中沒有先例時，請套用此原則。先建立 2 到 3 個競爭原型，並在決定前進行並排比較。"
 disable-model-invocation: true
 ---
 
-# Exhaust the Design Space
+<a id="exhaust-the-design-space"></a>
 
-It also applies to product design decisions where user experience depends on feel, not logic.
+# 徹底探索設計空間
+
+此原則也適用於產品設計決策，當使用者體驗依賴於感受而非邏輯時。

@@ -1,50 +1,62 @@
 ---
 name: workflow-from-chats
-description: Extract durable working preferences from recent Cursor chats and convert them into skills, rules, or workflow docs. Use when asked to learn preferences, mine feedback, personalize workflows, or generate team/person-specific agent guidance.
+description: "從近期的 Cursor 對話中萃取持久的工作偏好，並將其轉換為技能、規則或工作流程檔案。當被要求學習偏好、挖掘回饋、個人化工作流程，或產生針對團隊或特定人員的 agent 指引時使用。"
 ---
 
-# Workflow From Chats
+<a id="workflow-from-chats"></a>
 
-Infer durable working preferences from recent chats. Do not summarize chats; extract reusable workflow guidance.
+# 從對話建立工作流程
 
-## Scope
+從近期對話中推斷持久的工作偏好。不要摘要對話內容；請萃取可重複使用的工作流程指引。
 
-- Default to the last 7 days unless the user asks for a different window.
-- Read parent transcripts and relevant subagent transcripts. Use subagent content as evidence, but cite only parent conversations.
-- Do not expose local transcript paths, secrets, customer data, private chat content, or credentials.
+<a id="scope"></a>
 
-## Workflow
+## 範圍
 
-1. State the target workflow or preference surface in one paragraph.
-2. Build an internal transcript inventory: title/topic, parent conversation ID, approximate date, completion state, relevant subagents, and why it may contain preference evidence.
-3. Scan for explicit preferences, corrections, and workflow markers such as "I prefer", "always", "never", "not what I asked", "stop", "review", "PR", "CI", "logs", and "skill".
-4. Extract preference atoms: trigger, workflow step, decision rule, quality bar, stop condition, evidence, and confidence.
-5. Rate confidence as strong, medium, weak, or contradicted.
-6. Cluster by workflow shape rather than transcript: shipping, review, simplification, debugging, capture, communication, delegation, or validation.
-7. Choose the artifact: new skill, skill edit, rule, workflow doc, or no artifact.
-8. Draft only the reusable guidance. Filter anecdotes that will not help future tasks.
+- 預設為最近 7 天，除非使用者要求不同的時間範圍。
+- 讀取父級記錄檔及相關的 subagent 記錄檔。將 subagent 內容作為證據，但僅引用父級對話。
+- 不要揭露本機記錄檔路徑、機密資訊、客戶資料、私人對話內容或憑證。
 
-## Confidence
+<a id="workflow"></a>
 
-- Strong: explicit user preference, workflow-changing correction, repeated parent-chat pattern, or direct request to encode behavior.
-- Medium: accepted workflow, repeated tool/model/validation preference, or subagent consensus that the parent used successfully.
-- Weak: agent-chosen behavior with no user feedback, one ambiguous transcript, or a likely task-specific correction.
-- Contradicted: evidence points in incompatible directions; ask the user before writing files.
+## 工作流程
 
-## Artifact Choice
+1. 用一段話說明目標工作流程或偏好面向。
+2. 建立內部記錄檔清單：標題/主題、父級對話 ID、大約日期、完成狀態、相關的 subagent，以及它可能包含偏好證據的原因。
+3. 掃描明確的偏好、更正，以及工作流程標記，例如「我偏好」、「總是」、「絕不」、「不是我要的」、「停止」、「審查」、「PR」、「CI」、「紀錄」和「skill」。
+4. 萃取偏好原子：觸發條件、工作流程步驟、決策規則、品質標準、停止條件、證據和信心等級。
+5. 將信心等級評定為強、中、弱或相互矛盾。
+6. 依工作流程形態而非記錄檔進行分群：發布、審查、簡化、除錯、記錄、溝通、委派或驗證。
+7. 選擇產出物：新 skill、skill 編輯、規則、工作流程檔案，或無產出物。
+8. 僅起草可重複使用的指引。過濾掉對未來任務無助的軼事。
 
-- Skill: recurring multi-step workflow with clear triggers.
-- Rule: general behavior that should apply broadly.
-- Workflow doc: useful context that is not reliably triggerable.
-- No artifact: situational, stale, or low-confidence observation.
+<a id="confidence"></a>
 
-## Output
+## 信心等級
 
-Return a concise synthesis first:
+- 強：明確的使用者偏好、改變工作流程的更正、重複出現的父級對話模式，或直接要求編碼行為的請求。
+- 中：已接受的工作流程、重複出現的工具/模型/驗證偏好，或 subagent 共識顯示父級曾成功使用。
+- 弱：agent 自行選擇的行為且無使用者回饋、單一模糊的記錄檔，或可能是特定任務的更正。
+- 相互矛盾：證據指向不相容的方向；在寫入檔案前請先詢問使用者。
 
-- Target workflow.
-- Evidence corpus with parent conversation citations only.
-- Preference profile.
-- Adopt, consider, dismissed.
-- Proposed artifacts.
-- Open questions only if they block writing.
+<a id="artifact-choice"></a>
+
+## 產出物選擇
+
+- Skill：具有明確觸發條件的重複性多步驟工作流程。
+- 規則：應廣泛適用的一般行為。
+- 工作流程檔案：有用但無法可靠觸發的上下文。
+- 無產出物：情境性、過時或低信心的觀察。
+
+<a id="output"></a>
+
+## 輸出
+
+先回傳簡潔的綜合摘要：
+
+- 目標工作流程。
+- 僅包含父級對話引用的證據語料庫。
+- 偏好檔案。
+- 採用、考慮、棄用。
+- 建議的產出物。
+- 僅在阻礙撰寫時列出未決問題。

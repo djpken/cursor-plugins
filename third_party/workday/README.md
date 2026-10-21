@@ -1,87 +1,105 @@
 # Workday
 
-Cursor plugin that connects agents to [Workday](https://www.workday.com) — the cloud platform for HR, payroll, and finance — through a [Model Context Protocol](https://modelcontextprotocol.io/) server that Cursor hosts.
+Cursor 外掛，透過 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器（由 Cursor 託管）將代理連線到 [Workday](https://www.workday.com)，Workday 是雲端人力資源、薪資與財務平臺。
 
-Read a tenant's people data: workers and their profiles, supervisory organizations, time off and leave, pay groups and pay slips, job postings and candidates, and custom reports through Workday Query Language (WQL).
+讀取租戶的人員資料：員工及其個人資料、監督組織、休假與請假、薪資群組與薪資單、職位發布與候選人，以及透過 Workday Query Language (WQL) 的自訂報告。
 
-## Install
+<a id="install"></a>
 
-1. A team admin opens **Cursor Settings → Plugins**, searches for **Workday**, and installs it for the team.
-2. The admin enters the team's Workday API client (see [Team setup](#team-setup)).
-3. Each member signs in to Workday when Cursor prompts them.
+## 安裝
 
-Or run `/add-plugin workday` in chat.
+1. 團隊管理員開啟 **Cursor Settings → Plugins**，搜尋 **Workday**，並為團隊安裝。
+2. 管理員輸入團隊的 Workday API 客戶端（請參閱 [Team setup](#team-setup)）。
+3. 每位成員在 Cursor 提示時登入 Workday。
+
+或在聊天中執行 `/add-plugin workday`。
 
 ## MCP
 
-This plugin ships no `mcp.json`, and that is deliberate.
+此外掛不提供 `mcp.json`，這是刻意設計。
 
-Every other connector in this repository either points at a vendor's hosted endpoint or runs a package locally over stdio, so it carries its own server definition. Workday does not: Cursor runs the server, and the plugin exists only as the opt-in that turns it on for your team. There is no command to run and no MCP endpoint to configure.
+此儲存庫中的每個其他聯結器不是指向供應商託管的端點，也不是透過 stdio 在本地執行套件，因此它自帶伺服器定義。Workday 則不同：Cursor 執行伺服器，外掛僅作為選擇性啟用，為你的團隊開啟此功能。沒有需要執行的指令，也沒有需要設定的 MCP 端點。
 
-One consequence worth knowing: because the server is not declared here, you will not find it in a local `mcp.json` and you cannot point another MCP client at it. It is reachable from Cursor only.
+一個值得知道的後果：因為伺服器未在此宣告，你不會在本地 `mcp.json` 中找到它，也不能將其他 MCP 客戶端指向它。僅能從 Cursor 存取。
 
-## Team setup
+<a id="team-setup"></a>
 
-Workday API clients are registered inside each customer's tenant, so Cursor cannot ship one. A team admin supplies the team's own client once, and every member signs in through it.
+## 團隊設定
 
-### 1. Register an API client in Workday
+Workday API 客戶端是在每個客戶的租戶內註冊，因此 Cursor 無法提供。團隊管理員提供團隊自己的客戶端一次，每位成員透過它登入。
 
-A Workday administrator registers an API client in the tenant (**Register API Client**) with:
+<a id="1-register-an-api-client-in-workday"></a>
 
-- **Client grant type:** authorization code grant.
-- **Redirection URI:** `https://www.cursor.com/agents/mcp/oauth/callback`.
-- **Scopes:** the functional areas you want agents to read, such as staffing, organizations, time off, payroll, and recruiting.
+### 1. 在 Workday 註冊 API 客戶端
 
-After saving, **View API Clients** shows the client ID, the client secret, and the tenant's endpoint URLs.
+Workday 管理員在租戶中註冊 API 客戶端（**Register API Client**），並設定：
 
-### 2. Enter the client in Cursor
+- **Client grant type:** authorization code grant。
+- **Redirection URI:** `https://www.cursor.com/agents/mcp/oauth/callback`。
+- **Scopes:** 您希望代理讀取的功能區域，例如人力設定、組織、休假、薪資與招募。
 
-Only a team admin can save these. All six fields are required:
+儲存後，**View API Clients** 會顯示客戶端 ID、客戶端密碼與租戶的端點 URL。
 
-| Field | Value |
+<a id="2-enter-the-client-in-cursor"></a>
+
+### 2. 在 Cursor 輸入客戶端
+
+只有團隊管理員可以儲存這些資訊。所有六個欄位皆為必填：
+
+| 欄位 | 值 |
 | --- | --- |
-| `CLIENT_ID` | Client ID of the API client. |
-| `CLIENT_SECRET` | Client secret of the API client. Stored encrypted and never shown back on plugin listings. |
-| `TENANT` | Tenant name, for example `acme_dpt1`. Letters, digits, `_`, and `-` only. |
-| `AUTHORIZATION_BASE_URL` | **Authorization Endpoint** from View API Clients (ends in `/authorize`, on the tenant's web host), or that web host's origin. Given an origin, Cursor uses `<origin>/<TENANT>/authorize`. |
-| `TOKEN_ENDPOINT` | **Token Endpoint** from View API Clients, for example `https://wd2-impl-services1.workday.com/ccx/oauth2/acme_dpt1/token`. It is on the services host, not the web host, so Cursor does not derive it. |
-| `REST_API_BASE_URL` | **Workday REST API Endpoint** from View API Clients, for example `https://wd2-impl-services1.workday.com/ccx/api/v1/acme_dpt1`. |
+| `CLIENT_ID` | API 客戶端 ID。 |
+| `CLIENT_SECRET` | API 客戶端密碼。加密儲存，不會在外掛列表中顯示。 |
+| `TENANT` | 租戶名稱，例如 `acme_dpt1`。僅限字母、數字、`_` 與 `-`。 |
+| `AUTHORIZATION_BASE_URL` | 從 View API Clients 的 **Authorization Endpoint**（以 `/authorize` 結尾，位於租戶的網頁主機），或該網頁主機的來源。若提供來源，Cursor 使用 `<origin>/<TENANT>/authorize`。 |
+| `TOKEN_ENDPOINT` | 從 View API Clients 的 **Token Endpoint**，例如 `https://wd2-impl-services1.workday.com/ccx/oauth2/acme_dpt1/token`。它位於服務主機而非網頁主機，因此 Cursor 不會自動推導。 |
+| `REST_API_BASE_URL` | 從 View API Clients 的 **Workday REST API Endpoint**，例如 `https://wd2-impl-services1.workday.com/ccx/api/v1/acme_dpt1`。 |
 
-Every URL must use `https` on a Workday domain (`workday.com`, `myworkday.com`, `workdaygov.com`, or `myworkdaygov.com`, including subdomains). Cursor refuses other hosts because the client secret and members' grants are sent to them.
+每個 URL 必須使用 `https` 並位於 Workday 域名（`workday.com`、`myworkday.com`、`workdaygov.com` 或 `myworkdaygov.com`，包括子域名）。Cursor 拒絕其他主機，因為客戶端密碼與成員的授權會傳送至這些主機。
 
-### 3. Members sign in
+<a id="3-members-sign-in"></a>
 
-Each member signs in to Workday with their own account. The connection stays tied to the team whose client issued it, so switching teams in Cursor does not move a member's Workday session to another team's tenant.
+### 3. 成員登入
 
-## What agents can do
+每位成員使用自己的帳戶登入 Workday。連線會保持與發出客戶端之團隊的繫結，因此在 Cursor 中切換團隊不會將成員的 Workday 會話移至其他團隊的租戶。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Workers | Worker and employee profiles, compensation, and benefits |
-| Organizations | Organizations, supervisory organizations, and their members |
-| Time off | Absence balances, time-off entries, and leaves of absence |
-| Time tracking | Time clock events and worker time totals |
-| Payroll | Pay groups, pay components, pay slips, and payroll inputs |
-| Recruiting | Job postings, prospects, and interviews |
-| Reporting | WQL data sources and queries, and custom object definitions |
+| 員工 | 員工與僱員個人資料、薪酬與福利 |
+| 組織 | 組織、監督組織及其成員 |
+| 休假 | 缺勤餘額、休假記錄與請假 |
+| 時間追蹤 | 打卡事件與員工時間總計 |
+| 薪資 | 薪資群組、薪資組成、薪資單與薪資輸入 |
+| 招募 | 職位發布、潛在候選人與面試 |
+| 報告 | WQL 資料來源與查詢，以及自訂物件定義 |
 
-The server is the source of truth for tool names and schemas.
+伺服器是工具名稱與結構的來源。
 
-## Notes
+<a id="notes"></a>
 
-- Access follows whatever the signed-in Workday user can see, intersected with the API client's scopes. Workday's security groups still apply, so the connector cannot reach workers, compensation, or pay data that user has no access to.
-- Workday data is often sensitive. Grant the API client only the scopes you intend agents to read.
-- If sign-in fails with "credentials are not configured for this team", a field is missing, a URL is not an `https` Workday URL, or the tenant name has unsupported characters.
-- Disconnecting is independent on each side: uninstalling the plugin stops Cursor from offering the server, and disabling the API client or revoking its tokens in Workday ends Cursor's access to your data.
+## 注意事項
 
-## Docs
+- 存取範圍遵循登入的 Workday 使用者所能看到的資料，並與 API 客戶端 scopes 交集。Workday 的安全群組仍適用，因此聯結器無法存取使用者無權檢視的員工、薪酬或薪資資料。
+- Workday 資料通常敏感。僅授予 API 客戶端您希望代理讀取的 scopes。
+- 若登入失敗並顯示「credentials are not configured for this team」，表示欄位缺失、URL 不是 `https` Workday URL，或租戶名稱包含不支援的字元。
+- 斷開連線在兩端獨立：解除安裝外掛會停止 Cursor 提供伺服器，而停用 API 客戶端或在 Workday 中撤銷其令牌會結束 Cursor 對您的資料的存取。
+
+<a id="docs"></a>
+
+## 文件
 
 - Workday: https://www.workday.com
 - Workday Query Language: https://doc.workday.com
 - Model Context Protocol: https://modelcontextprotocol.io
 
-Logo is Workday's official mark, from the `Workday` GitHub organization.
+Logo 是 Workday 的官方標誌，來自 `Workday` GitHub 組織。
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

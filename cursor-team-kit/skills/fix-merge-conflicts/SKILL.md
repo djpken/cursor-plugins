@@ -1,32 +1,42 @@
 ---
 name: fix-merge-conflicts
-description: Resolve merge conflicts non-interactively, validate build and tests, and finalize conflict resolution
+description: "以非互動方式解決合併衝突，驗證建置與測試，並完成衝突處理"
 ---
 
-# Fix merge conflicts
+<a id="fix-merge-conflicts"></a>
 
-## Trigger
+# 修正合併衝突
 
-Branch has unresolved merge conflicts and needs a reliable path to a buildable state.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發條件
 
-1. Detect all conflicting files from git status and conflict markers.
-2. Resolve each conflict with minimal, correctness-first edits.
-3. Prefer preserving both sides when safe. Otherwise, choose the variant that compiles and keeps public behavior stable.
-4. Regenerate lockfiles with package manager tools instead of hand-editing.
-5. Run compile, lint, and relevant tests.
-6. Stage resolved files and summarize key decisions.
+分支存在未解決的合併衝突，且需要可靠的路徑以達到可建置狀態。
 
-## Guardrails
+<a id="workflow"></a>
 
-- Keep changes minimal and readable.
-- Do not leave conflict markers in any file.
-- Avoid broad refactors while resolving conflicts.
-- Do not push or tag during conflict resolution.
+## 工作流程
 
-## Output
+1. 從 git status 與衝突標記中偵測所有衝突檔案。
+2. 以最小且以正確性為優先的編輯方式解決每個衝突。
+3. 在安全的情況下，優先保留雙方的變更。否則，選擇能成功編譯且保持公開行為穩定的版本。
+4. 使用套件管理員工具重新產生鎖定檔案，而非手動編輯。
+5. 執行編譯、lint 以及相關的測試。
+6. 暫存已解決的檔案，並摘要關鍵決策。
 
-- Files resolved
-- Notable resolution choices
-- Build/test outcome
+<a id="guardrails"></a>
+
+## 防護措施
+
+- 保持變更最小且易讀。
+- 不要在任何檔案中留下衝突標記。
+- 在解決衝突時，避免進行大範圍的重構。
+- 在衝突處理期間，不要推送或建立標籤。
+
+<a id="output"></a>
+
+## 輸出
+
+- 已解決的檔案
+- 值得注意的解決選擇
+- 建置與測試結果

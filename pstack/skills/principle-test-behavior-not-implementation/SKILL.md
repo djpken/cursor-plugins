@@ -1,20 +1,22 @@
 ---
 name: principle-test-behavior-not-implementation
-description: "Apply when you write, change, or keep a test. Assert what the code's users can observe, so that the test fails when that behavior breaks and keeps passing when only the internals change."
+description: "在撰寫、修改或保留測試時應用此原則。測試應驗證程式碼使用者所能觀察到的行為，使測試在該行為失效時失敗，並在僅內部變動時持續透過。"
 disable-model-invocation: true
 ---
 
-# Test Behavior, Not Implementation
+<a id="test-behavior-not-implementation"></a>
 
-A test is a claim about what the code does for its users: a caller, an end user, or another service. Behavior is what those users can observe through the interface they use. That includes return values, errors, state they can read back, and effects on systems outside the code, such as a request sent, a row written, or a message emitted. Implementation is what they cannot observe: private helpers, internal call order, intermediate data, and which internal collaborator did the work.
+# 測試行為，而非實現
 
-Judge each test against two imagined edits:
+測試是關於程式碼對使用者所提供功能的宣告：呼叫者、最終使用者或其他服務。行為是這些使用者透過其所使用的介面所能觀察到的內容。這包括返回值、錯誤、可讀回的狀態，以及對外部系統的影響，例如發出的請求、寫入的資料行或產出的訊息。實現是使用者無法觀察的部分：私有輔助函式、內部呼叫順序、中間資料，以及內部協作者執行的工作。
 
-- **Break the behavior.** Make the code return a wrong value, skip an effect, or do the effect twice. If the test still passes, it proves nothing. The usual causes are an assertion looser than the contract, an expected value computed by the code under test, a restated constant or prompt string that never runs the code that reads it, and an assertion on data that the test built itself.
-- **Change the internals.** Keep every observable result the same and restructure the code underneath. If the test now fails, it is pinned to the implementation. It will need a rewrite on every refactor and still catches no bug.
+以兩個想像的編輯來評估每個測試：
 
-Keep a test that catches the first edit and survives the second. Rewrite or delete the rest. To write a test that does both, drive the code through its users' interface with a concrete input. Derive the expected value from the requirement, not from a run of the code. Assert what the contract promises, no less and no more.
+- **破壞行為。** 讓程式碼返回錯誤的值、跳過一個效果或執行效果兩次。如果測試仍然透過，則證明無效。常見原因包括：斷言比契約更鬆散、期望值由測試中的程式碼計算、重述的常量或提示字串未執行讀取它的程式碼，以及對測試自身構建的資料進行斷言。
+- **變動內部。** 保持所有可觀察結果相同並重構底層程式碼。如果測試現在失敗，則它與實現繫結。每次重構時都需要重寫，且仍無法捕捉任何錯誤。
 
-The contract decides, not the shape of the assertion. When "an empty cart never charges" is the promise, an assertion that the payment client got no call is behavior. Pair it with a case where the charge happens, so that the test shows it can see a call. The payload that a mocked external service receives is behavior, because that service observes it. A call to an internal helper is implementation, because no user can see it. An empty list is the exact answer when no record matches, and a hollow check when the test only needs some result. An exact error message pins wording that no caller reads. The error type that callers branch on is the contract.
+保留能捕捉第一個編輯並承受第二個編輯的測試。重寫或刪除其他測試。為了撰寫同時滿足兩點的測試，透過使用者介面以具體輸入驅動程式碼。期望值應從需求中推導，而非從程式碼執行中取得。斷言契約所承諾的內容，不多也不少。
 
-A test can pin an invariant instead of a call, such as a key that must exist in two tables or a compile-time type check. The invariant is the behavior.
+契約決定斷言的形態，而非斷言的結構。當「空購物車永不計費」是承諾時，斷言付款客戶端未收到呼叫即是行為。搭配一個發生計費的案例，使測試顯示它能看到呼叫。模擬外部服務收到的資料內容是行為，因為該服務觀察它。對內部輔助函式的呼叫是實現，因為使用者無法看到。當無記錄匹配時，空列表是正確答案；當測試僅需要某個結果時，空列表是空洞的檢查。確切的錯誤訊息繫結了無呼叫者閱讀的措辭。呼叫者分支判斷的錯誤型別是契約。
+
+測試可以繫結一個不變條件而非呼叫，例如必須在兩個表格中存在的鍵或編譯時型別檢查。該不變條件是行為。

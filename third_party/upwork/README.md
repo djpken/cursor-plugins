@@ -1,16 +1,18 @@
 # Upwork
 
-Cursor plugin that connects agents to [Upwork](https://www.upwork.com) through Upwork's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Upwork 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Upwork](https://www.upwork.com)。
 
-Search and shortlist talent, post and edit jobs, handle invitations and proposals, and manage active contracts in the signed-in Upwork account.
+在已登入的 Upwork 帳戶中，搜尋和篩選人才、發布和編輯工作、處理邀請和提案，以及管理有效契約。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Upwork**.
-3. Click **Install**, then complete the Upwork sign-in prompt.
+## 安裝
 
-Or run `/add-plugin upwork` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Upwork**。
+3. 點選 **安裝**，然後完成 Upwork 登入提示。
+
+或在聊天中執行 `/add-plugin upwork`。
 
 ## MCP
 
@@ -25,37 +27,47 @@ Or run `/add-plugin upwork` in chat.
 }
 ```
 
-Auth is OAuth 2.1 with Dynamic Client Registration. Cursor registers itself and prompts for Upwork sign-in when the plugin connects — there is no API key or client ID to configure.
+驗證採用 OAuth 2.1 與 Dynamic Client Registration。Cursor 會自行註冊，並在外掛連線時提示 Upwork 登入。不需要設定 API 金鑰或客戶 ID。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-An Upwork account is all you need — there is no plan tier, partner program, or waitlist. The tool surface differs depending on whether you sign in as a client or as a freelancer.
+## 連線前
 
-## What agents can do
+只需要一個 Upwork 帳戶。沒有方案等級、夥伴計畫或等候名單。工具介面會根據您以客戶或自由工作者身份登入而有所不同。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Find talent (client) | Search and shortlist freelancers, and manage talent lists |
-| Jobs (client) | Post, edit, and manage job listings |
-| Invitations & proposals | Send invitations, and review or respond to proposals |
-| Find work (freelancer) | Search jobs, and draft and submit proposals |
-| Contracts | Manage active contracts and work delivery |
+| 尋找人才（客戶） | 搜尋和篩選自由工作者，並管理人才列表 |
+| 工作（客戶） | 發布、編輯和管理工作列表 |
+| 邀請與提案 | 傳送邀請，並審閱或回應提案 |
+| 尋找工作（自由工作者） | 搜尋工作，並起草和提交提案 |
+| 契約 | 管理有效契約和工作交付 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱和結構的來源。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Upwork user who authorizes the connection.
-- Financial actions deliberately do not complete over MCP. Funding escrow, accepting an offer, and paying a milestone all finish on upwork.com.
-- Several community `upwork-mcp` projects exist on GitHub and npm; none are published by Upwork. This plugin uses Upwork's own hosted server.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Upwork 使用者身份執行。
+- 財務操作刻意不會透過 MCP 完成。資金託管、接受報價和支付里程碑都會在 upwork.com 上完成。
+- GitHub 和 npm 上有幾個社群 `upwork-mcp` 專案；都不是由 Upwork 發布。此外掛使用 Upwork 自家的託管伺服器。
+
+<a id="docs"></a>
+
+## 檔案
 
 - Upwork MCP Server: https://www.upwork.com/ai/mcp
-- Server URL: https://mcp.upwork.com/mcp
+- 伺服器 URL: https://mcp.upwork.com/mcp
 
-Logo is Upwork's official mark, from the `upwork` GitHub organization.
+標誌是 Upwork 的官方標誌，來自 `upwork` GitHub 組織。
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

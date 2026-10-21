@@ -1,22 +1,32 @@
-# Teaching plugin
+<a id="teaching-plugin"></a>
 
-Teaching workflows: skill mapping, practice plans, and feedback loops.
+# 教學外掛
 
-## Installation
+教學工作流程：技能對映、練習計畫與回饋迴圈。
+
+<a id="installation"></a>
+
+## 安裝
 
 ```bash
 /add-plugin teaching
 ```
 
-## Components
+<a id="components"></a>
 
-### Skills
+## 組成元件
 
-| Skill | Description |
+<a id="skills"></a>
+
+### 技能
+
+| 技能 | 描述 |
 |:------|:------------|
-| `create-learning-path` | Build a personalized learning roadmap with milestones and practice checkpoints |
-| `run-learning-retrospective` | Evaluate progress, identify blockers, and adjust the learning plan |
+| `create-learning-path` | 建立個人化學習路線圖，包含里程碑與練習檢查點 |
+| `run-learning-retrospective` | 評估進度、找出阻礙並調整學習計畫 |
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

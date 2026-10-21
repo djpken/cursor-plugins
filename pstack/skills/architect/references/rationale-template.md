@@ -1,35 +1,53 @@
-# Rationale template
+<a id="rationale-template"></a>
 
-The prose that ships alongside the type sketch. One page. Sentence-case headings, no boilerplate. Replace the italic notes with actual content.
+# 理由範本
 
-## Problem
+隨附於型別草圖的散文內容。一頁。標題使用句子大小寫，不使用套話。將斜體註解替換為實際內容。
 
-*One paragraph. What we're trying to do, and what about the existing system or constraints makes the shape non-obvious. If [Phase A](../SKILL.md#phase-a-ground-the-problem) surfaced constraints the design must honor (existing types to interop with, callers we can't break, invariants that crossed our boundary), name them here so the reader sees the same constraints you saw.*
+<a id="problem"></a>
 
-## Usage (caller's view)
+## 問題
 
-*Write this first, before the type sketch. Show the README or quickstart the consumer reads, plus two or three realistic call sites in their own code. What they import, what they call, what comes back. The type sketch in [Shape](#shape) is derived from this. The two must agree. When they diverge, reconcile the sketch to the usage, not the reverse. The caller's experience is the spec. The types serve it.*
+*一段話。我們試圖做什麼，以及現有系統或限制條件中有哪些因素使結構不直觀。如果 [Phase A](../SKILL.md#phase-a-ground-the-problem) 揭示了設計必須遵守的限制（例如需要互操作的現有型別、不能破壞的呼叫者、跨越我們邊界的不變數），請在此處列出，以便讀者看到與您相同的限制。*
 
-## Shape
+<a id="usage-callers-view"></a>
 
-*The recommended architecture. Data structures first. Then how data flows through the signatures. Name the load-bearing decisions. State which invariants are encoded in types, where validation lives, and what the system deliberately does not do. Judge interface depth explicitly. State what complexity the public surface hides, what remains exposed to callers, and why the interface is no larger than needed. Cite the principle behind each decision (e.g., `per boundary-discipline`). Don't restate it.*
+## 使用方式（呼叫者視角）
 
-## Synthesis decision
+*請先撰寫此部分，再撰寫型別草圖。展示消費者閱讀的 README 或快速入門指南，以及他們自己程式碼中兩到三個真實的呼叫位置。他們匯入什麼、呼叫什麼、回傳什麼。[Shape](#shape) 中的型別草圖是由此衍生而來。兩者必須一致。當兩者出現分歧時，應調整草圖以符合使用方式，而非相反。呼叫者的體驗即為規格。型別為其服務。*
 
-*Filled in by [arena](../../arena/SKILL.md). Records which candidate became the base and why, what was adapted from each of the others, and what was rejected and why.*
+<a id="shape"></a>
 
-## Tradeoffs accepted
+## 結構
 
-*One bullet per tradeoff the chosen shape makes. Form: "we accept X in exchange for Y." Name anything a future reader might mistake for an oversight, including things that look like premature optimization or premature simplification.*
+*建議的架構。先列出資料結構。然後說明資料如何透過簽名流動。指出關鍵決策。說明哪些不變數編碼在型別中、驗證位於何處，以及系統刻意不執行哪些操作。明確評估介面深度。說明公開介面隱藏了哪些複雜度、哪些複雜度仍暴露給呼叫者，以及為何介面不會大於必要範圍。引用每個決策背後的原則（例如，`per boundary-discipline`）。不要重述該原則。*
 
-## Alternatives considered
+<a id="synthesis-decision"></a>
 
-*Required. Name at least one concrete alternative shape, with one line on why it lost. Judge each alternative on interface depth, not implementation simplicity alone. Name the complexity it exposes to callers and the complexity it hides. Two or three alternatives belong here when the design space had real contenders. One is fine when the constraints forced the answer, with the conclusion phrased as "this was the only viable shape because..." Avoid listing flavors of the same shape. This section covers design alternatives the chosen shape considered and rejected, not other runner candidates.*
+## 綜合決策
 
-## Open questions and risks
+*由 [arena](../../arena/SKILL.md) 填寫。記錄哪個候選方案成為基礎及其原因、從其他方案中適應了哪些內容，以及拒絕了哪些內容及其原因。*
 
-*Things you noticed during the sketch that the human needs to weigh in on, and risks worth flagging before implementation starts. Phrase as questions, not assertions, so the human's answer is the resolution rather than a comment.*
+<a id="tradeoffs-accepted"></a>
 
-## Next implementation step
+## 接受的權衡
 
-*The first thing to build against the sketch. One sentence. What you'd start writing immediately after synthesis (or after Phase D sign-off, if a checkpoint was opted into).*
+*每個被選定結構所做出的權衡對應一個專案符號。格式：「我們接受 X 以換取 Y。」指出任何未來讀者可能誤認為疏忽的內容，包括看似過度最佳化或過度簡化的專案。*
+
+<a id="alternatives-considered"></a>
+
+## 考慮過的替代方案
+
+*必要。至少命名一個具體的替代結構，並用一行說明其落選原因。評估每個替代方案時，應基於介面深度，而非僅看實作簡單性。指出其暴露給呼叫者的複雜度以及隱藏的複雜度。當設計空間中有真正的競爭者時，應列出兩到三個替代方案。如果限制條件迫使答案唯一，列出一個即可，並將結論表述為「這是唯一可行的結構，因為...」。避免列出同一結構的變體。此部分涵蓋被選定結構考慮並拒絕的設計替代方案，而非其他落選候選者。*
+
+<a id="open-questions-and-risks"></a>
+
+## 未決問題與風險
+
+*在草圖階段注意到、需要人類介入評估的事項，以及在實作開始前值得標記的風險。以問題形式表述，而非斷言，以便人類的回答成為解決方案，而非註解。*
+
+<a id="next-implementation-step"></a>
+
+## 下一個實作步驟
+
+*根據草圖要建構的第一件事。一句話。綜合後（或如果選擇了檢查點，則在 Phase D 核准後）您會立即開始撰寫的內容。*

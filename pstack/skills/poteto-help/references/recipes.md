@@ -1,8 +1,12 @@
-# Prompts worth copying
+<a id="prompts-worth-copying"></a>
 
-Swap in the real paths, skills, and done checks. Informal wording works.
+# 值得複製的提示
 
-## Understand
+換入真實路徑、技能和完成檢查。非正式措辭也可以。
+
+<a id="understand"></a>
+
+## 理解
 
 - `/poteto-mode read <thread>. restate the underlying issue in your own words, in plain english.`
 - `/in-your-own-words <long or messy ask>`
@@ -13,16 +17,20 @@ Swap in the real paths, skills, and done checks. Informal wording works.
 - `/teach me why you implemented it this way and not <other way>. what did you trade off?`
 - `/poteto-mode take over this branch. read the decision log, find what's done, and continue. don't redo finished work.`
 
-## Build
+<a id="build"></a>
 
-- Bug: `/poteto-mode <symptom>. repro first, then fix and verify.`
-- Bug in an app: `/poteto-mode repro this with /verify-<app>. if it repros on main, fix it and show me a video as proof.`
-- Bug with a cheap test: `/poteto-mode repro <bug> first. if there's a cheap test path, /tdd it. then fix and rerun.`
-- Feature: `/poteto-mode add <behavior>. <current output> stays byte-identical. verify both.`
-- Refactor: `/poteto-mode move <code> into one module, zero behavior change. record the current output first and prove it's unchanged after.`
-- Perf: `/poteto-mode <operation> takes <time> on <fixture>. trace it, fix the measured cause, show me before and after.`
+## 構建
 
-## Design and plan
+- 錯誤：`/poteto-mode <symptom>. repro first, then fix and verify.`
+- 應用中的錯誤：`/poteto-mode repro this with /verify-<app>. if it repros on main, fix it and show me a video as proof.`
+- 帶有低成本測試的錯誤：`/poteto-mode repro <bug> first. if there's a cheap test path, /tdd it. then fix and rerun.`
+- 功能：`/poteto-mode add <behavior>. <current output> stays byte-identical. verify both.`
+- 重構：`/poteto-mode move <code> into one module, zero behavior change. record the current output first and prove it's unchanged after.`
+- 效能：`/poteto-mode <operation> takes <time> on <fixture>. trace it, fix the measured cause, show me before and after.`
+
+<a id="design-and-plan"></a>
+
+## 設計與規劃
 
 - `/poteto-mode prototype a few options for <feature>. take screenshots or videos for me to compare.`
 - `/poteto-mode we need <feature>. /architect it first, and answer open questions with prototypes. let me review before proceeding.`
@@ -31,21 +39,25 @@ Swap in the real paths, skills, and done checks. Informal wording works.
 - `/poteto-mode turn this design into a plan. small verifiable PRs, each with its own verification steps.`
 - `/poteto-mode plan the migration of <library> to <target>. small verifiable PRs. the result must match the original exactly, bugs included.`
 
-## Review and ship
+<a id="review-and-ship"></a>
 
-- `/interrogate the whole branch, but skeptically. don't change anything yet. no nitpicks unless it's a real bug or regression.` Read the dismissals too.
-- `/create-formal-verification-skill prove <property> holds in <module>, even when <steps> interleave or retry.` After merges or refactors in that code: `/maintain-formal-verification-skill`.
+## 審閱與發布
+
+- `/interrogate the whole branch, but skeptically. don't change anything yet. no nitpicks unless it's a real bug or regression.` 也要閱讀拒絕的部分。
+- `/create-formal-verification-skill prove <property> holds in <module>, even when <steps> interleave or retry.` 在那段程式碼進行合併或重構之後：`/maintain-formal-verification-skill`。
 - `/swarm check every package under <dir> against its check script. one worker per package. one report.`
 - `/poteto-mode open the pr. small ordered commits, evidence in the description.`
-- `/poteto-mode babysit this pr. get it green.` For status only: `/poteto-mode check on pr <number>. anything outstanding?`
+- `/poteto-mode babysit this pr. get it green.` 僅限狀態：`/poteto-mode check on pr <number>. anything outstanding?`
 - `/poteto-mode land the stack.`
 
-## Away and back
+<a id="away-and-back"></a>
+
+## 離開與返回
 
 - `/poteto-mode im going to bed. <goal> in a fresh worktree off <base>. done means <checks>. keep a decision log. don't ask me before committing. /loop until done. if you're truly stuck after a few hours, stop and write up why.`
-- `/show-me-your-work catch me up on what you did last night.` Read its Attention section first.
-- `/ketchup` catches you up on this chat since your last message and lists every call that waits on you.
+- `/show-me-your-work catch me up on what you did last night.` 先閱讀其 Attention 部分。
+- `/ketchup` 從你上次訊息之後，為你補上這個對話的進度，並列出所有等待你回應的呼叫。
 - `/poteto-mode full autopilot on this queue. each item is independent.`
 - `/poteto-mode autopilot these changes but stack them, don't ship. i'll land the stack.`
-- `/reflect capture what we learned so the next run doesn't repeat it.` Approve only edits that change a future decision.
-- `/bro` restates the last reply in plain words.
+- `/reflect capture what we learned so the next run doesn't repeat it.` 僅批准會改變未來決定的編輯。
+- `/bro` 以簡單的語言重新表述最後一個回覆。

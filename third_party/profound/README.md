@@ -1,16 +1,20 @@
-# Profound
+<a id="profound"></a>
 
-Cursor plugin that connects agents to [Profound](https://www.tryprofound.com) through Profound's official hosted [Model Context Protocol](https://modelcontextprotocol.io/) server.
+# 深奧
 
-Retrieve AI visibility, sentiment, and citation reports, access agent analytics, and build or run Profound Agents in the signed-in Profound account.
+Cursor 外掛，透過 Profound 官方託管的 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Profound](https://www.tryprofound.com)。
 
-## Install
+取得 AI 可見度、情感與引用報告，存取代理分析，並在已登入的 Profound 帳戶中建立或執行 Profound Agents。
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Profound**.
-3. Click **Install**, then complete the Profound sign-in prompt.
+<a id="install"></a>
 
-Or run `/add-plugin profound` in chat.
+## 安裝
+
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Profound**。
+3. 點選 **安裝**，然後完成 Profound 登入提示。
+
+或在聊天中執行 `/add-plugin profound`。
 
 ## MCP
 
@@ -25,36 +29,44 @@ Or run `/add-plugin profound` in chat.
 }
 ```
 
-Auth is OAuth 2.1 against Profound. Cursor prompts for Profound sign-in when the plugin connects — there is no API key or client ID to configure.
+驗證是透過 OAuth 2.1 對 Profound 進行。當外掛連線時，Cursor 會提示 Profound 登入，不需要設定 API 金鑰或客戶 ID。
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-| Category | Capabilities |
+## 代理可執行的工作
+
+| 分類 | 功能 |
 | --- | --- |
-| Discovery | Confirm the signed-in user, then list organizations, regions, models, categories, domains, tags, topics, and prompts |
-| Visibility | Share of voice, mentions, and position across answer engines such as ChatGPT, Perplexity, Gemini, and Google AI Overviews |
-| Citations & sentiment | Track which pages answer engines cite, and how they talk about a brand or category |
-| Agent analytics | Bot crawl reports, referral traffic from answer engines, and raw analytics |
-| Profound Agents | List, build, publish, and run Agents, then poll runs for status and outputs |
+| 探索 | 確認已登入的使用者，然後列出組織、區域、模型、類別、領域、標籤、主題與提示 |
+| 可見度 | 在 ChatGPT、Perplexity、Gemini 與 Google AI Overviews 等答案引擎中的聲量佔比、提及與排名 |
+| 引用與情感 | 追蹤答案引擎引用哪些頁面，以及它們如何討論品牌或類別 |
+| 代理分析 | 爬蟲報告、來自答案引擎的推薦流量與原始分析 |
+| Profound Agents | 列出、建立、發布與執行 Agents，然後監控執行狀態與輸出 |
 
-The hosted runtime is the source of truth for tool names and schemas. Call `whoami` as a read-only smoke test after connecting.
+託管執行環境是工具名稱與結構的來源。連線後，將 `whoami` 作為僅讀的冒煙測試呼叫。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Profound user who authorizes the connection and cannot exceed that user's permissions.
-- Analytics tools are read-only. Agent tools can create, update, publish, and run Agent definitions in the signed-in organization.
-- Enterprise plans can authenticate with a long-lived Bearer API key instead of OAuth. This plugin uses the recommended OAuth flow. See [Authentication](https://docs.tryprofound.com/mcp/authentication).
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Profound 使用者身份執行，且不能超過該使用者許可權。
+- 分析工具僅讀。Agent 工具可以在已登入的組織中建立、更新、發布與執行 Agent 定義。
+- 企業方案可以使用長期有效的 Bearer API 金鑰進行驗證，而非 OAuth。此外掛使用建議的 OAuth 流程。請參閱 [Authentication](https://docs.tryprofound.com/mcp/authentication)。
 
-- Profound MCP overview: https://docs.tryprofound.com/mcp/overview
-- Connect AI coding tools: https://docs.tryprofound.com/mcp/connect
-- Analytics capabilities: https://docs.tryprofound.com/mcp/capabilities/analytics-capabilities
-- Agents capabilities: https://docs.tryprofound.com/mcp/capabilities/agents-capabilities
-- Server URL: https://mcp.tryprofound.com/mcp
+<a id="docs"></a>
 
-Logo is Profound's official GitHub organization mark (white isotype on black).
+## 文件
 
-## License
+- Profound MCP 概述：https://docs.tryprofound.com/mcp/overview
+- 連線 AI 編碼工具：https://docs.tryprofound.com/mcp/connect
+- 分析功能：https://docs.tryprofound.com/mcp/capabilities/analytics-capabilities
+- Agents 功能：https://docs.tryprofound.com/mcp/capabilities/agents-capabilities
+- 伺服器 URL：https://mcp.tryprofound.com/mcp
+
+標誌是 Profound 官方 GitHub 組織標記（黑色背景上的白色同構圖）。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

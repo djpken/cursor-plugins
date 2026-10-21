@@ -1,16 +1,18 @@
 # Gmail
 
-Cursor plugin that connects agents to [Gmail](https://mail.google.com) through Google's remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Google 的遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Gmail](https://mail.google.com)。
 
-Search threads, read messages, manage labels and drafts, and compose mail in the signed-in Gmail account.
+搜尋郵件串、閱讀訊息、管理標籤與草稿，以及在已登入的 Gmail 帳戶中撰寫郵件。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Gmail**.
-3. Click **Install**, then complete the Google sign-in prompt.
+## 安裝
 
-Or run `/add-plugin gmail` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Gmail**。
+3. 點選 **安裝**，然後完成 Google 登入提示。
+
+或在聊天中執行 `/add-plugin gmail`。
 
 ## MCP
 
@@ -25,16 +27,20 @@ Or run `/add-plugin gmail` in chat.
 }
 ```
 
-Auth is OAuth 2.0 against Google. Cursor prompts for Google sign-in when the plugin connects.
+驗證方式是針對 Google 的 OAuth 2.0。當外掛連線時，Cursor 會提示 Google 登入。
 
-## Docs
+<a id="docs"></a>
 
-- Google MCP setup: https://developers.google.com/workspace/gmail/api/guides/configure-mcp-server
-- Workspace MCP overview: https://developers.google.com/workspace/guides/configure-mcp-servers
+## 檔案
 
-Logo is the official Gmail product icon, placed on a white tile with padding so it reads well in the Cursor UI:
+- Google MCP 設定：https://developers.google.com/workspace/gmail/api/guides/configure-mcp-server
+- Workspace MCP 概覽：https://developers.google.com/workspace/guides/configure-mcp-servers
+
+標誌是官方 Gmail 產品圖示，放置在帶有留白的白色底板上，以便在 Cursor 介面中呈現良好：
 https://www.gstatic.com/images/branding/productlogos/gmail_2026/v1/192px.svg
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

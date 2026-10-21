@@ -1,36 +1,44 @@
-# Agent Compatibility
+<a id="agent-compatibility"></a>
 
-Cursor plugin for checking how well a repo holds up under agent workflows. It pairs the published `agent-compatibility` CLI with focused reviews for startup, validation, and docs reliability.
+# Agent 相容性
 
-By default, the full pass returns one overall score and one short list of the highest-leverage fixes. If the user wants the full breakdown, the agents can expose the component scores and the reasoning behind them.
+Cursor 外掛程式，用於檢查儲存庫在 agent 工作流程下的表現。它將已發布的 `agent-compatibility` CLI 與針對啟動、驗證及檔案可靠性的專注審查相結合。
 
-## What it includes
+預設情況下，完整檢查會回傳一個總體分數，以及一份列出最高效益修正專案的簡短清單。如果使用者需要完整的細項分析，agent 可以顯示各組成分數及其背後的推理過程。
 
-- `check-agent-compatibility`: full compatibility pass
-- `compatibility-scan-review`: raw CLI-backed scan
-- `startup-review`: cold-start and bootstrap review
-- `validation-review`: small-change verification review
-- `docs-reliability-review`: docs reliability review
+<a id="what-it-includes"></a>
 
-## Score model
+## 包含內容
 
-- `Agent Compatibility Score`: final blended score shown to the user
-- `Deterministic Compatibility Score`: raw score from the published CLI
-- `Startup Compatibility Score`: how much guesswork it takes to boot the repo
-- `Validation Loop Score`: how practical it is to verify a small change
-- `Docs Reliability Score`: how closely the docs match the real setup path
+- `check-agent-compatibility`：完整相容性檢查
+- `compatibility-scan-review`：原始 CLI 支援的掃描
+- `startup-review`：冷啟動與初始化審查
+- `validation-review`：小型變更驗證審查
+- `docs-reliability-review`：檔案可靠性審查
 
-The final score blends the deterministic scan with the workflow checks:
+<a id="score-model"></a>
+
+## 分數模型
+
+- `Agent Compatibility Score`：顯示給使用者的最終混合分數
+- `Deterministic Compatibility Score`：來自已發布 CLI 的原始分數
+- `Startup Compatibility Score`：啟動儲存庫所需的猜測程度
+- `Validation Loop Score`：驗證小型變更的實用性
+- `Docs Reliability Score`：檔案與實際設定路徑的吻合程度
+
+最終分數將確定性掃描與工作流程檢查進行混合：
 
 ```text
 Agent Compatibility Score = round((deterministic * 0.7) + (workflow * 0.3))
 ```
 
-The CLI also reports an accelerator layer for committed agent tooling. That extra context informs recommendations, but it does not inflate the deterministic compatibility score itself.
+CLI 也會報告已提交的 agent 工具加速器層。這些額外資訊會影響建議內容，但不會膨脹確定性相容性分數本身。
 
-## How to use it
+<a id="how-to-use-it"></a>
 
-Use `check-agent-compatibility` when you want the full pass. That skill fans out to the four review agents above, then returns a compact result:
+## 使用方式
+
+當您需要完整檢查時，請使用 `check-agent-compatibility`。該 skill 會分發至上述四個審查 agent，然後回傳精簡的結果：
 
 ```md
 ## Agent Compatibility Score: 72/100
@@ -40,47 +48,51 @@ Top fixes
 - Second issue
 ```
 
-Ask for a breakdown if you want the component scores or the weighting.
+如果您需要組成分數或權重，請要求提供細項分析。
 
-## CLI notes
+<a id="cli-notes"></a>
 
-The plugin does not bundle the scanner. It runs the published npm package when needed.
+## CLI 說明
 
-Default scan (compact terminal dashboard):
+此外掛程式不包含掃描器。它會在需要時執行已發布的 npm 套件。
+
+預設掃描（精簡終端機儀錶板）：
 
 ```bash
 npx -y agent-compatibility@latest .
 ```
 
-JSON output:
+JSON 輸出：
 
 ```bash
 npx -y agent-compatibility@latest --json .
 ```
 
-Markdown output:
+Markdown 輸出：
 
 ```bash
 npx -y agent-compatibility@latest --md .
 ```
 
-Plain text output:
+純文字輸出：
 
 ```bash
 npx -y agent-compatibility@latest --text .
 ```
 
-Config override for ignored paths or weight overrides:
+用於忽略路徑或權重覆蓋的設定覆寫：
 
 ```bash
 npx -y agent-compatibility@latest . --config ./agent-compatibility.config.json
 ```
 
-The scanner is heuristic. It scores repo signals and surfaces likely friction, but it is not a full quality verdict on the codebase.
+掃描器是啟發式的。它對儲存庫訊號進行評分並顯示可能的摩擦點，但並非對程式碼庫的完整品質判定。
 
-## Local install
+<a id="local-install"></a>
 
-If you want to use this plugin directly, symlink this directory into:
+## 本機安裝
+
+如果您想直接使用此外掛程式，請將此資料夾建立符號連結至：
 
 ```bash
 ~/.cursor/plugins/local/agent-compatibility

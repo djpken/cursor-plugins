@@ -1,48 +1,60 @@
-# Linear Tickets
+<a id="linear-tickets"></a>
 
-## What this source contains
+# Linear 票
 
-- Issues describing features, bugs, and their motivation
-- Project docs attached to issues (often PRDs or specs)
-- Parent/sub-issue relationships (broader initiative → specific tickets)
-- Comments on issues (clarifications, scope changes, "why we're doing this" rationale)
-- Labels (e.g., `compliance`, `customer-request`, `perf`) that signal the type of motivation
-- Status updates that explain scope changes
-- Attachments and linked GitHub PRs
+<a id="what-this-source-contains"></a>
 
-Linear is where the product/business context often lives: the "we're doing this because customer X asked" or "this is for the Q3 compliance initiative" layer.
+## 此來源包含什麼
 
-## How to search it
+- 描述功能、錯誤及其動機的議題
+- 附在議題上的專案檔案（通常是 PRD 或規格）
+- 父/子議題關係（較廣泛的計畫 → 特定票）
+- 議題上的評論（澄清、範圍變更、「我們為什麼要做這件事」的理由）
+- 標籤（例如 `compliance`、`customer-request`、`perf`）表示動機型別
+- 狀態更新說明範圍變更
+- 附件和連結的 GitHub PR
 
-Use the Linear MCP.
+Linear 通常是產品/業務情境所在：「我們因為客戶 X 要求而做這件事」或「這是 Q3 合規計畫」的層次。
 
-1. **Start with linked tickets.** If the seed commits or PRs reference ticket IDs (e.g., `ENG-1234`, `[BUG-567]`), fetch those first with `get_issue`. Read the full issue including comments.
-2. **List related issues by keyword.** Use `list_issues` with text search for the feature name, key symbol, or business term. Try multiple phrasings.
-3. **Walk the issue tree.** If you land on a sub-issue, fetch its parent. Sub-issues are tactical. Parents often carry the "why."
-4. **Read project docs.** If the issue belongs to a project, use `get_project` and check attached docs. Project-level documents are where specs and rationale are most often captured.
-5. **Check labels and milestones.** Labels hint at the category of motivation (customer-request, incident-followup, compliance). Milestones tie work to deadlines, which often reveal motivation.
+<a id="how-to-search-it"></a>
 
-## What good evidence looks like here
+## 如何搜尋
 
-- An issue description stating the business problem: "Customer Acme needs X because of their SOC2 audit"
-- A comment recording a decision: "We decided to go with approach B because approach A would require touching the billing service"
-- A parent issue titled like an initiative: "Q3 Enterprise Readiness" or "Reduce Payment Failures"
-- An attached PRD or spec
-- Labels like `customer:acme`, `incident-followup`, `compliance`, `perf-regression`
+使用 Linear MCP。
 
-## Common pitfalls
+1. **從連結的票開始。** 如果種子 commit 或 PR 引用票 ID（例如 `ENG-1234`、`[BUG-567]`），先用 `get_issue` 取得這些票。閱讀完整議題，包括評論。
+2. **按關鍵字列出相關議題。** 使用 `list_issues` 進行文字搜尋，尋找功能名稱、關鍵符號或業務詞彙。嘗試不同的措辭。
+3. **走議題樹。** 如果你落在子議題上，取得其父議題。子議題是策略性的。父議題通常包含「為什麼」。
+4. **閱讀專案檔案。** 如果議題屬於專案，使用 `get_project` 並檢查附上的檔案。專案層級的檔案通常是規格和理由最常被記錄的地方。
+5. **檢查標籤和里程碑。** 標籤暗示動機的類別（客戶請求、事件後續、合規）。里程碑將工作與截止日期連結，這通常揭示動機。
 
-- **Scope drift.** The ticket the PR references may have been closed and reopened with a different scope. Read the whole history.
-- **Mechanical templates.** Some teams require "Why" sections but fill them with boilerplate. Generic text ("improve user experience") is probably not a real answer.
-- **Stale tickets.** Old tickets often reflect a version of the plan that changed. Check dates and cross-reference with the code's ship date.
-- **Closed-as-duplicate chains.** Follow the duplicate-of relationships back to the canonical ticket.
-- **Private workspace content.** If you can't access an issue, note that as a gap rather than guessing.
+<a id="what-good-evidence-looks-like-here"></a>
 
-## What to return
+## 這裡的良好證據是什麼
 
-For each relevant ticket:
-- Ticket ID and title
-- The problem/motivation quoted from the description or comments (not paraphrased. The synthesizer needs the exact text to cite)
-- Labels, parent issue, project
-- Author, created date, closed date
-- Link to the ticket if available
+- 議題描述說明業務問題：「客戶 Acme 需要 X，因為他們的 SOC2 稽核」
+- 評論記錄決策：「我們決定採用方案 B，因為方案 A 需要修改帳單服務」
+- 父議題標題類似計畫：「Q3 企業準備」或「減少付款失敗」
+- 附上的 PRD 或規格
+- 標籤如 `customer:acme`、`incident-followup`、`compliance`、`perf-regression`
+
+<a id="common-pitfalls"></a>
+
+## 常見陷阱
+
+- **範圍漂移。** PR 參考的票可能已被關閉並以不同範圍重新開啟。閱讀整個歷史。
+- **機械模板。** 有些團隊要求「為什麼」欄位，但填入了通用內容。通用文字（「改善使用者體驗」）可能不是真正的答案。
+- **過時的票。** 舊票通常反映已變更的計畫版本。檢查日期並與程式碼的發布日期交叉參考。
+- **關閉為重複的鏈。** 沿著重複關係回到原始票。
+- **私人工作區內容。** 如果你無法存取議題，將其記錄為缺口，而不是猜測。
+
+<a id="what-to-return"></a>
+
+## 回傳內容
+
+對於每個相關票：
+- 票 ID 和標題
+- 從描述或評論中引述的問題/動機（不是改寫。合成器需要確切的文字來引用）
+- 標籤、父議題、專案
+- 作者、建立日期、關閉日期
+- 票的連結（如果可用）

@@ -1,23 +1,31 @@
 ---
 name: check-compiler-errors
-description: Run compile and type-check commands and report failures
+description: "執行編譯與型別檢查指令，並回報失敗專案"
 ---
 
-# Check compiler errors
+<a id="check-compiler-errors"></a>
 
-## Trigger
+# 檢查編譯器錯誤
 
-Compile or type-check failures are blocking local validation or CI.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發條件
 
-1. Run the repo's compile and type-check commands.
-2. Summarize errors by file and type.
-3. Fix the highest-confidence issues first.
-4. Re-run checks until clean or blocked.
+編譯或型別檢查失敗，阻擋了本機驗證或 CI。
 
-## Output
+<a id="workflow"></a>
 
-- Current compile and type-check status
-- Error summary grouped by file and category
-- Fixes applied and remaining blockers
+## 工作流程
+
+1. 執行儲存庫的編譯與型別檢查指令。
+2. 依檔案與型別彙整錯誤摘要。
+3. 優先修復信心度最高的問題。
+4. 重新執行檢查，直到透過或受阻為止。
+
+<a id="output"></a>
+
+## 輸出
+
+- 目前的編譯與型別檢查狀態
+- 依檔案與類別分組的錯誤摘要
+- 已套用的修復與剩餘的阻擋專案

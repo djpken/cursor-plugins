@@ -1,16 +1,18 @@
 # Workable
 
-Cursor plugin that connects agents to [Workable](https://www.workable.com) through Workable's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Workable 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Workable](https://www.workable.com)。
 
-Search and advance candidates, manage jobs, offers, and requisitions, and work with employee, time-off, and performance records in the signed-in Workable account.
+在已登入的 Workable 帳戶中搜尋和推進候選人、管理職位、offer 和 requisition，並處理員工、休假和績效記錄。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Workable**.
-3. Click **Install**, then complete the Workable sign-in prompt.
+## 安裝
 
-Or run `/add-plugin workable` in chat.
+1. 開啟 **Cursor Settings → Plugins**。
+2. 搜尋 **Workable**。
+3. 點選 **Install**，然後完成 Workable 登入提示。
+
+或在聊天中執行 `/add-plugin workable`。
 
 ## MCP
 
@@ -25,48 +27,58 @@ Or run `/add-plugin workable` in chat.
 }
 ```
 
-Auth is OAuth 2.0 with dynamic discovery and Dynamic Client Registration. Cursor registers itself and prompts for Workable sign-in when the plugin connects — there is no API key to configure.
+驗證採用 OAuth 2.0，支援動態探索和 Dynamic Client Registration。Cursor 會自行註冊，並在外掛連線時提示 Workable 登入，無需設定 API 金鑰。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-MCP is included on every Workable subscription plan at no extra cost, and no admin role is required — access is scoped to the signed-in user's role.
+## 連線前注意事項
 
-Workable's MCP OAuth checks the client's redirect URI against a pre-approved list. Workable names Cursor as a supported client, but if sign-in fails with a **redirect URI mismatch**, ask Workable Support to allow Cursor's two fixed callbacks:
+MCP 已包含於每個 Workable 訂閱方案，無額外費用，且不需要管理員角色，存取範圍僅限於登入使用者角色的許可權。
 
-| Surface | Redirect URI |
+Workable 的 MCP OAuth 會檢查客戶端的 redirect URI 是否符合預核准列表。Workable 將 Cursor 列為支援的客戶端，但如果登入失敗並顯示 **redirect URI mismatch**，請聯絡 Workable Support 允許 Cursor 的兩個固定回呼：
+
+| 介面 | Redirect URI |
 |:--------|:-------------|
 | Desktop | `http://localhost:8787/callback` |
-| Web and Cloud Agents | `https://www.cursor.com/agents/mcp/oauth/callback` |
+| Web 和 Cloud Agents | `https://www.cursor.com/agents/mcp/oauth/callback` |
 
-One quirk worth knowing: every tool except `get_accounts` takes an `account` parameter, so the agent has to call `get_accounts` first and reuse the returned subdomain.
+一個值得知道的特性：除了 `get_accounts` 之外，每個工具都需要 `account` 引數，因此代理必須先呼叫 `get_accounts`，並重用返回的子域名。
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-| Category | Capabilities |
+## 代理可執行的工作
+
+| 分類 | 能力 |
 | --- | --- |
-| Jobs & requisitions | Create and manage jobs, job posts, requisitions, and pipeline stages |
-| Candidates | Search, create, comment on, rate, and move candidates through stages |
-| Offers & members | Manage offers, team members, and account configuration |
-| Employees | Employee records, departments, legal entities, and work schedules |
-| Time off & tracking | Time-off requests and balances, plus time tracking entries |
-| Performance | Performance reviews and review cycles |
+| 職位與 requisition | 建立和管理職位、職位貼文、requisition 和 pipeline 階段 |
+| 候選人 | 搜尋、建立、評論、評分，並將候選人推進至不同階段 |
+| Offer 與成員 | 管理 offer、團隊成員和帳戶設定 |
+| 員工 | 員工記錄、部門、法人實體和工作排班 |
+| 休假與追蹤 | 休假申請和餘額，以及時間追蹤記錄 |
+| 績效 | 績效評估和評估週期 |
 
-The hosted runtime is the source of truth for tool names and schemas. Call `get_accounts` as a read-only smoke test after connecting — you need its `subdomain` for every other tool anyway.
+託管 runtime 是工具名稱和 schema 的來源依據。連線後，請呼叫 `get_accounts` 作為僅讀的 smoke test，因為每個其他工具都需要它的 `subdomain`。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Workable user who authorizes the connection and cannot exceed that user's role permissions.
-- The server spans ATS **and** HRIS, so it can write to employee, time-off, time-tracking, and performance data — not just recruiting.
-- Transport is stateless streamable HTTP in JSON mode. There is no SSE endpoint.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Workable 使用者身份執行，且不能超出該使用者角色的許可權。
+- 伺服器同時涵蓋 ATS **和** HRIS，因此可以寫入員工、休假、時間追蹤和績效資料，不只是招募相關資料。
+- 傳輸採用無狀態的 streamable HTTP 於 JSON 模式，沒有 SSE endpoint。
+
+<a id="docs"></a>
+
+## 檔案
 
 - Workable MCP server: https://workable.readme.io/reference/workable-mcp-server
-- Using the Workable MCP server: https://help.workable.com/hc/en-us/articles/39415735712407-Using-the-Workable-MCP-server-to-connect-to-AI-assistant
+- 使用 Workable MCP server: https://help.workable.com/hc/en-us/articles/39415735712407-Using-the-Workable-MCP-server-to-connect-to-AI-assistant
 - Server URL: https://mcp.workable.com/mcp
 
-Logo is Workable's official mark, from the `Workable` GitHub organization.
+Logo 是 Workable 的官方標誌，來自 `Workable` GitHub 組織。
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

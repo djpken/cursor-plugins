@@ -1,11 +1,17 @@
-# CLI for Agents
+<a id="cli-for-agents"></a>
 
-Cursor plugin with a single skill that encodes patterns for **CLIs meant to be driven by coding agents**: non-interactive flags first, layered `--help` with examples, stdin and pipelines, fast actionable errors, idempotency, `--dry-run`, and predictable command structure.
+# 代理用的 CLI
 
-## What it includes
+Cursor 外掛，包含單一 skill，其中編碼了**供程式碼代理驅動的 CLI** 的正規化：優先使用非互動式旗標、分層的 `--help` 並附範例、stdin 與管線、快速且可採取行動的錯誤訊息、冪等性、`--dry-run`，以及可預測的指令結構。
 
-- `cli-for-agents`: design and review guidance for agent-friendly command-line tools
+<a id="what-it-includes"></a>
 
-## When to use it
+## 包含內容
 
-Use when you are building or refactoring a CLI, writing subcommand help, or reviewing whether an existing tool will block agents (interactive prompts, missing examples, ambiguous errors).
+- `cli-for-agents`：針對代理友善之命令列工具的設計與審查指引
+
+<a id="when-to-use-it"></a>
+
+## 適用時機
+
+當您正在建置或重構 CLI、撰寫子命令說明，或審查現有工具是否會阻擋代理（例如互動式提示、缺少範例、錯誤訊息含糊不清）時，請使用此工具。

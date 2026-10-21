@@ -1,46 +1,58 @@
 ---
 name: create-verification-skill
-description: "Generate a project-local verification skill that drives your app the way a user does — any language, framework, or platform. Use for /create-verification-skill, \"make a control skill for this repo\", or when a project has no scripted way to prove UI/CLI/service behavior."
+description: "產生一個專案本地的驗證 skill，以使用者的方式驅動應用程式，適用於任何語言、框架或平臺。適用於 /create-verification-skill、\"為這個儲存庫建立一個控制 skill\"，或當專案沒有指令碼化方式來證明 UI/CLI/服務行為時使用。"
 disable-model-invocation: true
 ---
 
-# Create a verification skill
+<a id="create-a-verification-skill"></a>
+
+# 建立驗證 skill
 
 In Claude Code, read [the Claude Code adapter](../../docs/harness/claude-code.md) once per session before you follow this skill. It maps the Cursor names in pstack skills to Claude Code.
 
-Every serious project needs a scripted way to drive the real app and prove behavior: launch it, exercise a feature the way a user would, and capture evidence. This skill generates that as a project-local skill (`.cursor/skills/verify-<app>/`) tailored to the repo. You write the generator's output for the next agent, not for a human: it will be read cold, mid-task, by an agent that has never seen the app.
+每個嚴肅的專案都需要一種指令碼化方式來驅動實際應用程式並證明其行為：啟動它、以使用者的方式操作功能，並擷取證據。此 skill 會將這些內容生成為一個專案本地的 skill (`.cursor/skills/verify-<app>/`)，並針對該儲存庫進行調整。你為下一個 agent 撰寫產生器的輸出，而非為人類撰寫：它將由一個從未見過該應用程式的 agent 在任務中途冷讀。
 
-## 1. Interview the repo, not the user
+<a id="1-interview-the-repo-not-the-user"></a>
 
-Answer these from the codebase and only ask the user what you cannot observe:
+## 1. 訪談儲存庫，而非使用者
 
-- **Surface:** what does a user actually touch? A web UI, a CLI/TUI, a desktop app, an API, a mobile app, a library? A repo can have several; pick the primary one and note the rest.
-- **Run:** how does the app start locally? Prefer the repo's own documented dev command (package scripts, Makefile, README quickstart). Note ports, env vars, seed data, auth.
-- **Drive:** how can an agent interact with it programmatically? Existing harnesses first — Playwright/Cypress specs, expect scripts, PTY helpers, curl-able endpoints, a debug port. Only then pick a generic recipe: browser/CDP for web and Electron, a tmux/PTY harness for CLI/TUI, plain HTTP for services.
-- **Observe:** what evidence can be captured? Screenshots, terminal transcripts, response bodies, logs, exit codes, DB state.
-- **Isolate:** can two instances run side by side (ports, data dirs, profiles)? If not, say so in the generated skill: refusing to double-drive a shared instance beats corrupting the user's session.
+從程式碼庫中回答以下問題，僅就你無法觀察到的部分詢問使用者：
 
-If the checkout doesn't build or start as-is, fix that first (or report it precisely) before generating; a skill written against a broken base teaches wrong steps. When an irrelevant missing asset blocks startup (a static dir the API never serves, a sample config), the generated skill may create it, clearly marked as verification scaffolding, and remove it in cleanup.
+- **介面：** 使用者實際接觸的是什麼？網頁 UI、CLI/TUI、桌面應用程式、API、行動應用程式，還是函式庫？一個儲存庫可能有多個介面；請選擇主要的一個，並註記其餘的。
+- **執行：** 應用程式如何在本地啟動？優先使用儲存庫自身檔案記載的開發命令（package scripts、Makefile、README 快速入門）。註記埠號、環境變數、種子資料、驗證。
+- **驅動：** agent 如何以程式化方式與其互動？優先使用現有的測試框架，例如 Playwright/Cypress 規格、expect 指令碼、PTY 輔助工具、可用 curl 的端點，或除錯埠。只有在這些都不可用時，才選擇通用配方：網頁和 Electron 使用瀏覽器/CDP，CLI/TUI 使用 tmux/PTY 框架，服務使用純 HTTP。
+- **觀察：** 可以擷取哪些證據？螢幕截圖、終端機記錄、回應主體、紀錄、結束程式碼、資料庫狀態。
+- **隔離：** 兩個例項能否並行執行（埠號、資料目錄、設定檔）？如果不能，請在產生的 skill 中說明：拒絕雙重驅動共享例項，優於損壞使用者的工作階段。
 
-## 2. Generate the skill
+如果 checkout 無法直接建置或啟動，請先修復該問題（或精確報告它）再生成；針對損壞基礎撰寫的 skill 會教導錯誤的步驟。當無關的缺失資產阻擋啟動時（例如 API 從未提供的靜態目錄、範例設定檔），產生的 skill 可以建立該資產，並清楚標記為驗證腳手架，並在清理時移除它。
 
-Write `.cursor/skills/verify-<app>/SKILL.md` with YAML frontmatter (`name: verify-<app>` and a `description` that names the app, the surface, and when to reach for it — without frontmatter the skill never registers) and these sections, each grounded in what the interview actually found (no placeholders left):
+<a id="2-generate-the-skill"></a>
 
-- **Launch:** the exact command that starts the app for verification, and how to tell it's ready (a log line, a prompt). Launch must reach a usable state from an empty data dir, including any migrations and seed data. Ready means usable, not just that a process answers. A database health check can pass while its init scripts are still running. Include teardown. For a short-lived CLI or TUI there is no server to keep alive: launch means build the binary (or install deps) once, then start each drive in its own isolated PTY or tmux session.
-- **Doctor:** one read-only check that answers "is this instance worth driving?" — process up, right version/build, port owned by us, auth valid. An agent runs this first whenever anything looks off.
-- **Drive:** the harness recipe with real selectors/commands from this repo, not examples. Prefer stable handles (ARIA labels, data attributes, prompt strings, route paths) over coordinates and tab order.
-- **Evidence:** what to capture for a proof and where it goes. State the proof standards: exercise the real user path, not internal setters or test-only endpoints; capture the action and the resulting state, not just the final screen; verify side effects (files written, rows inserted, messages sent) alongside what's visible; mocks only where a production boundary already isolates the external system. When the safe path is a dry-run or test mode, verify what it actually skips by observing (files, network, git refs) rather than trusting its name: some dry-runs still touch the network or open a browser.
-- **Cleanup:** how to tear down instances the run created. Never kill by process name; kill what you started. Cleanup removes instances and scratch state, never the evidence: proof artifacts survive the teardown, in a location the skill names.
-- **Helpers:** any script the skill ships is executable and its invocation is shown in the skill body. A helper the reader has to reverse-engineer is not a helper.
+## 2. 產生 skill
 
-## 3. Seed the feature map
+撰寫 `.cursor/skills/verify-<app>/SKILL.md`，包含 YAML frontmatter（`name: verify-<app>` 以及一個 `description`，其中指明應用程式、介面，以及何時使用它，沒有 frontmatter 則 skill 永遠不會註冊），並包含以下章節，每個章節都必須基於訪談實際發現的內容（不得留有佔位符）：
 
-Create `.cursor/skills/verify-<app>/features/README.md` plus one file per user-facing feature you can identify (aim for the top 3-5 to start, from routes, commands, menus, or docs). Follow the shape in [`references/feature-map-example/`](references/feature-map-example/), with a README index and one file per feature. Each file answers, from the user's point of view: what the feature is, how to reach it, how to drive it with the harness, and what observable end state proves it works. The four H2s are `Sub-features`, `How to get to it (user POV)`, `Driving it with <harness>`, and `Gotchas`. If the seed data lacks a precondition that a journey needs, the journey reports a failure and the reason goes in that feature's `Gotchas`. Never weaken the journey to make it pass. The map is the repo's maintained verification source; a proof that drives one convenient entry point is incomplete when the map lists others.
+- **啟動：** 啟動應用程式進行驗證的精確命令，以及如何判斷它已就緒（一行紀錄、一個提示符號）。啟動必須從空的資料目錄達到可用狀態，包括任何遷移和種子資料。就緒意味著可用，而不僅僅是程序有回應。資料庫健康檢查可能透過，但其初始化指令碼仍在執行中。包含拆除步驟。對於短生命週期的 CLI 或 TUI，沒有需要保持存活的伺服器：啟動意味著一次建置二進位檔（或安裝相依性），然後在各自隔離的 PTY 或 tmux 工作階段中啟動每次驅動。
+- **診斷：** 一個唯讀檢查，回答「這個例項值得驅動嗎？」，包括程序是否執行、版本/建置是否正確、埠號是否由我們擁有、驗證是否有效。當任何情況看起來異常時，agent 會首先執行此檢查。
+- **驅動：** 使用來自此儲存庫的實際選擇器/命令的框架配方，而非範例。優先使用穩定的控制程式碼（ARIA 標籤、data 屬性、提示字串、路由路徑），而非座標和標籤順序。
+- **證據：** 證明需要擷取什麼，以及存放位置。說明證明標準：操作真實的使用者路徑，而非內部 setter 或僅供測試的端點；擷取動作和產生的狀態，而不僅僅是最終螢幕；驗證副作用（寫入的檔案、插入的列、傳送的訊息），與可見內容並行；僅在生產邊界已隔離外部系統的地方使用模擬。當安全路徑是 dry-run 或測試模式時，透過觀察（檔案、網路、git refs）來驗證它實際跳過了什麼，而不是相信其名稱：某些 dry-run 仍會觸及網路或開啟瀏覽器。
+- **清理：** 如何拆除執行期間建立的例項。永遠不要透過程序名稱殺死程序；只殺死你啟動的程序。清理移除例項和暫存狀態，但絕不移除證據：證明產物在拆除後仍然存在，位於 skill 指定的位置。
+- **輔助工具：** skill 隨附的任何指令碼都必須可執行，且其呼叫方式顯示在 skill 主體中。需要讀者逆向工程的輔助工具不是輔助工具。
 
-## 4. Prove the generated skill before handing it over
+<a id="3-seed-the-feature-map"></a>
 
-Run its own instructions end to end once: launch, doctor, drive ONE mapped feature (one is enough; the map exists so later runs can cover the rest), capture evidence, clean up. After cleanup, confirm the evidence still exists at the named location — a cleanup that eats the proof fails this step. Fix what fails, and run the generated cleanup after every failed iteration too, so broken attempts don't strand processes and ports. A generated skill that was never executed is a draft, not a deliverable. If you proved it in a stand-in for the real target (a container in place of a fresh VM, a local stack in place of a remote one), list every setup step the stand-in did that the target will not. Those steps stay unverified until a run on the real target covers them.
+## 3. 初始化功能地圖
 
-## 5. Offer the maintenance loop
+建立 `.cursor/skills/verify-<app>/features/README.md`，以及每個可識別的使用者端功能一個檔案（目標是前 3-5 個，來自路由、命令、選單或檔案）。遵循 [`references/feature-map-example/`](references/feature-map-example/) 中的格式，包含 README 索引和每個功能一個檔案。每個檔案從使用者的角度回答：功能是什麼、如何到達它、如何使用框架驅動它，以及什麼可觀察的終態證明它運作正常。四個 H2 標題是 `Sub-features`、`How to get to it (user POV)`、`Driving it with <harness>` 和 `Gotchas`。如果種子資料缺乏旅程所需的前置條件，旅程會報告失敗，原因記錄在該功能的 `Gotchas` 中。永遠不要削弱旅程以使其透過。地圖是儲存庫維護的驗證來源；當地圖列出其他入口點時，僅驅動一個方便入口點的證明是不完整的。
 
-Point the user at `/maintain-verification-skill` for keeping the map honest as the app changes. Suggest a cadence only if they ask.
+<a id="4-prove-the-generated-skill-before-handing-it-over"></a>
+
+## 4. 在交付前證明產生的 skill
+
+端到端執行一次其自身的說明：啟動、診斷、驅動一個已對映的功能（一個就足夠；地圖的存在是為了讓後續執行覆蓋其餘部分）、擷取證據、清理。清理後，確認證據仍位於指定位置，清理如果吞噬證明則此步驟失敗。修復失敗的部分，並在每次失敗的迭代後也執行產生的清理，以便損壞的嘗試不會遺留程序和埠號。從未執行過的產生 skill 是草稿，而非交付物。如果你在真實目標的替代品上證明瞭它（例如用容器代替新的 VM，用本地堆疊代替遠端堆疊），請列出替代品執行了而目標不會執行的每個設定步驟。這些步驟在真實目標上的執行覆蓋它們之前，仍處於未驗證狀態。
+
+<a id="5-offer-the-maintenance-loop"></a>
+
+## 5. 提供維護迴圈
+
+引導使用者參考 `/maintain-verification-skill`，以便在應用程式變更時保持地圖的準確性。僅當他們詢問時，才建議頻率。

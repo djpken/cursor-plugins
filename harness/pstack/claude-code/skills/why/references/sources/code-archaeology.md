@@ -1,21 +1,27 @@
-# Code Archaeology (git + in-repo)
+<a id="code-archaeology-git--in-repo"></a>
 
-## What this source contains
+# 程式碼考古（git + 儲存庫內）
 
-- Commit history (messages, dates, authors, diffs)
-- PR descriptions, review comments, and discussion threads (via `gh`)
-- Inline code comments, TODOs, FIXMEs, deprecation notes
-- ADRs (architectural decision records) if the repo keeps them
-- Tests, whose names and assertions often encode the edge cases that motivated a change
-- Related files modified in the same commits (co-change signal)
-- CHANGELOG entries and release notes in the repo
-- Issue/ticket IDs in commit messages and PR bodies
+<a id="what-this-source-contains"></a>
 
-The most trustworthy source, tied directly to the code, and the most complete. Everything that went through the repo should be here.
+## 此來源包含什麼
 
-## How to search it
+- 提交歷史（訊息、日期、作者、差異）
+- PR 描述、審閱評論與討論串（透過 `gh`）
+- 行內程式碼註解、TODO、FIXME、棄用說明
+- ADR（架構決策記錄），若儲存庫保留這些記錄
+- 測試，其名稱與斷言常編碼了促成變更的邊界案例
+- 同一提交中修改的相關檔案（共同變更訊號）
+- 儲存庫中的 CHANGELOG 條目與發行說明
+- 提交訊息與 PR 正文中的問題/票單 ID
 
-Expand the seed commit list:
+最可信的來源，直接與程式碼相關，且最完整。所有經過儲存庫的內容都應在此處。
+
+<a id="how-to-search-it"></a>
+
+## 如何搜尋
+
+擴充初始提交列表：
 
 ```bash
 # History through renames
@@ -37,7 +43,7 @@ git show <hash>
 git log <old>..<new> -p -- <file>
 ```
 
-Look for out-of-band docs:
+尋找外部檔案：
 
 ```bash
 # ADRs often live in docs/adr/ or similar

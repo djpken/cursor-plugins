@@ -1,16 +1,18 @@
 # Greenhouse
 
-Cursor plugin that connects agents to [Greenhouse](https://www.greenhouse.com) Recruiting through Greenhouse's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Greenhouse 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Greenhouse](https://www.greenhouse.com) 招募系統。
 
-Search candidates, jobs, and applications, review scorecards and interview stages, and, where your admin allows it, take recruiting actions in the signed-in Greenhouse organization.
+搜尋候選人、職位和申請，檢視評分卡和麵試階段，並且在您的管理員允許的情況下，在已登入的 Greenhouse 組織中執行招募操作。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Greenhouse**.
-3. Click **Install**, then complete the Greenhouse sign-in prompt.
+## 安裝
 
-Or run `/add-plugin greenhouse` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Greenhouse**。
+3. 點選 **安裝**，然後完成 Greenhouse 登入提示。
+
+或在聊天中執行 `/add-plugin greenhouse`。
 
 ## MCP
 
@@ -25,32 +27,40 @@ Or run `/add-plugin greenhouse` in chat.
 }
 ```
 
-Auth is OAuth 2.0 against Greenhouse with PKCE and dynamic client registration. Cursor prompts for Greenhouse sign-in when the plugin connects — there is no API key to configure. The server requests the `greenhouse:mcp_client` scope.
+認證是針對 Greenhouse 的 OAuth 2.0，使用 PKCE 和動態客戶端註冊。當外掛連線時，Cursor 會提示 Greenhouse 登入，不需要設定 API 金鑰。伺服器請求 `greenhouse:mcp_client` 範圍。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-A Greenhouse **Site Admin** must enable MCP scopes under **Configure → Dev Center → MCP Access** and save. Until scopes are saved, every sign-in ends on Greenhouse's "Unable to authorize" page. Greenhouse MCP is available on Greenhouse Recruiting Core, Plus, and Pro.
+## 連線前
 
-If sign-in still ends on "Unable to authorize", ask the Site Admin to add Cursor's redirect URLs in the **Clients** tab of MCP Access:
+Greenhouse **網站管理員** 必須在 **Configure → Dev Center → MCP Access** 下啟用 MCP 範圍並儲存。直到範圍儲存後，每次登入都會在 Greenhouse 的「無法授權」頁面結束。Greenhouse MCP 可在 Greenhouse Recruiting Core、Plus 和 Pro 上使用。
+
+如果登入仍然在「無法授權」頁面結束，請要求網站管理員在 MCP Access 的 **Clients** 選項卡中新增 Cursor 的 redirect URL：
 
 - `https://www.cursor.com/agents/mcp/oauth/callback` (Grok Bot)
-- `http://localhost:8787/callback` (Grok Bot local fallback)
+- `http://localhost:8787/callback` (Grok Bot 本地 fallback)
 - `cursor://anysphere.cursor-mcp/oauth/callback` (Cursor IDE)
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Greenhouse user who authorizes the connection, limited by both the organization's enabled MCP scopes and that user's Greenhouse permissions. Unconfigured organizations get read-only scopes.
-- Greenhouse blocks delete endpoints and asks for confirmation before high-impact writes such as rejecting or hiring.
-- Greenhouse MCP is in beta; tool inputs and outputs may change without notice.
+## 注意
 
-## Docs
+- 工具呼叫以授權連線的 Greenhouse 使用者身份執行，受組織啟用的 MCP 範圍和該使用者 Greenhouse 許可權的限制。未設定的組織會獲得僅讀範圍。
+- Greenhouse 會阻止刪除端點，並在執行高影響寫入操作（如拒絕或僱用）之前要求確認。
+- Greenhouse MCP 處於 beta 階段；工具輸入和輸出可能隨時變更，恕不另行通知。
 
-- Greenhouse MCP overview: https://support.greenhouse.io/hc/en-us/articles/52090956642075-Greenhouse-MCP
-- Set up Greenhouse MCP with supported AI tools: https://support.greenhouse.io/hc/en-us/articles/52096319906971-Set-up-Greenhouse-MCP-with-supported-AI-tools
-- Server URL: https://mcp.us.greenhouse.io/mcp
+<a id="docs"></a>
 
-Logo is Greenhouse's official app icon (white "g" on the brand green tile) from https://www.greenhouse.com.
+## 文件
 
-## License
+- Greenhouse MCP 概述：https://support.greenhouse.io/hc/en-us/articles/52090956642075-Greenhouse-MCP
+- 設定 Greenhouse MCP 與支援的 AI 工具：https://support.greenhouse.io/hc/en-us/articles/52096319906971-Set-up-Greenhouse-MCP-with-supported-AI-tools
+- 伺服器 URL：https://mcp.us.greenhouse.io/mcp
+
+標誌是 Greenhouse 官方應用圖示（品牌綠色底上的白色「g」），來自 https://www.greenhouse.com.
+
+<a id="license"></a>
+
+## 許可
 
 MIT

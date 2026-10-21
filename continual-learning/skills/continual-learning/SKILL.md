@@ -1,24 +1,32 @@
 ---
 name: continual-learning
-description: Orchestrate continual learning by delegating transcript mining and AGENTS.md updates to `agents-memory-updater`.
+description: "透過將對話記錄挖掘與 AGENTS.md 更新委派給 `agents-memory-updater`，來協調持續學習。"
 disable-model-invocation: true
 ---
 
-# Continual Learning
+<a id="continual-learning"></a>
 
-Keep `AGENTS.md` current by delegating the memory update flow to one subagent.
+# 持續學習
 
-## Trigger
+透過將記憶更新流程委派給一個子代理，來保持 `AGENTS.md` 為最新狀態。
 
-Use when the user asks to mine prior chats, maintain `AGENTS.md`, or run the continual-learning loop.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發條件
 
-1. Call `agents-memory-updater`.
-2. Return the updater result.
+當使用者要求挖掘先前對話、維護 `AGENTS.md`，或執行持續學習迴圈時使用。
 
-## Guardrails
+<a id="workflow"></a>
 
-- Keep the parent skill orchestration-only.
-- Do not mine transcripts or edit files in the parent flow.
-- Do not bypass the subagent.
+## 工作流程
+
+1. 呼叫 `agents-memory-updater`。
+2. 回傳更新器的結果。
+
+<a id="guardrails"></a>
+
+## 防護措施
+
+- 保持父級 skill 僅負責協調。
+- 不要在父級流程中挖掘對話記錄或編輯檔案。
+- 不要繞過子代理。

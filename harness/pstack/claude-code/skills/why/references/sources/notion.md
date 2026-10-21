@@ -1,55 +1,67 @@
-# Notion Docs
+<a id="notion-docs"></a>
 
-## What this source contains
+# Notion 文件
 
-- PRDs (product requirement documents)
-- Technical specs and RFCs
-- Architectural decision records (ADRs)
-- Meeting notes from design reviews
-- Team pages with domain context
-- Postmortems from incidents
-- Runbooks that may explain defensive code
-- Strategy documents that set priorities
+<a id="what-this-source-contains"></a>
 
-Notion is where "why" often lives in long-form before it becomes code. A significant feature usually has a doc.
+## 此來源包含的內容
 
-## How to search it
+- PRD（產品需求檔案）
+- 技術規格與 RFC
+- 架構決策記錄（ADR）
+- 設計審查會議記錄
+- 團隊頁面與領域背景
+- 事件後檢討（Postmortem）
+- 操作手冊（Runbook），可能解釋防禦性程式碼
+- 設定優先順序的策略檔案
 
-Use the Notion MCP.
+Notion 是「為什麼」常以長文形式存在的地方，在變成程式碼之前。一個重要的功能通常有檔案。
 
-1. **Keyword searches with `notion-search`.** Try:
-   - The feature name
-   - Key symbols / class names from the target code
-   - Author handles (design docs are often authored before the code lands)
-   - Error strings or user-visible terms
-   - Time-bounded queries if you know when the code shipped
-2. **Fetch candidate pages with `notion-fetch`.** Read the full content, not the preview. Rationale is often buried mid-document.
-3. **Follow backlinks and child pages.** Design docs often have sub-pages for alternatives considered, appendices, or implementation notes.
-4. **Check related databases.** `notion-query-data-sources` and `notion-query-meeting-notes` can surface meeting notes that discussed the decision.
-5. **Search author-specific spaces.** If the PR author has a personal notebook (common at some companies), it may hold exploratory thinking that preceded the code.
+<a id="how-to-search-it"></a>
 
-## What good evidence looks like here
+## 如何搜尋
 
-- A PRD with a "Problem statement" or "Motivation" section that matches the target code's purpose
-- An "Alternatives considered" or "Rejected approaches" section
-- A postmortem that names the target code as the fix for a specific incident
-- Meeting notes that record "we decided X because Y" and tie to the same author/date range as the PR
-- An ADR template filled out non-trivially (status, context, decision, consequences)
+使用 Notion MCP。
 
-## Common pitfalls
+1. **使用 `notion-search` 進行關鍵字搜尋。**嘗試：
+   - 功能名稱
+   - 目標程式碼中的關鍵符號／類別名稱
+   - 作者帳號（設計檔案通常在程式碼落地之前撰寫）
+   - 錯誤訊息或使用者可見的詞彙
+   - 時間範圍搜尋，如果你知道程式碼發布的時間
+2. **使用 `notion-fetch` 取得候選頁面。**閱讀完整內容，而非預覽。理由常埋在檔案中間。
+3. **追蹤反向連結與子頁面。**設計檔案常有子頁面，包含考慮過的替代方案、附錄或實作註記。
+4. **檢查相關資料庫。**`notion-query-data-sources` 和 `notion-query-meeting-notes` 可以找出討論該決策的會議記錄。
+5. **搜尋作者專屬空間。**如果 PR 作者有個人筆記（在某些公司常見），可能包含程式碼之前的探索性思考。
 
-- **Outdated docs.** Specs are often written before implementation and not updated. The doc may describe a plan that changed. Cross-check against the actual PR.
-- **Doc vs. reality drift.** A spec may say "we'll do X" but the code actually does Y. Flag the divergence. The synthesizer will surface the contradiction.
-- **Boilerplate templates.** Some orgs require a "Why" section that gets filled with fluff. Look for specificity.
-- **Unlinked docs.** The most relevant doc may not be linked from anywhere. Broad keyword searches help.
-- **Multiple drafts.** If a topic has multiple docs, find the one that was finalized or most recently updated. Check dates.
-- **Access-restricted pages.** If you can't access a page, note it as a gap.
+<a id="what-good-evidence-looks-like-here"></a>
 
-## What to return
+## 這裡的良好證據看起來像
 
-For each relevant doc:
-- Title and URL
-- Authors and last-updated date
-- The motivation text (verbatim quote), with page/section location
-- Relevant linked pages (so the synthesizer can cite them)
-- Whether the doc was finalized or draft
+- PRD 有「問題陳述」或「動機」段落，與目標程式碼的目的相符
+- 「考慮過的替代方案」或「拒絕的方法」段落
+- 事件後檢討指出目標程式碼是特定事件的解決方案
+- 會議記錄記載「我們決定 X 因為 Y」，並與 PR 的作者／日期範圍相符
+- ADR 模板非空泛地填寫（狀態、背景、決策、後果）
+
+<a id="common-pitfalls"></a>
+
+## 常見陷阱
+
+- **過時的檔案。**規格常在實作之前撰寫，且未更新。檔案可能描述已改變的計畫。與實際 PR 交叉檢查。
+- **檔案與現實偏差。**規格可能說「我們會做 X」，但程式碼實際做 Y。標出差異。合成器會呈現矛盾。
+- **模板填充。**某些組織要求「為什麼」段落，但內容空洞。尋找具體性。
+- **未連結的檔案。**最相關的檔案可能未從任何地方連結。廣泛的關鍵字搜尋有幫助。
+- **多個草稿。**如果主題有多個檔案，找到最終版或最近更新的版本。檢查日期。
+- **存取受限的頁面。**如果你無法存取頁面，將其記錄為缺口。
+
+<a id="what-to-return"></a>
+
+## 要回傳的內容
+
+對於每個相關檔案：
+- 標題與 URL
+- 作者與最後更新日期
+- 動機文字（逐字引用），包含頁面／段落位置
+- 相關連結頁面（供合成器引用）
+- 檔案是否為最終版或草稿

@@ -1,11 +1,11 @@
 
-Slack visibility:
-- Write like a human typing in Slack. Short, terse, intent-first. No bot-speak ("I have completed", "Successfully executed", "Please find attached"), no filler emoji, no em-dashes. Show data over narration: "subplan-glint-23 → handed-off (4m12s)" beats a paragraph saying the same.
-- The script mirrors task status in `{{channel}}` / `{{threadTs}}`. Don't edit those messages.
-- Don't post to the channel root or open another kickoff. Stay in the run thread.
-- Post a Slack note when silence would hide useful context: blocked work, changed assumptions, surprising findings, review request. Otherwise stay quiet.
-- Default to autonomous. Don't @-mention humans; the dispatcher is already following the run thread and gets channel-level notifications. Posting in-thread is enough.
-- For non-Slack follow-up (Linear ticket, GitHub issue, on-call page) call the relevant MCP directly. Orchestrate's structured plumbing is Slack-only; runtime MCPs are not.
-- `bun <path-to-orchestrate>/scripts/cli.ts comment "<note>" --thread-ts {{threadTs}} --sender {{taskName}}{{agentIdFlag}} --workspace <workspace>`. `--agent-id` adds a footer link back to your cursor.com page.
-- File attachments (repro/fix videos): `bun cli.ts comment --thread-ts {{threadTs}} --file <path> --comment "<initial>" --sender {{taskName}}{{agentIdFlag}} --workspace <workspace>`. Lands in the run thread alongside the status mirror.
-- Add `--criticality required` for messages that must land. Default is best-effort.
+Slack 可見性：
+- 像人類在 Slack 打字一樣撰寫。簡短、精煉、意圖優先。避免機器人用語（例如「我已完成」、「成功執行」、「請參閱附件」），不要使用填充用的表情符號，也不要使用破折號。用資料呈現勝過敘述：「subplan-glint-23 → handed-off (4m12s)」比一段說同樣內容的文字更好。
+- 該指令碼會在 `{{channel}}` / `{{threadTs}}` 中同步任務狀態。請勿編輯這些訊息。
+- 不要釋出到頻道根層級，也不要開啟另一個啟動討論。請留在執行緒中。
+- 當沉默會隱藏有用資訊時，請釋出 Slack 備註：例如被阻擋的工作、變化的假設、出人意料的發現、審查請求。否則請保持安靜。
+- 預設為自主執行。不要 @-mention 人類；排程器已經在追蹤執行緒並接收頻道層級的通知。在執行緒中釋出即可。
+- 對於非 Slack 的後續動作（Linear 工單、GitHub issue、值班頁面），請直接呼叫相關的 MCP。Orchestrate 的結構化管道僅限於 Slack；runtime MCP 不在此限。
+- `bun <path-to-orchestrate>/scripts/cli.ts comment "<note>" --thread-ts {{threadTs}} --sender {{taskName}}{{agentIdFlag}} --workspace <workspace>`。`--agent-id` 會新增一個頁尾連結，指向您的 cursor.com 頁面。
+- 檔案附件（重現/修復影片）：`bun cli.ts comment --thread-ts {{threadTs}} --file <path> --comment "<initial>" --sender {{taskName}}{{agentIdFlag}} --workspace <workspace>`。會與狀態映象一起出現在執行緒中。
+- 為必須送達的訊息新增 `--criticality required`。預設為盡力而為。

@@ -1,28 +1,36 @@
 ---
 name: cancel-ralph
-description: Cancel an active Ralph Loop. Use when the user wants to stop, cancel, or abort a running ralph loop.
+description: "取消正在執行中的 Ralph 迴圈。當使用者想要停止、取消或中止正在執行的 ralph 迴圈時使用。"
 ---
 
-# Cancel Ralph
+<a id="cancel-ralph"></a>
 
-## Trigger
+# 取消 Ralph
 
-The user wants to cancel or stop an active Ralph loop.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發
 
-1. Check if `.cursor/ralph/scratchpad.md` exists.
+使用者想要取消或停止正在執行中的 Ralph 迴圈。
 
-2. **If it does not exist**: Tell the user "No active Ralph loop found."
+<a id="workflow"></a>
 
-3. **If it exists**:
-   - Read `.cursor/ralph/scratchpad.md` to get the current iteration from the `iteration:` field.
-   - Remove the state file and any done flag:
+## 工作流程
+
+1. 檢查是否存在 `.cursor/ralph/scratchpad.md`。
+
+2. **如果不存在**：告訴使用者"No active Ralph loop found."
+
+3. **如果存在**：
+   - 讀取 `.cursor/ralph/scratchpad.md` 以從 `iteration:` 欄位取得目前的迭代數。
+   - 移除狀態檔案及任何完成標記：
      ```bash
      rm -rf .cursor/ralph
      ```
-   - Report: "Cancelled Ralph loop (was at iteration N)."
+   - 報告："Cancelled Ralph loop (was at iteration N)."
 
-## Output
+<a id="output"></a>
 
-A short confirmation with the iteration count, or a message that no loop was active.
+## 輸出
+
+包含迭代數的簡短確認訊息，或告知沒有正在執行中的迴圈。

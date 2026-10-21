@@ -1,20 +1,24 @@
 # SharePoint
 
-Cursor plugin that connects agents to [Microsoft SharePoint](https://www.microsoft.com/microsoft-365/sharepoint/collaboration) through Cursor's remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Cursor 的遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Microsoft SharePoint](https://www.microsoft.com/microsoft-365/sharepoint/collaboration)。
 
-Search for sites, browse a site's document libraries and folders, search and read files, and read SharePoint lists and list items in the signed-in Microsoft account.
+在已登入的 Microsoft 帳戶中搜尋網站、瀏覽網站的檔案庫與資料夾、搜尋與讀取檔案，以及讀取 SharePoint 清單與清單專案。
 
-## SharePoint vs. OneDrive
+<a id="sharepoint-vs-onedrive"></a>
 
-The [OneDrive plugin](../onedrive/) reaches the signed-in user's **personal drive**. This plugin reaches the **sites** the user can access: team and communication sites, their document libraries, and their lists. Install both if you want personal files and team sites covered.
+## SharePoint 與 OneDrive 的比較
 
-## Install
+[OneDrive 外掛](../onedrive/) 可存取已登入使用者**個人磁碟機**。此外掛可存取使用者可訪問的**網站**：小組與通訊網站、其檔案庫及其清單。若您希望同時涵蓋個人檔案與小組網站，請安裝兩者。
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **SharePoint**.
-3. Click **Install**, then complete the Microsoft sign-in prompt.
+<a id="install"></a>
 
-Or run `/add-plugin sharepoint` in chat.
+## 安裝
+
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **SharePoint**。
+3. 點選 **安裝**，然後完成 Microsoft 登入提示。
+
+或在聊天中執行 `/add-plugin sharepoint`。
 
 ## MCP
 
@@ -29,26 +33,32 @@ Or run `/add-plugin sharepoint` in chat.
 }
 ```
 
-Auth is OAuth 2.0 against Microsoft (Entra ID). Cursor prompts for Microsoft sign-in when the plugin connects.
+驗證方式為對 Microsoft（Entra ID）進行 OAuth 2.0。當外掛連線時，Cursor 會提示 Microsoft 登入。
 
-The plugin is read-only. It requests the delegated `Sites.Read.All` scope, which Microsoft classifies as high-impact, so most work or school tenants require an administrator to consent once before members can connect.
+此外掛僅具讀取功能。它請求委派的 `Sites.Read.All` 範圍，Microsoft 將其分類為高影響範圍，因此大多數工作或學校租戶需要管理員先同意一次，成員才能連線。
 
-## Tools
+<a id="tools"></a>
 
-| Area | Tools |
+## 工具
+
+| 區域 | 工具 |
 |:-----|:------|
-| Sites | `search_sites`, `get_site` |
-| Document libraries | `list_site_drives`, `list_site_drive_items`, `search_site_drive_items`, `get_site_drive_item` |
-| Lists | `list_site_lists`, `get_list`, `list_list_items`, `get_list_item` |
+| 網站 | `search_sites`, `get_site` |
+| 檔案庫 | `list_site_drives`, `list_site_drive_items`, `search_site_drive_items`, `get_site_drive_item` |
+| 清單 | `list_site_lists`, `get_list`, `list_list_items`, `get_list_item` |
 
-## Docs
+<a id="docs"></a>
 
-- SharePoint sites API (Microsoft Graph): https://learn.microsoft.com/en-us/graph/api/resources/sharepoint
-- Microsoft Graph overview: https://learn.microsoft.com/en-us/graph/overview
+## 檔案
 
-Logo is the official Microsoft SharePoint product icon from Microsoft's Fluent brand icon CDN, placed on a white tile with padding so it reads well in the Cursor UI:
+- SharePoint 網站 API（Microsoft Graph）：https://learn.microsoft.com/en-us/graph/api/resources/sharepoint
+- Microsoft Graph 概覽：https://learn.microsoft.com/en-us/graph/overview
+
+標誌為 Microsoft 官方 SharePoint 產品圖示，取自 Microsoft Fluent 品牌圖示 CDN，放置於白色底板上並留有邊距，以便在 Cursor 介面中清晰呈現：
 https://res-1.cdn.office.net/files/fabric-cdn-prod_20240411.001/assets/brand-icons/product/svg/sharepoint_48x1.svg
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

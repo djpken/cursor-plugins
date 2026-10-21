@@ -1,86 +1,100 @@
 ---
 name: google-sheets
-description: Build and edit Google Sheets with the google-sheets tools - values, formatting, charts, conditional formatting, structure, validation, named and protected ranges. Use when creating a spreadsheet or dashboard, formatting cells, adding or fixing charts, or reorganizing tabs and rows.
+description: "使用 google-sheets 工具建立和編輯 Google Sheets - 值、格式、圖表、條件格式、結構、驗證、命名和保護範圍。在建立工作表或儀錶板、格式化細胞、新增或修正圖表，或重新組織分頁和行時使用。"
 ---
 
-# Google Sheets authoring
+<a id="google-sheets-authoring"></a>
 
-## Two coordinate systems, on purpose
+# Google Sheets 編寫
 
-- VALUE tools (`read_range`, `write_range`, `append_rows`, `clear_range`)
-  address a TAB TITLE plus A1 cells: `{sheet: "Data", cells: "A1:B4"}`.
-- STRUCTURE/FORMAT tools (`format_cells`, `set_borders`, `merge_cells`,
+<a id="two-coordinate-systems-on-purpose"></a>
+
+## 兩個座標系統，刻意設計
+
+- VALUE 工具（`read_range`、`write_range`、`append_rows`、`clear_range`）
+  使用 TAB 標題加上 A1 細胞：`{sheet: "Data", cells: "A1:B4"}`。
+- STRUCTURE/FORMAT 工具（`format_cells`、`set_borders`、`merge_cells`、
   `add_chart`, `add_conditional_formatting`, `insert_rows_or_columns`,
   `delete_rows_or_columns`, `freeze_rows_or_columns`, `sort_range`,
   `set_data_validation`, `set_basic_filter`, `add_banding`,
-  `set_column_width`, `rename_sheet_tab`, `delete_sheet_tab`) address the
-  numeric `sheetId`.
+  `set_column_width`、`rename_sheet_tab`、`delete_sheet_tab`）使用
+  數字 `sheetId`。
 
-`get_spreadsheet` returns both (each tab's title AND sheetId) with no cell
-data - call it first and keep the mapping. A new tab's sheetId is in
-`add_sheet_tab`'s reply (`replies[0].addSheet.properties.sheetId`).
+`get_spreadsheet` 返回兩者（每個分頁的標題和 sheetId）且不含細胞
+資料 - 先呼叫它並保留對映。新分頁的 sheetId 在
+`add_sheet_tab` 的回應中（`replies[0].addSheet.properties.sheetId`）。
 
-## Sequencing a styled sheet: values first, then format, chart last
+<a id="sequencing-a-styled-sheet-values-first-then-format-chart-last"></a>
 
-1. `create_spreadsheet` (optionally with named tabs; it cannot target a
-   folder - move it after with google-drive `google_drive_move_or_rename`).
-2. `write_range` the data with `parseInput: true` when values include
-   numbers, dates, or formulas (default false stores everything as literal
-   text - a top source of "chart is empty" bugs).
-3. Format like a real dashboard, not a bare grid:
-   - `format_cells` bold header with a fill color and white text; number
+## 建立有樣式的工作表順序：先值，再格式，圖表最後
+
+1. `create_spreadsheet`（可選用命名分頁；它無法指定
+   資料夾 - 之後用 google-drive `google_drive_move_or_rename` 移動它）。
+2. 以 `write_range` 處理資料，當值包含 `parseInput: true`
+   （預設 false 將所有內容儲存為純文字 - 這是"圖表空白"錯誤的常見來源）。
+   格式像真正的儀錶板，不是裸表格：
+3. 格式像真正的儀錶板，而非簡陋的表格：
+   - `format_cells` 標頭行。
      patterns on value columns (`$#,##0`, `0.0%`).
-   - `freeze_rows_or_columns` the header row.
-   - `set_basic_filter` over the table range - filter dropdowns are what
+   - `freeze_rows_or_columns` 在表格範圍上 - 篩選下拉是
+   - `set_basic_filter` 在表格範圍之上 - 篩選下拉選單才是
      make it read as a data table.
-   - `set_borders` (outer heavier than inner) or `add_banding` for
+   - `set_borders`（外層比內層粗）或 `add_banding` 用於
      alternating row colors; `set_column_width` so nothing clips.
-   - `add_conditional_formatting` for thresholds worth seeing at a glance.
-4. `add_chart` LAST, after the data exists.
+   - `add_conditional_formatting` 最後，在資料存在之後。
+4. `add_chart` 最後，在資料存在之後。
 
-## Charts
+<a id="charts"></a>
 
-- In `add_chart`, the FIRST range is the domain (x axis / pie labels) and
-  later ranges are the series, one column each; anchoring a chart to the
-  wrong or reversed ranges is the most common chart bug. All ranges live on
-  the same tab as the chart. `headerCount: 1` uses the first cells as
-  series labels - include the header row in each range when you set it.
-- Place the chart over empty cells beside or below the table, not on top of
-  the data it plots.
-- A wrong chart is fixed in place, not worked around: `get_spreadsheet`
-  lists every tab's charts (chartId, title), `update_chart` replaces a
-  chart's spec keeping its position, `delete_chart` removes one. Never add
-  a second chart to paper over a bad first one.
+## 圖表
 
-## Named and protected ranges
+- 在 `add_chart` 中，第一個範圍是領域（x軸 / 圓餅圖示籤）且
+  錯誤或反向範圍是最常見的圖表錯誤。所有範圍位於
+  錯誤或反向的範圍是最常見的圖表錯誤。所有範圍位於
+  圖表所在的同一工作表。`headerCount: 1` 使用第一個單元格作為
+  將圖表放在表格旁邊或下方的空細胞上，不要放在
+- 它所繪製的資料之上。
+  它所繪製的資料。
+- 列出每個分頁的圖表（chartId、標題），`get_spreadsheet` 取代
+  圖表的規格並保留其位置，`update_chart` 移除一個。絕不要
+  圖表的規格保持其位置，`delete_chart` 移除一個。絕不新增
+  命名和保護範圍
 
-- `add_named_range` makes formulas self-documenting (`=SUM(Budget)` instead
-  of `=SUM(B2:B13)`); write the formula with `parseInput: true`. Names
-  cannot look like cell references.
-- `protect_range` guards headers and formula cells (`warningOnly: true` by
-  default warns editors; `false` locks them). Protect AFTER the last write
-  to that range, or your own writes fight the protection.
-- `get_spreadsheet` lists both, with the ids `delete_named_range` and
-  `unprotect_range` need.
+<a id="named-and-protected-ranges"></a>
 
-## Pitfalls
+## 命名與保護範圍
 
-- No revision guard anywhere: last write wins. Read before writing when a
-  collaborator may be editing.
-- `merge_cells` keeps only the top-left value; write the text after merging.
-- `sort_range` rewrites cell positions; sort before adding formulas that
-  reference the range, and exclude the header row from the sorted range.
-- `insert_rows_or_columns` / `delete_rows_or_columns` positions are 1-based
-  (A=1); deletes are immediate and not undoable through the API.
-- `find_replace_sheet` is literal (never regex here) and can search inside
-  formulas with `searchFormulas: true`.
-- Whole-tab reads can blow the byte cap; bound `cells` (e.g. "1:2000") on
-  tabs you have not sized and follow `nextCells` when truncated.
+- `add_named_range`）；用 `=SUM(Budget)` 寫公式。名稱
+  的 `=SUM(B2:B13)`）；用 `parseInput: true` 寫公式。名稱
+  不能看起來像單元格參考。
+- `protect_range` 保護標題與公式單元格（`warningOnly: true` 預設
+  警告編輯者；`false` 鎖定它們）。在最後一次寫入
+  該範圍之後進行保護，否則你自己的寫入會與保護衝突。
+- `get_spreadsheet` 列出兩者，使用 ID `delete_named_range` 和
+  `unprotect_range` 需要。
 
-## Verify your work
+<a id="pitfalls"></a>
 
-`read_range` for values (FORMATTED_VALUE shows what the user sees;
-UNFORMATTED_VALUE the raw numbers - use it to confirm numbers are numbers,
-not text). `get_spreadsheet` for structure: tabs, charts, named ranges,
-protections. google-drive `google_drive_export_file` (pdf renders every tab
-including charts and formatting) when the visual result matters.
+## 任何地方都沒有版本保護：最後寫入勝出。在寫入前讀取，當
+
+- 協作者可能正在編輯。
+  協作者可能正在編輯。
+- `merge_cells` 重寫細胞位置；在新增引用範圍的公式之前排序，
+- `sort_range` 重寫單元格位置；在新增引用範圍的公式之前排序，
+  並從排序範圍中排除標題行。
+- `insert_rows_or_columns` / `delete_rows_or_columns` 位置以 1 為基準
+  （A=1）；刪除是立即生效且無法透過 API 回復。
+- `find_replace_sheet` 在公式內搜尋。
+  使用 `searchFormulas: true` 的公式。
+- 整工作表讀取可能超出位元組上限；在未確定大小的工作表上限制 `cells`（例如 "1:2000"）
+  並在截斷時遵循 `nextCells`。
+
+<a id="verify-your-work"></a>
+
+## 驗證你的工作
+
+`read_range` 用於值（FORMATTED_VALUE 顯示使用者看到的；
+UNFORMATTED_VALUE 原始數字 - 用它確認數字是數字，
+保護。google-drive `get_spreadsheet`（pdf 渲染每個分頁
+保護。google-drive `google_drive_export_file`（PDF 渲染每個工作表
+包括圖表和格式）當視覺結果很重要時。

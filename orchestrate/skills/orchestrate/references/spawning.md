@@ -1,79 +1,97 @@
-# Spawning tasks
+<a id="spawning-tasks"></a>
 
-Contract between `plan.json` entries and the cloud agents the script spawns. Mechanics (auth, `CursorAgentError` vs `RunResult.status === "error"`) live in `cursor-sdk/SKILL.md`. Read that first.
+# 建立任務
 
-## Branch naming
+`plan.json` 專案與指令碼建立的雲端 agent 之間的合約。機制（驗證、`CursorAgentError` 與 `RunResult.status === "error"`）位於 `cursor-sdk/SKILL.md`。請先閱讀該檔案。
 
-Cloud agents own their working branch. `state.json` starts with a deterministic placeholder (`orch/<rootSlug>/<task-name>`) so pre-spawn state is readable, then replaces it with the branch reported by `Run.git.branches[].branch` after handoff. Kebab-case is enforced (`TASK_NAME_RE` in `orchestrate.ts`) so task names still feed filesystem paths and prompt text without escaping. No auto-managed integration branch. Branches live independently until a merge task consolidates them (see `handoffs.md` → "Merges are tasks").
+<a id="branch-naming"></a>
 
-Do not ask workers to create or rename branches to match the placeholder. If a downstream task needs an upstream task's code, depend on that upstream task so the script can wait for handoff and use the recorded actual branch.
+## 分支命名
 
-## Agent naming
+雲端 agent 擁有其工作分支。`state.json` 以確定性的佔位符（`orch/<rootSlug>/<task-name>`）開始，以便建立前的狀態可讀，然後在交接後將其替換為 `Run.git.branches[].branch` 報告的分支。強制使用 Kebab-case（`orchestrate.ts` 中的 `TASK_NAME_RE`），以便任務名稱仍能用於檔案系統路徑和提示文字，而無需轉義。沒有自動管理的整合分支。分支獨立存在，直到合併任務將它們整合（請參閱 `handoffs.md` →「合併是任務」）。
 
-Cloud agents are given a `name` at `Agent.create` time so the Cursor agent list (`cursor.com/agents`, IDE agent list) groups a single orchestrate run together and stays readable across dozens of concurrent children.
+不要要求 worker 建立或重新命名分支以匹配佔位符。如果下游任務需要上游任務的程式碼，請依賴該上游任務，以便指令碼可以等待交接並使用記錄的實際分支。
 
-| Spawn site | Agent name |
+<a id="agent-naming"></a>
+
+## Agent 命名
+
+在 `Agent.create` 時，雲端 agent 會被賦予一個 `name`，以便 Cursor agent 列表（`cursor.com/agents`，IDE agent 列表）將單次 orchestrate 執行分組在一起，並在數十個並行子任務中保持可讀性。
+
+| 建立位置 | Agent 名稱 |
 |------------|------------|
-| Root planner (`cli.ts kickoff`) | `<first line of goal, up to 100 chars>` |
-| Worker / subplanner / verifier (`spawnTask`) | `<rootSlug>/<taskName>` — echoes the task's branch without the `orch/` prefix |
-| Model catalog probe (`probe-models`) | `probe: <modelSlug>` |
+| 根規劃器（`cli.ts kickoff`） | `<first line of goal, up to 100 chars>` |
+| Worker / 子規劃器 / 驗證器（`spawnTask`） | 回顯任務的分支：`<rootSlug>/<taskName>`，不含 `orch/` 字首 |
+| 模型目錄探查（`probe-models`） | `probe: <modelSlug>` |
 
-The server caps names at 100 chars and rejects empty/whitespace-only values; the helpers handle both. When `name` is omitted the cloud backend auto-generates one from the first prompt, so this is purely a readability upgrade — dropping a name doesn't change behavior.
+伺服器將名稱限制為 100 個字元，並拒絕空值或僅包含空白值的輸入；輔助函式會處理這兩種情況。當省略 `name` 時，雲端後端會從第一個提示自動生成一個名稱，因此這純粹是可讀性的升級，移除名稱不會改變行為。
 
-## Starting refs and dependencies
+<a id="starting-refs-and-dependencies"></a>
 
-| Field | Controls | Default | Pair with |
+## 起始引用與依賴
+
+| 欄位 | 控制項 | 預設值 | 搭配使用 |
 |-------|----------|---------|-----------|
-| `startingRef` | Which branch the cloud agent clones from | `plan.baseBranch` | `dependsOn` when depending on another task's work |
-| `dependsOn` | When the task is allowed to spawn | `[]` | The script records the upstream branch from `Run.git` after handoff |
+| `startingRef` | 雲端 agent 從哪個分支複製 | `plan.baseBranch` | 依賴其他任務的工作時，搭配 `dependsOn` |
+| `dependsOn` | 任務何時允許建立 | `[]` | 指令碼在交接後從 `Run.git` 記錄上游分支 |
 
-`startingRef` without `dependsOn` gives a point-in-time snapshot: whatever commits exist on that branch at spawn time, which may be nothing. Pair them unless you really mean "start from the current tip, even if empty".
+沒有 `dependsOn` 的 `startingRef` 提供一個時間點快照：即建立時該分支上存在的任何 commit，可能為空。除非您確實意指「從目前的頂端開始，即使為空」，否則請搭配使用它們。
 
-Verifiers default `startingRef` to their target's branch and auto-include the target in `dependsOn`; the planner doesn't need to wire either explicitly.
+驗證器預設將 `startingRef` 設為其目標的分支，並自動在 `dependsOn` 中包含目標；規劃器不需要明確設定這兩者。
 
-Any task can set `verify`: a Markdown-formatted plan (setup, automated, manual, gotchas). Workers see it as a target spec; verifiers inherit the target's `verify` as their recipe.
+任何任務都可以設定 `verify`：一個 Markdown 格式的計畫（設定、自動化、手動、注意事項）。Worker 將其視為目標規格；驗證器繼承目標的 `verify` 作為其配方。
 
-## Spawn design decisions
+<a id="spawn-design-decisions"></a>
 
-The script calls `Agent.create` with two deliberate defaults:
+## 建立設計決策
 
-- **PRs are opt-in per task.** `autoCreatePR` on the cloud-agent create call mirrors the task's `openPR` flag (default false). The server-side `cloud_agent_pr_control` gate makes that flag a no-op today, so the real mechanism is the worker prompt: when `openPR: true`, the worker is instructed to open a draft PR against `plan.prBase ?? plan.baseBranch` via the ManagePullRequest tool after pushing. Subplanners and verifiers never open PRs; they hand off to their parent. Task-driven PRs give the planner a specific guarantee: this task ships as its own pull request.
-- **PR base vs. worker starting ref.** `plan.baseBranch` is the starting ref for workers that don't specify their own. `plan.prBase` (optional, defaults to `baseBranch`) is where openPR workers aim their PRs. Split when you want workers to inherit planner-side setup from the planner's branch but still open PRs against `main` (so each worker PR is mergeable without the planner's branch landing first). Leave `prBase` unset for the classic pattern where worker PRs stack on the planner's branch.
-- **No shared integration branch.** Each task is its own island until a merge task consolidates them. An auto-managed integration branch would smuggle planner-level coding decisions into infrastructure, violating Core Principle #1.
+指令碼呼叫 `Agent.create` 時帶有兩個刻意設定的預設值：
 
-## Task prompt contract
+- **PR 是每個任務選擇性啟用的。** 雲端 agent 建立呼叫中的 `autoCreatePR` 會反映任務的 `openPR` 旗標（預設為 false）。伺服器端的 `cloud_agent_pr_control` 閘門目前使該旗標無效，因此真正的機制是 worker 提示：當 `openPR: true` 時，worker 會收到指示，在推送後透過 ManagePullRequest 工具對 `plan.prBase ?? plan.baseBranch` 開啟一個草稿 PR。子規劃器和驗證器從不開啟 PR；它們會交接給其父級。任務驅動的 PR 為規劃器提供了一個具體保證：此任務將作為其自身的 pull request 發布。
+- **PR 基底與 worker 起始引用。** `plan.baseBranch` 是未指定自身起始引用的 worker 的起始引用。`plan.prBase`（選填，預設為 `baseBranch`）是 openPR worker 開啟 PR 的目標位置。當您希望 worker 從規劃器的分支繼承規劃器端的設定，但仍對 `main` 開啟 PR 時，請將兩者分開（這樣每個 worker PR 都可以合併，而無需先落地規劃器的分支）。若要使用 worker PR 堆疊在規劃器分支上的經典模式，請保持 `prBase` 未設定。
+- **沒有共享的整合分支。** 在合併任務將它們整合之前，每個任務都是其自身的島嶼。自動管理的整合分支會將規劃器層級的編碼決策偷偷帶入基礎設施，違反核心原則 #1。
 
-The script renders prompts from `scopedGoal`, `pathsAllowed`, `pathsForbidden`, `acceptance`, `startingRef`, `type`, and `openPR`. Fix the plan entry if the prompt doesn't match your intent. Don't patch the prompt template. Every spawned prompt tells the agent:
+<a id="task-prompt-contract"></a>
 
-- It's isolated. No communication with other agents.
-- Commit to the current cloud-agent branch and push. No branch renames, merges, or rebases. Open a draft PR only if the task sets `openPR: true` (workers only; subplanners and verifiers never open PRs).
-- Final message is the handoff in the structure from `handoffs.md`. That's the only thing the planner reads.
+## 任務提示合約
 
-Subplanner prompts also start with `/orchestrate` so the skill loads automatically when the agent boots.
+指令碼從 `scopedGoal`、`pathsAllowed`、`pathsForbidden`、`acceptance`、`startingRef`、`type` 和 `openPR` 渲染提示。如果提示不符合您的意圖，請修正計畫專案。不要修補提示範本。每個建立的提示都會告訴 agent：
 
-Workers cannot ask clarifying questions mid-run. Under-specified `scopedGoal` produces silent drift. Write each task as if you'll never get another chance to steer it.
+- 它是隔離的。不與其他 agent 通訊。
+- Commit 到目前的雲端 agent 分支並推送。不要重新命名分支、合併或 rebase。僅當任務設定 `openPR: true` 時才開啟草稿 PR（僅限 worker；子規劃器和驗證器從不開啟 PR）。
+- 最終訊息是 `handoffs.md` 中結構的交接。這是規劃器唯一閱讀的內容。
 
-Cloud-agent VMs may redact environment variable values as a prompt-injection defense, so do not rely on env vars for data multiple agents must share. Use the planner-authored artifact pattern instead: commit a file to the base branch and reference it by path in `scopedGoal` so clones pick it up. Never paste credentials into `scopedGoal`; it is sent to the model provider and may end up in git history when state sync is on.
+子規劃器的提示也以 `/orchestrate` 開始，以便在 agent 啟動時自動載入 skill。
 
-## Slack visibility
+Worker 無法在執行期間提出澄清問題。規格不足的 `scopedGoal` 會導致靜態漂移。請將每個任務撰寫得彷彿您永遠沒有機會再次引導它。
 
-When `SLACK_BOT_TOKEN` is set, Slack traffic is owned by the script. Agents do not drive lifecycle. The script posts the kickoff thread to `plan.slackChannel`, records the result in `plan.slackKickoffRef`, mirrors task status messages in that thread, and reads `:rotating_light:` on the kickoff message for Andon.
+雲端 agent VM 可能會作為提示注入防禦而刪減環境變數值，因此不要依賴環境變數來儲存多個 agent 必須共享的資料。請改用規劃器撰寫的產物模式：將檔案 commit 到基底分支，並在 `scopedGoal` 中透過路徑引用它，以便複製時能獲取它。永遠不要將憑證貼到 `scopedGoal` 中；它會被傳送到模型供應商，並在啟用狀態同步時可能進入 git 歷史。
 
-Spawn prompts still include a Slack block because workers may need to leave notes:
+<a id="slack-visibility"></a>
 
-- `comment "<note>" --thread-ts <run-thread-ts> --workspace <workspace>` posts a note through the retry queue when silence would hide useful context. `--task <name>` with `--workspace` is also accepted; the CLI validates the task and posts in the run thread.
-- For Linear, GitHub, or other external systems, call the relevant MCP directly. Orchestrate's `comment` CLI is Slack-only.
+## Slack 可見性
 
-If Slack comments fail, keep working and say what happened in the handoff. Disk handoffs are still authoritative for downstream prompt assembly.
+當設定 `SLACK_BOT_TOKEN` 時，Slack 流量由指令碼擁有。Agent 不驅動生命週期。指令碼將啟動執行緒發布到 `plan.slackChannel`，在 `plan.slackKickoffRef` 中記錄結果，在該執行緒中映象任務狀態訊息，並讀取啟動訊息上的 `:rotating_light:` 以進行 Andon。
 
-## Tracking & recovery
+建立提示仍包含一個 Slack 區塊，因為 worker 可能需要留下備註：
 
-After each successful spawn the script persists `agentId`, `runId`, and `parentAgentId` to `state.json`, so a later rerun can re-attach via `Agent.getRun` and read lineage from disk. A row with partial identity (exactly one of `agentId` / `runId`) on restart is marked `error` with an explanatory note. Rename and respawn, or prune.
+- 當沉默會隱藏有用上下文時，`comment "<note>" --thread-ts <run-thread-ts> --workspace <workspace>` 會透過重試佇列發布備註。也接受帶有 `--workspace` 的 `--task <name>`；CLI 會驗證任務並在執行執行緒中發布。
+- 對於 Linear、GitHub 或其他外部系統，請直接呼叫相關的 MCP。Orchestrate 的 `comment` CLI 僅限 Slack。
 
-After every handoff the script reconciles dependent verifiers' `startingRef`. The actual worker branch is sourced from the handoff body's `## Branch` line — the SDK leaves `Run.git.branches[].branch` empty for worker runs, so the body is authoritative. Any verifier whose `verifies` points at the just-handed-off task and whose `startingRef` is still the `orch/<rootSlug>/<task>` placeholder is updated to that real branch. Planner-authored `startingRef` overrides win; each propagation logs to `attention.log`. Load also sweeps over already-handed-off rows so state recovered from disk converges before the next spawn.
+如果 Slack 評論失敗，請繼續工作並在交接中說明發生了什麼。磁碟交接對於下游提示組裝仍然是權威的。
 
-## Lineage
+<a id="tracking--recovery"></a>
 
-Each `state.tasks[]` row's `parentAgentId` is the spawning planner's cloud agent id from `plan.selfAgentId` at spawn. `kill-tree --agent-id` walks those parent links downward. If the planner never set `selfAgentId`, children get `parentAgentId: null` and that subtree is skipped for a scoped kill; omit `--agent-id` to cancel the whole tree.
+## 追蹤與恢復
 
-Spawn templates use the child's id as `{{selfAgentId}}` and the parent's as `{{parentAgentId}}`. The id from `Agent.create` is valid before `send()`; the cloud client sends it at create time and rejects a mismatched server response.
+每次成功建立後，指令碼會將 `agentId`、`runId` 和 `parentAgentId` 持久化到 `state.json`，以便稍後的重新執行可以透過 `Agent.getRun` 重新附加，並從磁碟讀取系譜。重新啟動時，具有部分識別資訊（恰好是 `agentId` / `runId` 之一）的列會被標記為 `error` 並附上說明備註。請重新命名並重新建立，或修剪。
+
+每次交接後，指令碼會協調相依驗證者的 `startingRef`。實際的工作者分支取自交接主體中的 `## Branch` 行。SDK 會將工作者執行時的 `Run.git.branches[].branch` 留空，因此主體內容為權威來源。任何 `verifies` 指向剛完成交接的任務，且 `startingRef` 仍為 `orch/<rootSlug>/<task>` 佔位符的驗證者，都會更新為該實際分支。由規劃者撰寫的 `startingRef` 覆寫具有優先權；每次傳播都會記錄到 `attention.log`。載入時也會掃描已交接的列，以便從磁碟恢復的狀態在下次生成前收斂。
+
+<a id="lineage"></a>
+
+## 血緣
+
+每個 `state.tasks[]` 列的 `parentAgentId` 是生成規劃者在生成時來自 `plan.selfAgentId` 的雲端 agent id。`kill-tree --agent-id` 會沿著這些父級連結向下遍歷。如果規劃者從未設定 `selfAgentId`，子項將獲得 `parentAgentId: null`，且該子樹在範圍限定的終止操作中會被略過；省略 `--agent-id` 即可取消整棵樹。
+
+生成模板使用子項的 id 作為 `{{selfAgentId}}`，並使用父項的 id 作為 `{{parentAgentId}}`。來自 `Agent.create` 的 id 在 `send()` 之前有效；雲端客戶端會在建立時傳送該 id，並拒絕不匹配的伺服器回應。

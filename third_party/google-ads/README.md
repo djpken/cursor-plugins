@@ -1,14 +1,16 @@
 # Google Ads
 
-Cursor plugin that connects Grok Bot to [Google Ads](https://ads.google.com) through Cursor's remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Cursor 的遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將 Grok Bot 連線到 [Google Ads](https://ads.google.com)。
 
-Report on accounts and campaigns with GAQL, research keywords and audiences, and make campaign changes. Every change is checked with `validate_mutate` (`validateOnly`) before `mutate` applies it.
+使用 GAQL 報告帳戶和廣告活動、研究關鍵字和目標物件，並進行廣告活動變更。每次變更都會先以 `validate_mutate`（`validateOnly`）檢查，再由 `mutate` 套用。
 
-## Install
+<a id="install"></a>
 
-1. Open **Grok Bot Settings → Plugins**.
-2. Search for **Google Ads**.
-3. Click **Install**, then complete the Google sign-in prompt.
+## 安裝
+
+1. 開啟 **Grok Bot 設定 → 外掛**。
+2. 搜尋 **Google Ads**。
+3. 點選 **安裝**，然後完成 Google 登入提示。
 
 ## MCP
 
@@ -23,17 +25,21 @@ Report on accounts and campaigns with GAQL, research keywords and audiences, and
 }
 ```
 
-Auth is OAuth 2.0 against Google with the `https://www.googleapis.com/auth/adwords` scope. Grok Bot prompts for Google sign-in when the plugin connects.
+驗證採用 OAuth 2.0，對 Google 使用 `https://www.googleapis.com/auth/adwords` 範圍。當外掛連線時，Grok Bot 會提示 Google 登入。
 
-## Tools
+<a id="tools"></a>
 
-- **Reporting:** `list_accessible_customers`, `search`, `search_fields`, `list_billing`, `get_operation`
-- **Planning:** `keyword_planner`, `reach_planner`, `audience_insights`, `benchmarks`, `suggest`, `generate_assets`
-- **Changes:** `validate_mutate`, `mutate`, `recommendation_action`, `experiment_action`, `upload_conversions`
+## 工具
 
-## Docs
+- **報告：** `list_accessible_customers`、`search`、`search_fields`、`list_billing`、`get_operation`
+- **規劃：** `keyword_planner`、`reach_planner`、`audience_insights`、`benchmarks`、`suggest`、`generate_assets`
+- **變更：** `validate_mutate`、`mutate`、`recommendation_action`、`experiment_action`、`upload_conversions`
 
-- Google Ads API: https://developers.google.com/google-ads/api/docs/start
-- GAQL: https://developers.google.com/google-ads/api/docs/query/overview
+<a id="docs"></a>
 
-Logo is the official Google Ads product icon, placed on a white tile with padding so it reads well in the UI.
+## 檔案
+
+- Google Ads API：https://developers.google.com/google-ads/api/docs/start
+- GAQL：https://developers.google.com/google-ads/api/docs/query/overview
+
+標誌為官方 Google Ads 產品圖示，放置在白色底板上並加上留白，以便在介面中清楚呈現。

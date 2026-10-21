@@ -1,145 +1,159 @@
 ---
 name: thermo-nuclear-code-quality-review
-description: Run an extremely strict maintainability review for abstraction quality, giant files, and spaghetti-condition growth. Use for a thermo-nuclear code quality review, thermonuclear review, deep code quality audit, or especially harsh maintainability review.
+description: "執行極度嚴格的維護性審查，針對抽象品質、巨型檔案以及義大利麵式條件邏輯的增長。適用於熱核程式碼品質審查、熱核審查、深度程式碼品質稽核，或特別嚴厲的維護性審查。"
 disable-model-invocation: true
 ---
 
-# Thermo-Nuclear Code Quality Review
+<a id="thermo-nuclear-code-quality-review"></a>
 
-Use this skill for an unusually strict review focused on implementation quality, maintainability, abstraction quality, and codebase health.
+# 熱核程式碼品質審查
 
-Above all, this skill should push the reviewer to be **ambitious** about code structure. Do not merely identify local cleanup opportunities. Actively search for "code judo" moves: restructurings that preserve behavior while making the implementation dramatically simpler, smaller, more direct, and more elegant.
+使用此 skill 進行異常嚴格的審查，專注於實作品質、維護性、抽象品質以及程式碼庫健康狀況。
 
-## Core Prompt
+最重要的是，此 skill 應促使審查者對程式碼結構抱持**雄心**。不要僅僅識別區域性清理機會。積極尋找「程式碼柔道」手法：在保持行為不變的同時，讓實作變得顯著更簡單、更小、更直接、更優雅的重構。
 
-Start from this baseline:
+<a id="core-prompt"></a>
 
-> Perform a deep code quality audit of the current branch's changes.
-> Rethink how to structure / implement the changes to meaningfully improve code quality without impacting behavior.
-> Work to improve abstractions, modularity, reduce Spaghetti code, improve succinctness and legibility.
-> Be ambitious, if there is a clear path to improving the implementation that involves restructuring some of the codebase, go for it.
-> Be extremely thorough and rigorous. Measure twice, cut once.
+## 核心提示
 
-## Non-Negotiable Additional Standards
+從以下基準開始：
 
-Apply the baseline prompt above, plus these explicit review rules:
+> 對目前分支的變更進行深度程式碼品質稽核。
+> 重新思考如何結構化或實作這些變更，以在不影響行為的情況下，有意義地提升程式碼品質。
+> 致力於改善抽象、模組化、減少義大利麵式程式碼、提升簡潔性與可讀性。
+> 要有雄心，如果存在一條明確的路徑來改善實作，且涉及重構部分程式碼庫，就放手去做。
+> 要極度徹底且嚴謹。三思而後行。
 
-0. **Be ambitious about structural simplification.**
-   - Do not stop at "this could be a bit cleaner."
-   - Look for opportunities to reframe the change so that whole branches, helpers, modes, conditionals, or layers disappear entirely.
-   - Prefer the solution that makes the code feel inevitable in hindsight.
-   - Assume there is often a "code judo" move available: a re-organization that uses the existing architecture more effectively and makes the change dramatically simpler and more elegant.
-   - If you see a path to delete complexity rather than rearrange it, push hard for that path.
+<a id="non-negotiable-additional-standards"></a>
 
-1. **Do not let a PR push a file from under 1k lines to over 1k lines without a very strong reason.**
-   - Treat this as a strong code-quality smell by default.
-   - Prefer extracting helpers, subcomponents, modules, or local abstractions instead of letting a file sprawl past 1000 lines.
-   - If the diff crosses that threshold, explicitly ask whether the code should be decomposed first.
-   - Only waive this if there is a compelling structural reason and the resulting file is still clearly organized.
+## 不可妥協的額外標準
 
-2. **Do not allow random spaghetti growth in existing code.**
-   - Be highly suspicious of new ad-hoc conditionals, scattered special cases, or one-off branches inserted into unrelated flows.
-   - If a change adds "weird if statements in random places", treat that as a design problem, not a stylistic nit.
-   - Prefer pushing the logic into a dedicated abstraction, helper, state machine, policy object, or separate module instead of tangling an existing path.
-   - Call out changes that make the surrounding code harder to reason about, even if they technically work.
+套用上述基準提示，加上這些明確的審查規則：
 
-3. **Bias toward cleaning the design, not just accepting working code.**
-   - If behavior can stay the same while the structure becomes meaningfully cleaner, push for the cleaner version.
-   - Do not rubber-stamp "it works" implementations that leave the codebase messier.
-   - Strongly prefer simplifications that remove moving pieces altogether over refactors that merely spread the same complexity around.
+0. **對結構簡化抱持雄心。**
+   - 不要止步於「這可以稍微更乾淨一點」。
+   - 尋找機會重新定義變更，讓整個分支、輔助函式、模式、條件判斷或層級完全消失。
+   - 優先選擇那種讓程式碼在事後看來顯得必然的解決方案。
+   - 假設通常存在「程式碼柔道」手法：一種重新組織，能更有效地利用現有架構，並讓變更變得顯著更簡單、更優雅。
+   - 如果你看到一條刪除複雜性而非重新排列複雜性的路徑，請強力推動該路徑。
 
-4. **Prefer direct, boring, maintainable code over hacky or magical code.**
-   - Treat brittle, ad-hoc, or "magic" behavior as a code-quality problem.
-   - Be skeptical of generic mechanisms that hide simple data-shape assumptions.
-   - Flag thin abstractions, identity wrappers, or pass-through helpers that add indirection without buying clarity.
+1. **不要讓 PR 在沒有非常強勁理由的情況下，將檔案從 1k 行以下推高到 1k 行以上。**
+   - 預設將此視為強烈的程式碼品質異味。
+   - 優先提取輔助函式、子元件、模組或區域性抽象，而不是讓檔案蔓延超過 1000 行。
+   - 如果 diff 跨越該門檻，明確詢問是否應先分解程式碼。
+   - 僅在有令人信服的結構理由，且結果檔案仍然組織清晰時，才豁免此規則。
 
-5. **Push hard on type and boundary cleanliness when they affect maintainability.**
-   - Question unnecessary optionality, `unknown`, `any`, or cast-heavy code when a clearer type boundary could exist.
-   - Prefer explicit typed models or shared contracts over loosely-shaped ad-hoc objects.
-   - If a branch relies on silent fallback to paper over an unclear invariant, ask whether the boundary should be made explicit instead.
+2. **不允許現有程式碼中出現隨機的義大利麵式增長。**
+   - 對新的臨時條件判斷、分散的特殊情況，或插入到無關流程中的單一分支保持高度懷疑。
+   - 如果變更新增了「隨機地方的奇怪 if 陳述」，將其視為設計問題，而非風格挑剔。
+   - 優先將邏輯推入專用的抽象、輔助函式、狀態機、策略物件或獨立模組，而不是糾纏現有路徑。
+   - 指出那些讓周圍程式碼更難以推理的變更，即使它們在技術上能運作。
 
-6. **Keep logic in the canonical layer and reuse existing helpers.**
-   - Call out feature logic leaking into shared paths or implementation details leaking through APIs.
-   - Prefer existing canonical utilities/helpers over bespoke one-offs.
-   - Push code toward the right package, service, or module instead of normalizing architectural drift.
+3. **傾向於清理設計，而不僅僅是接受能運作的程式碼。**
+   - 如果行為可以保持不變，而結構變得有意義地更乾淨，請推動更乾淨的版本。
+   - 不要蓋章透過那些讓程式碼庫變得更混亂的「它能運作」實作。
+   - 強烈偏好那些完全移除活動部件的簡化，而非僅僅將相同複雜性分散到各處的重新整理。
 
-7. **Treat unnecessary sequential orchestration and non-atomic updates as design smells when the cleaner structure is obvious.**
-   - If independent work is serialized for no good reason, ask whether the flow should run in parallel instead.
-   - If related updates can leave state half-applied, push for a more atomic structure.
-   - Do not over-index on micro-optimizations, but do flag avoidable orchestration complexity that makes the implementation more brittle.
+4. **偏好直接、無聊、可維護的程式碼，而非花俏或魔法般的程式碼。**
+   - 將脆弱、臨時或「魔法」行為視為程式碼品質問題。
+   - 對隱藏簡單資料形狀假設的通用機制保持懷疑。
+   - 標記那些增加間接性卻未換取清晰度的薄抽象、身份包裝器或透傳輔助函式。
 
-## Primary Review Questions
+5. **當影響維護性時，強力推動型別與邊界的乾淨。**
+   - 當存在更清晰的型別邊界時，質疑不必要的可選性、`unknown`、`any`，或大量使用 cast 的程式碼。
+   - 偏好明確的型別化模型或共享合約，而非鬆散形狀的臨時物件。
+   - 如果分支依賴靜默回退來掩蓋不清晰的不變數，詢問是否應使邊界變得明確。
 
-For every meaningful change, ask:
+6. **將邏輯保留在正規層級並重用現有輔助函式。**
+   - 指出功能邏輯洩漏到共享路徑，或實作細節透過 API 洩漏。
+   - 偏好現有的正規工具或輔助函式，而非客製化的單一用途函式。
+   - 將程式碼推向正確的套件、服務或模組，而不是讓架構漂移成為常態。
 
-- Is there a "code judo" move that would make this dramatically simpler?
-- Can this change be reframed so fewer concepts, branches, or helper layers are needed?
-- Does this improve or worsen the local architecture?
-- Did the diff add branching complexity where a better abstraction should exist?
-- Did a previously cohesive module become more coupled, more stateful, or harder to scan?
-- Is this logic living in the right file and layer?
-- Did this change enlarge a file or component past a healthy size boundary?
-- Are there repeated conditionals that signal a missing model or missing helper?
-- Is the implementation direct and legible, or does it rely on special cases and incidental control flow?
-- Is this abstraction actually earning its keep, or is it just a wrapper?
-- Did the diff introduce casts, optionality, or ad-hoc object shapes that obscure the real invariant?
-- Is this logic living in the canonical layer, or did the diff leak details across a boundary?
-- Is this orchestration more sequential or less atomic than it needs to be?
+7. **當更乾淨的結構明顯時，將不必要的順序編排和非原子更新視為設計異味。**
+   - 如果獨立工作被無故序列化，詢問流程是否應改為並行執行。
+   - 如果相關更新可能導致狀態半應用，請推動更具原子性的結構。
+   - 不要過度關注微最佳化，但要標記那些使實作更脆弱的可避免編排複雜性。
 
-## What to Flag Aggressively
+<a id="primary-review-questions"></a>
 
-Escalate findings when you see:
+## 主要審查問題
 
-- A complicated implementation where a cleaner reframing could delete whole categories of complexity.
-- Refactors that move code around but fail to reduce the number of concepts a reader must hold in their head.
-- A file crossing 1000 lines due to the PR, especially if the new code could be split out.
-- New conditionals bolted onto unrelated code paths.
-- One-off booleans, nullable modes, or flags that complicate existing control flow.
-- Feature-specific logic leaking into general-purpose modules.
-- Generic "magic" handling that hides simple structure and makes the code harder to reason about.
-- Thin wrappers or identity abstractions that add indirection without simplifying anything.
-- Unnecessary casts, `any`, `unknown`, or optional params that muddy the real contract.
-- Copy-pasted logic instead of extracted helpers.
-- Narrow edge-case handling implemented in the middle of an already busy function.
-- Refactors that technically pass tests but make the code less modular or less readable.
-- "Temporary" branching that is likely to become permanent debt.
-- Bespoke helpers where the codebase already has a canonical utility for the job.
-- Logic added in the wrong layer/package when it should live somewhere more central.
-- Sequential async flow where obviously independent work could stay simpler and clearer with parallel execution.
-- Partial-update logic that leaves state less atomic than necessary.
+對於每個有意義的變更，詢問：
 
-## Preferred Remedies
+- 是否存在「程式碼柔道」手法，能使其變得顯著更簡單？
+- 能否重新定義此變更，使其需要更少的概念、分支或輔助層級？
+- 這是否改善或惡化了區域性架構？
+- diff 是否在應存在更好抽象的地方增加了分支複雜性？
+- 先前內聚的模組是否變得耦合更緊、狀態更多或更難以掃描？
+- 此邏輯是否位於正確的檔案和層級？
+- 此變更是否將檔案或元件擴大到健康大小邊界之外？
+- 是否有重複的條件判斷，顯示缺少模型或缺少輔助函式？
+- 實作是否直接且可讀，還是依賴特殊情況和附帶的控制流？
+- 此抽象是否真正物有所值，還是僅僅是一個包裝器？
+- diff 是否引入了 cast、可選性或臨時物件形狀，從而模糊了真正的不變數？
+- 此邏輯是否位於正規層級，還是 diff 將細節洩漏到了邊界之外？
+- 此編排是否比必要的更順序化或更不具原子性？
 
-When you identify a code-quality problem, prefer suggestions like:
+<a id="what-to-flag-aggressively"></a>
 
-- Delete a whole layer of indirection rather than polishing it.
-- Reframe the state model so conditionals disappear instead of getting centralized.
-- Change the ownership boundary so the feature becomes a natural extension of an existing abstraction.
-- Turn special-case logic into a simpler default flow with fewer exceptions.
-- Extract a helper or pure function.
-- Split a large file into smaller focused modules.
-- Move feature-specific logic behind a dedicated abstraction.
-- Replace condition chains with a typed model or explicit dispatcher.
-- Separate orchestration from business logic.
-- Collapse duplicate branches into a single clearer flow.
-- Delete wrappers that do not meaningfully clarify the API.
-- Reuse the existing canonical helper instead of introducing a near-duplicate.
-- Make type boundaries more explicit so the control flow gets simpler.
-- Move the logic to the package/module/layer that already owns the concept.
-- Parallelize independent work when that also simplifies the orchestration.
-- Restructure related updates into a more atomic flow when partial state would be harder to reason about.
+## 應積極標記的內容
 
-Do not be satisfied with "maybe rename this" feedback when the real issue is structural.
-Do not be satisfied with a merely cleaner version of the same messy idea if there is a plausible path to a much simpler idea.
+當你看到以下情況時，升級發現：
 
-## Review Tone
+- 複雜的實作，而更乾淨的重新定義可以刪除整類複雜性。
+- 重新整理只是移動程式碼，但未能減少讀者必須在腦中持有的概念數量。
+- 檔案因 PR 而超過 1000 行，特別是如果新程式碼可以被拆分出來。
+- 新的條件判斷被附加到無關的程式碼路徑上。
+- 一次性布林值、可空模式或旗標，使現有控制流變得複雜。
+- 特定功能的邏輯洩漏到通用模組中。
+- 通用的「魔法」處理方式，隱藏了簡單的結構，使程式碼更難以推理。
+- 薄薄的包裝器或恆等抽象，增加了間接性卻沒有簡化任何東西。
+- 不必要的型別轉換、`any`、`unknown`，或可選引數，這些都會模糊真正的合約。
+- 複製貼上的邏輯，而非提取的輔助函式。
+- 在已經繁忙的函式中實作的狹窄邊緣案例處理。
+- 技術上透過測試的重構，但使程式碼的模組化程度或可讀性降低。
+- 「暫時」的分支，很可能成為永久的技術債。
+- 自訂的輔助函式，而程式碼庫中已經有標準的工具函式來完成該工作。
+- 邏輯被新增在錯誤的層級或套件中，而它應該放在更核心的位置。
+- 序列的非同步流程，而明顯獨立的工作如果並行執行，可以保持更簡單和清晰。
+- 部分更新邏輯，使狀態的原子性低於必要程度。
 
-Be direct, serious, and demanding about quality.
-Do not be rude, but do not soften major maintainability issues into mild suggestions.
-If the code is making the codebase messier, say so clearly.
-If the implementation missed an opportunity for a dramatic simplification, say that clearly too.
+<a id="preferred-remedies"></a>
 
-Good phrases:
+## 首選的解決方案
+
+當您識別出程式碼品質問題時，請優先考慮以下建議：
+
+- 刪除整個間接層，而不是對其進行修飾。
+- 重新構建狀態模型，使條件判斷消失，而不是將其集中化。
+- 變更所有權邊界，使該功能成為現有抽象的自然延伸。
+- 將特殊案例邏輯轉化為更簡單的預設流程，減少例外情況。
+- 提取輔助函式或純函式。
+- 將大型檔案拆分為較小的專注模組。
+- 將特定功能的邏輯移到專用抽象背後。
+- 用型別化模型或明確的分發器取代條件鏈。
+- 將編排與業務邏輯分離。
+- 將重複的分支合併為單一更清晰的流程。
+- 刪除那些沒有實質上澄清 API 的包裝器。
+- 重用現有的標準輔助函式，而不是引入幾乎重複的函式。
+- 使型別邊界更明確，從而簡化控制流程。
+- 將邏輯移到已經擁有該概念的套件、模組或層級中。
+- 當並行化獨立工作也能簡化編排時，請進行並行化。
+- 當部分狀態會使推理更困難時，將相關的更新重構為更具原子性的流程。
+
+當真正的問題是結構性的時，不要滿足於「也許重新命名這個」的回饋。
+如果存在通往更簡單想法的合理途徑，不要滿足於同一個混亂想法的僅僅更乾淨的版本。
+
+<a id="review-tone"></a>
+
+## 審查語氣
+
+對品質保持直接、嚴肅和嚴格的要求。
+不要無禮，但也不要將重大的可維護性問題軟化為輕微的建議。
+如果程式碼使程式碼庫變得混亂，請明確指出。
+如果實作錯過了大幅簡化的機會，也請明確指出。
+
+好的措辭：
 
 - `this pushes the file past 1k lines. can we decompose this first?`
 - `this adds another special-case branch into an already busy flow. can we move this behind its own abstraction?`
@@ -151,42 +165,46 @@ Good phrases:
 - `i think there's a code-judo move here that makes this much simpler. can we reframe this so these branches disappear?`
 - `this refactor moves complexity around, but doesn't really delete it. is there a way to make the model itself simpler?`
 
-## Output Expectations
+<a id="output-expectations"></a>
 
-Prioritize findings in this order:
+## 輸出預期
 
-1. Structural code-quality regressions
-2. Missed opportunities for dramatic simplification / code-judo restructuring
-3. Spaghetti / branching complexity increases
-4. Boundary / abstraction / type-contract problems that make the code harder to reason about
-5. File-size and decomposition concerns
-6. Modularity and abstraction issues
-7. Legibility and maintainability concerns
+按以下順序優先處理發現的問題：
 
-Do not flood the review with low-value nits if there are larger structural issues.
-Prefer a smaller number of high-conviction comments over a long list of cosmetic notes.
+1. 結構性的程式碼品質退化
+2. 錯過了大幅簡化或程式碼柔道重構的機會
+3. 義大利麵式程式碼或分支複雜度增加
+4. 邊界、抽象或型別合約問題，使程式碼更難以推理
+5. 檔案大小和分解方面的顧慮
+6. 模組化和抽象問題
+7. 可讀性和可維護性方面的顧慮
 
-## Approval Bar
+如果存在更大的結構性問題，不要用低價值的細枝末節淹沒審查。
+優先選擇少量高確信的評論，而不是長篇大論的表面註記。
 
-Do not approve merely because behavior seems correct.
-The bar for approval is:
+<a id="approval-bar"></a>
 
-- no clear structural regression
-- no obvious missed opportunity to make the implementation dramatically simpler when such a path is visible
-- no unjustified file-size explosion
-- no obvious spaghetti-growth from special-case branching
-- no obviously hacky or magical abstraction that makes the code harder to reason about
-- no unnecessary wrapper/cast/optionality churn obscuring the real design
-- no clear architecture-boundary leak or avoidable canonical-helper duplication
-- no missed opportunity for an obvious decomposition that would materially improve maintainability
+## 核准標準
 
-Treat these as presumptive blockers unless the author can justify them clearly:
+不要僅僅因為行為看起來正確就核准。
+核准的標準是：
 
-- the PR preserves a lot of incidental complexity when there is a plausible code-judo move that would delete it
-- the PR pushes a file from below 1000 lines to above 1000 lines
-- the PR adds ad-hoc branching that makes an existing flow more tangled
-- the PR solves a local problem by scattering feature checks across shared code
-- the PR adds an unnecessary abstraction, wrapper, or cast-heavy contract that makes the design more indirect
-- the PR duplicates an existing helper or puts logic in the wrong layer when there is a clear canonical home
+- 沒有明顯的結構性退化
+- 在可見的路徑下，沒有明顯錯過使實作大幅簡化的機會
+- 沒有不合理的檔案大小膨脹
+- 沒有因特殊案例分支而明顯增加的義大利麵式程式碼
+- 沒有明顯的駭客式或魔法式抽象，使程式碼更難以推理
+- 沒有不必要的包裝器、型別轉換或可選性變動，遮蔽了真正的設計
+- 沒有明顯的架構邊界洩漏或可避免的標準輔助函式重複
+- 沒有錯過明顯的分解機會，該機會能實質性地改善可維護性
 
-If those conditions are not met, leave explicit, actionable feedback and push for a cleaner decomposition.
+除非作者能清楚證明其合理性，否則將這些視為預設的阻擋因素：
+
+- PR 保留了大量的附帶複雜性，而存在合理的程式碼柔道動作可以刪除它
+- PR 將檔案從 1000 行以下推高到 1000 行以上
+- PR 新增了即席分支，使現有流程更加糾纏
+- PR 透過在共享程式碼中散佈功能檢查來解決區域性問題
+- PR 新增了不必要的抽象、包裝器或依賴大量型別轉換的合約，使設計更加間接
+- 當存在明確的標準歸屬位置時，PR 重複了現有的輔助函式或將邏輯放在錯誤的層級
+
+如果這些條件未滿足，請留下明確且可執行的回饋，並推動更乾淨的分解。

@@ -1,39 +1,51 @@
 # Docs Canvas
 
-Cursor plugin for rendering documentation — architecture notes, API references, runbooks, and codebase walkthroughs — as a navigable Cursor Canvas instead of a flat markdown file.
+Cursor 外掛程式，用於將檔案（包括架構說明、API 參考、操作手冊及程式碼庫導覽）呈現為可導覽的 Cursor Canvas，而非平坦的 markdown 檔案。
 
-## Status
+<a id="status"></a>
 
-This plugin is an **initial scaffold**. The skill structure is complete and the Canvas welcome page will surface it in the marketplace, but the skill body is intentionally a starting outline rather than a fully-tuned playbook. Expect iteration as the "docs on a canvas" pattern matures.
+## 狀態
 
-## What it includes
+此外掛程式為**初始骨架**。skill 結構已完整，Canvas 歡迎頁面會在市集（marketplace）中顯示它，但 skill 主體刻意設計為起始大綱，而非完全調校的 playbook。隨著「檔案畫布」模式的成熟，預期會持續迭代。
 
-- `docs-canvas`: build a Canvas that presents structured documentation with an overview card, a navigable table of contents, mixed prose/code/diagram sections, and a references block.
+<a id="what-it-includes"></a>
 
-## When to use
+## 包含內容
 
-- Rendering architecture notes, design docs, or RFCs as something you can scan, not just read top-to-bottom.
-- Turning a directory of markdown docs, or a single large doc, into a Canvas with jump navigation.
-- Answering a codebase question with a layout richer than a single reply — sections, diagrams, tables, callouts.
+- `docs-canvas`：建立一個 Canvas，以概覽卡片、可導覽的目錄、混合文字/程式碼/圖表的章節，以及參考區塊來呈現結構化檔案。
 
-Trigger it with phrases like "docs canvas", "documentation overview", "architecture walkthrough", "API reference page", or "render this doc as an interactive canvas".
+<a id="when-to-use"></a>
 
-## How it's organized
+## 使用時機
 
-The skill expects a docs canvas to lead with:
+- 將架構說明、設計檔案或 RFC 呈現為可快速瀏覽的內容，而非僅限於從上到下閱讀。
+- 將一個 markdown 檔案目錄或單一大型檔案轉換為具有跳轉導覽功能的 Canvas。
+- 以比單一回覆更豐富的版面設定（章節、圖表、表格、提示框）來回答程式碼庫相關問題。
 
-1. **Overview** — short summary card: purpose, scope, audience.
-2. **Table of contents** — sticky/pinned list of sections the reader can jump to.
-3. **Body sections** — one per logical unit (architecture, API, examples, gotchas), mixing prose, code blocks, diagrams, callouts.
-4. **References** — links to related docs, source files, RFCs, external material.
+使用「docs canvas」、「documentation overview」、「architecture walkthrough」、「API reference page」或「render this doc as an interactive canvas」等短語觸發。
 
-Those are a floor, not a ceiling — the skill encourages reaching for whatever representation (diagrams, tables, decision trees, worked examples) actually helps the reader for the specific topic.
+<a id="how-its-organized"></a>
 
-## Requirements
+## 組織方式
 
-- Cursor with Canvas enabled.
-- Source material: a directory of markdown files, a single doc URL, an inline outline, or a codebase question to answer.
+此 skill 預期 docs canvas 應以以下內容開頭：
 
-## License
+1. **概覽**：簡短摘要卡片，說明目的、範圍與目標受眾。
+2. **目錄**：固定或釘選的章節清單，方便讀者跳轉。
+3. **主體章節**：每個邏輯單元（架構、API、範例、注意事項）各佔一章，內容混合文字、程式碼區塊、圖表及提示框。
+4. **參考資料**：連結至相關檔案、原始檔案、RFC 及外部資料。
+
+這些是基準而非上限，此 skill 鼓勵針對特定主題，採用任何實際有助於讀者的呈現方式（圖表、表格、決策樹、實作範例）。
+
+<a id="requirements"></a>
+
+## 需求
+
+- 已啟用 Canvas 的 Cursor。
+- 原始資料：markdown 檔案目錄、單一檔案 URL、內嵌大綱，或需回答的程式碼庫問題。
+
+<a id="license"></a>
+
+## 授權條款
 
 MIT

@@ -1,16 +1,18 @@
 # Square
 
-Cursor plugin that connects agents to [Square](https://squareup.com) through Square's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server, hosted by Block.
+Cursor 外掛，透過 Square 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器（由 Block 提供）將代理連線到 [Square](https://squareup.com)。
 
-Query and manage a Square seller account — payments, orders, catalog items, inventory, customers, invoices, and more — through the Square API.
+透過 Square API 查詢和管理 Square 賣家帳戶：付款、訂單、商品專案、庫存、客戶、發票等。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Square**.
-3. Click **Install**, then complete the Square sign-in prompt.
+## 安裝
 
-Or run `/add-plugin square` in chat.
+1. 開啟 **Cursor Settings → Plugins**。
+2. 搜尋 **Square**。
+3. 點選 **Install**，然後完成 Square 登入提示。
+
+或在聊天中執行 `/add-plugin square`。
 
 ## MCP
 
@@ -25,38 +27,46 @@ Or run `/add-plugin square` in chat.
 }
 ```
 
-Auth is OAuth 2.1 with Dynamic Client Registration and PKCE. Cursor registers itself and prompts for Square sign-in when the plugin connects — there is no access token or client ID to configure. Square lets you approve only the permission scopes you want the connection to have.
+驗證採用 OAuth 2.1，包含 Dynamic Client Registration 和 PKCE。Cursor 會自行註冊，並在外掛連線時提示 Square 登入；不需要設定存取令牌或客戶 ID。Square 讓您僅核准您希望連線具有的許可權範圍。
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-The server exposes a small, generic tool set that reaches the full Square API:
+## 代理可執行的工作
 
-| Tool | Purpose |
+伺服器提供一個小型通用工具組，可存取完整的 Square API：
+
+| 工具 | 用途 |
 | --- | --- |
-| `get_service_info` | Discover the methods available on a Square service (for example `catalog`, `orders`, `payments`) |
-| `get_type_info` | Get the parameter requirements for a method before calling it |
-| `make_api_request` | Execute a Square API call |
+| `get_service_info` | 探索 Square 服務上可用的方法（例如 `catalog`、`orders`、`payments`） |
+| `get_type_info` | 在呼叫方法之前取得其引數需求 |
+| `make_api_request` | 執行 Square API 呼叫 |
 
-Through those tools agents can reach payments and refunds, orders, catalog and inventory, customers and loyalty, invoices and subscriptions, bookings, team members and timecards, gift cards, disputes, payouts, and more — limited to the scopes you approve.
+透過這些工具，代理可存取付款與退款、訂單、商品與庫存、客戶與忠誠度、發票與訂閱、預約、團隊成員與時間卡、禮品卡、爭議、付款結算等，僅限於您核准的範圍。
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱和結構的來源真相。
 
-## Notes
+<a id="notes"></a>
 
-- The remote server reaches **production** data only. To test against a Square Sandbox account, run Square's local server instead (`npx square-mcp-server start` with `ACCESS_TOKEN` and `SANDBOX=true`); see Square's docs.
-- The server can write as well as read — including creating orders, payments, refunds, and invoices — when the matching `*_WRITE` scopes are approved. Approve only the scopes you need, and grant read-only scopes if agents should not change seller data.
-- Square labels the MCP server as beta.
-- Square maintains an allowlist of MCP clients for OAuth registration. If sign-in is rejected for an unregistered client, request an addition in the Square developer forum.
+## 注意事項
 
-## Docs
+- 遠端伺服器僅存取**生產**資料。若要測試 Square Sandbox 帳戶，請改用 Square 的本地伺服器（`npx square-mcp-server start` 搭配 `ACCESS_TOKEN` 和 `SANDBOX=true`）；請參閱 Square 的說明檔案。
+- 伺服器可讀取也可寫入，包括建立訂單、付款、退款和發票，當相符的 `*_WRITE` 範圍核准時。僅核准您需要的範圍，並授予僅讀範圍，若代理不應更改賣家資料。
+- Square 將 MCP 伺服器標示為 beta。
+- Square 維護 MCP 客戶的允許列表，用於 OAuth 註冊。若未註冊的客戶登入被拒絕，請在 Square 開發者論壇中請求新增。
 
-- Square MCP server: https://developer.squareup.com/docs/mcp
-- Source: https://github.com/square/square-mcp-server
-- OAuth permissions reference: https://developer.squareup.com/docs/oauth-api/square-permissions
-- Server URL: https://mcp.squareup.com/mcp
+<a id="docs"></a>
 
-Logo is Square's official mark, from the `square` GitHub organization.
+## 說明檔案
 
-## License
+- Square MCP 伺服器：https://developer.squareup.com/docs/mcp
+- 來源：https://github.com/square/square-mcp-server
+- OAuth 許可權參考：https://developer.squareup.com/docs/oauth-api/square-permissions
+- 伺服器 URL：https://mcp.squareup.com/mcp
+
+標誌是 Square 的官方標記，來自 `square` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

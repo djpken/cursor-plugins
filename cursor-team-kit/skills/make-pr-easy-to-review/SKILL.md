@@ -1,23 +1,29 @@
 ---
 name: make-pr-easy-to-review
-description: Prepare PRs for review by cleaning noisy history, improving PR descriptions, and adding reviewer guidance without changing code behavior. Use for "make this easy to review", "tidy this PR", "clean up commits", or "annotate the diff".
+description: "透過清理雜亂的歷史記錄、改善 PR 描述，以及新增審查者指引來準備 PR 以供審查，且不變更程式碼行為。適用於「讓這個 PR 更容易審查」、「整理這個 PR」、「清理 commits」或「為 diff 新增註解」等情境。"
 ---
 
-# Make PR Easy to Review
+<a id="make-pr-easy-to-review"></a>
 
-Prepare a PR so a reviewer can quickly understand the intent, important files, and risk. The default goal is reviewability without behavior changes.
+# 讓 PR 更容易審查
 
-## Workflow
+準備 PR，讓審查者能快速理解意圖、重要檔案與風險。預設目標是在不變更行為的前提下提升可審查性。
 
-1. Resolve the target PR from the user-provided URL or current branch.
-2. Inspect commits, diff size, changed paths, generated files, and PR description.
-3. Identify reviewability issues: noisy commits, stale description, unrelated changes, mixed mechanical and logic changes, missing tests, or unclear reviewer entry points.
-4. Propose a plan before rewriting history or force-pushing.
-5. Apply safe improvements, then verify the tree or diff still matches the intended code.
+<a id="workflow"></a>
 
-## History Cleanup
+## 工作流程
 
-Only rewrite history when the user asks for it or agrees to the plan. Before rewriting:
+1. 從使用者提供的 URL 或目前分支解析目標 PR。
+2. 檢查 commits、diff 大小、變更路徑、產生的檔案以及 PR 描述。
+3. 識別可審查性問題：雜亂的 commits、過時的描述、無關的變更、混合機械式與邏輯變更、缺少測試，或審查者入口不明確。
+4. 在重寫歷史記錄或強制推送之前，先提出計畫。
+5. 套用安全的改進措施，然後驗證樹狀結構或 diff 仍與預期的程式碼相符。
+
+<a id="history-cleanup"></a>
+
+## 歷史記錄清理
+
+僅在使用者要求或同意計畫時才重寫歷史記錄。重寫前：
 
 ```bash
 gh pr view <PR> --json title,headRefName,baseRefName,state,commits
@@ -25,15 +31,15 @@ git fetch origin <headRefName> <baseRefName>
 ORIGINAL_TREE=$(git rev-parse origin/<headRefName>^{tree})
 ```
 
-Good commit groupings usually follow dependency order:
+良好的 commit 分組通常遵循相依性順序：
 
-1. Schema/storage or generated API definitions.
-2. Core logic.
-3. Wiring and integration.
-4. UI or surface behavior.
-5. Tests.
+1. Schema/儲存或產生的 API 定義。
+2. 核心邏輯。
+3. 接線與整合。
+4. UI 或表面行為。
+5. 測試。
 
-After rewriting, verify content identity:
+重寫後，驗證內容一致性：
 
 ```bash
 echo "Original tree: $ORIGINAL_TREE"
@@ -41,19 +47,23 @@ echo "Current tree:  $(git rev-parse HEAD^{tree})"
 git diff origin/<headRefName> --stat
 ```
 
-Do not push if the tree changed unintentionally.
+如果樹狀結構意外變更，請勿推送。
 
-## Reviewer Guidance
+<a id="reviewer-guidance"></a>
 
-When code behavior should stay untouched, prefer PR description and review notes:
+## 審查者指引
 
-- Add a TL;DR that matches the actual diff.
-- Separate core files from generated or mechanical files.
-- Call out risky behavior changes, migration order, rollout plan, and test coverage.
-- Link issue trackers, dashboards, or design docs when they explain intent.
+當程式碼行為應保持不變時，優先使用 PR 描述與審查筆記：
 
-## Guardrails
+- 新增與實際 diff 相符的 TL;DR。
+- 將核心檔案與產生或機械式檔案分開。
+- 指出有風險的行為變更、遷移順序、推出計畫以及測試覆蓋率。
+- 當問題追蹤器、儀錶板或設計檔案能解釋意圖時，請連結它們。
 
-- Never hide meaningful behavior changes inside "cleanup".
-- Do not bypass hooks unless the user explicitly asks.
-- If the PR is too large to make reviewable with notes, recommend splitting instead of polishing around the problem.
+<a id="guardrails"></a>
+
+## 防護措施
+
+- 切勿在「清理」中隱藏有意義的行為變更。
+- 除非使用者明確要求，否則請勿略過 hooks。
+- 如果 PR 過大，無法透過筆記使其可審查，建議拆分而非繞過問題進行修飾。

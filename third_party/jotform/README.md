@@ -1,16 +1,18 @@
 # Jotform
 
-Cursor plugin that connects agents to [Jotform](https://www.jotform.com) through Jotform's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Jotform 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Jotform](https://www.jotform.com)。
 
-List and create forms, edit existing ones, submit to them, and read submissions in the signed-in Jotform account.
+在已登入的 Jotform 帳戶中，列出與建立表格、編輯現有表格、提交表格，以及讀取提交內容。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Jotform**.
-3. Click **Install**, then complete the Jotform sign-in prompt.
+## 安裝
 
-Or run `/add-plugin jotform` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Jotform**。
+3. 點選 **安裝**，然後完成 Jotform 登入提示。
+
+或在聊天中執行 `/add-plugin jotform`。
 
 ## MCP
 
@@ -25,37 +27,47 @@ Or run `/add-plugin jotform` in chat.
 }
 ```
 
-Auth is OAuth 2.0 and it is required on first connect. Cursor prompts for Jotform sign-in when the plugin connects. Bearer-token access is not supported.
+驗證採用 OAuth 2.0，首次連線時必須進行驗證。外掛連線時，Cursor 會提示 Jotform 登入。不支援 Bearer 令牌存取。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-Only **workspace admins** can install the Jotform MCP app. Once an admin has approved it, every user still authorizes individually. Revoke a client later from **Account → Connected Apps → Jotform MCP → Clients**.
+## 連線前
 
-## What agents can do
+只有**工作區管理員**可以安裝 Jotform MCP 應用程式。管理員核准後，每位使用者仍需各自授權。之後可從**帳戶 → 已連線的應用 → Jotform MCP → 客戶端**撤銷客戶端。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Forms | List forms, create new ones, edit existing ones, and assign them |
-| Submissions | Read submissions and create new ones |
+| 表格 | 列出表格、建立新表格、編輯現有表格，並指派表格 |
+| 提交 | 讀取提交內容並建立新的提交 |
 
-The hosted runtime is the source of truth for tool names and schemas. Call `list_forms` as a read-only smoke test after connecting.
+託管執行環境是工具名稱與結構的來源。連線後，執行 `list_forms` 作為僅讀的冒煙測試。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Jotform user who authorizes the connection.
-- The server URL is the bare host, `https://mcp.jotform.com`, with no `/mcp` path suffix.
-- Free and paid Jotform accounts both work. Enterprise plans get higher rate limits (600 requests per minute), custom branding, and SSO.
-- Self-hosting is not offered — the hosted endpoint is the only option.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Jotform 使用者身份執行。
+- 伺服器 URL 是純主機 `https://mcp.jotform.com`，不含 `/mcp` 路徑字尾。
+- 免費與付費 Jotform 帳戶均可使用。企業方案享有更高的速率限制（每分鐘 600 次請求）、自定義品牌與 SSO。
+- 不提供自行託管，託管端點是唯一選項。
+
+<a id="docs"></a>
+
+## 文件
 
 - Jotform MCP: https://www.jotform.com/mcp/
-- Developer page: https://www.jotform.com/developers/mcp/
-- Server repository: https://github.com/jotform/mcp-server
-- Server URL: https://mcp.jotform.com
+- 開發者頁面: https://www.jotform.com/developers/mcp/
+- 伺服器儲存庫: https://github.com/jotform/mcp-server
+- 伺服器 URL: https://mcp.jotform.com
 
-Logo is Jotform's official mark, from the `jotform` GitHub organization.
+標誌是 Jotform 官方標識，取自 `jotform` GitHub 組織。
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

@@ -1,15 +1,17 @@
 ---
 name: principle-never-block-on-the-human
-description: "Apply when tempted to ask 'should I do X?' on reversible work."
+description: "在可逆的工作中，當你傾向問「我應該做X嗎？」時，請採取行動。"
 disable-model-invocation: true
 ---
 
-# Never Block on the Human
+<a id="never-block-on-the-human"></a>
 
-The human supervises asynchronously. Agents must stay unblocked. Make reasonable decisions, proceed, and let the human course-correct after the fact. Since code changes are reversible and reviewable, a wrong decision usually costs less than blocking.
+# 永遠不要阻塞於人類
 
-- Proceed, then present. Do the work, show the result. Don't ask "should I do X?" Do X, explain why.
-- Make the system self-healing. When you notice a problem, log it and fix it in the next round.
-- Irreversible actions (force-push, delete production data, send external messages) still require confirmation.
-- Reversible actions (write code, edit notes, split tasks) should proceed without blocking.
-- Product direction comes from the human. Execution should not block.
+人類以非同步方式監督。代理必須保持不阻塞。做出合理的決定，繼續執行，並讓人類在事後進行修正。由於程式碼變更是可逆且可審查的，錯誤的決定通常比阻塞的成本更低。
+
+- 繼續執行，然後呈現結果。完成工作，展示結果。不要問「我應該做X嗎？」做X，並解釋為什麼。
+- 讓系統自我修復。當你注意到問題時，記錄它並在下一輪修正。
+- 不可逆的動作（強制推送、刪除生產資料、傳送外部訊息）仍需確認。
+- 可逆的動作（寫程式碼、編輯筆記、拆分任務）應繼續執行而不阻塞。
+- 產品方向來自人類。執行不應阻塞。

@@ -1,68 +1,78 @@
 # WhatsApp Business
 
-Cursor plugin that connects agents to [WhatsApp Business](https://business.whatsapp.com) — Meta's messaging platform for businesses — through a [Model Context Protocol](https://modelcontextprotocol.io/) server that Cursor hosts.
+Cursor 外掛透過 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器（由 Cursor 提供）將代理連線到 [WhatsApp Business](https://business.whatsapp.com)，這是 Meta 的企業訊息平臺。
 
-Work with a WhatsApp Business Account: send messages from your business phone number, manage message templates, and look up contacts and phone numbers.
+使用 WhatsApp Business 帳戶：從您的企業電話號碼傳送訊息、管理訊息模板，以及查詢聯絡人和電話號碼。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **WhatsApp Business** and click **Install**.
-3. Enter your WhatsApp Business Account ID, phone number ID, and access token (see [Before you connect](#before-you-connect)).
+## 安裝
 
-Or run `/add-plugin whatsapp-business` in chat.
+1. 開啟 **Cursor Settings → Plugins**。
+2. 搜尋 **WhatsApp Business** 並點選 **Install**。
+3. 輸入您的 WhatsApp Business 帳戶 ID、電話號碼 ID 和存取令牌（請參閱 [Before you connect](#before-you-connect)）。
+
+或在聊天中執行 `/add-plugin whatsapp-business`。
 
 ## MCP
 
-This plugin ships no `mcp.json`, and that is deliberate.
+此外掛不包含任何 `mcp.json`，這是刻意設計。
 
-Every other connector in this repository either points at a vendor's hosted endpoint or runs a package locally over stdio, so it carries its own server definition. WhatsApp Business does not: Cursor runs the server, and the plugin exists only as the opt-in that turns it on for your account. There is no command to run and no MCP endpoint to configure.
+此儲存庫中的其他每個聯結器，不是指向供應商的託管端點，也不是透過 stdio 在本地執行套件，因此各自帶有伺服器定義。WhatsApp Business 則不同：Cursor 執行伺服器，外掛僅作為選用功能，為您的帳戶啟用它。沒有需要執行指令，也沒有需要設定的 MCP 端點。
 
-One consequence worth knowing: because the server is not declared here, you will not find it in a local `mcp.json` and you cannot point another MCP client at it. It is reachable from Cursor only.
+一個值得知道的影響：因為伺服器未在此宣告，您不會在本地 `mcp.json` 中找到它，也不能將其他 MCP 客戶端指向它。它只能從 Cursor 存取。
 
 ## Before you connect
 
-Each person who installs the plugin enters their own three values. These are per-member settings, so a team admin cannot set them for everyone.
+每個安裝外掛的人需輸入自己的三個值。這些是每個成員的設定，團隊管理員無法為所有人設定。
 
-### 1. Create a system user token in Meta
+<a id="1-create-a-system-user-token-in-meta"></a>
 
-1. In [Meta Business Suite](https://business.facebook.com), open **Business settings → Users → System users** and add a system user, or pick an existing one.
-2. Under **Assign assets**, give the system user access to your WhatsApp Business Account.
-3. Click **Generate new token**, choose the Meta app connected to your WhatsApp Business Account, and select the `whatsapp_business_messaging` and `whatsapp_business_management` permissions.
-4. Copy the token. Meta shows it only once.
+### 1. 在 Meta 建立系統使用者令牌
 
-### 2. Find your IDs in WhatsApp Manager
+1. 在 [Meta Business Suite](https://business.facebook.com)，開啟 **Business settings → Users → System users**，新增系統使用者，或選擇現有的系統使用者。
+2. 在 **Assign assets** 下，授予該系統使用者存取您的 WhatsApp Business 帳戶。
+3. 點選 **Generate new token**，選擇與您的 WhatsApp Business 帳戶連結的 Meta 應用，並選取 `whatsapp_business_messaging` 和 `whatsapp_business_management` 許可權。
+4. 複製令牌。Meta 僅顯示一次。
 
-- **WhatsApp Business Account ID:** shown next to your account name in [WhatsApp Manager](https://business.facebook.com/wa/manage/home/).
-- **Phone number ID:** the long numeric ID under **Account tools → Phone numbers**. Use the ID, not the phone number itself.
+<a id="2-find-your-ids-in-whatsapp-manager"></a>
 
-### 3. Enter the values in Cursor
+### 2. 在 WhatsApp Manager 中找到您的 ID
 
-All three fields are required:
+- **WhatsApp Business Account ID:** 在 [WhatsApp Manager](https://business.facebook.com/wa/manage/home/) 中顯示於帳戶名稱旁。
+- **Phone number ID:** 在 **Account tools → Phone numbers** 下的長數字 ID。請使用 ID，而非電話號碼本身。
 
-| Field | Value |
+<a id="3-enter-the-values-in-cursor"></a>
+
+### 3. 在 Cursor 中輸入這些值
+
+三個欄位皆為必填：
+
+| 欄位 | 值 |
 | --- | --- |
-| `WHATSAPP_BUSINESS_ACCOUNT_ID` | WhatsApp Business Account ID from WhatsApp Manager. |
-| `WHATSAPP_BUSINESS_PHONE_NUMBER_ID` | Phone number ID from **Account tools → Phone numbers**. Agents send messages from this number. |
-| `WHATSAPP_BUSINESS_ACCESS_TOKEN` | The system user token from step 1. Treated as a secret and never shown back. |
+| `WHATSAPP_BUSINESS_ACCOUNT_ID` | 來自 WhatsApp Manager 的 WhatsApp Business 帳戶 ID。 |
+| `WHATSAPP_BUSINESS_PHONE_NUMBER_ID` | 來自 **Account tools → Phone numbers** 的電話號碼 ID。代理從此號碼傳送訊息。 |
+| `WHATSAPP_BUSINESS_ACCESS_TOKEN` | 步驟 1 的系統使用者令牌。視為秘密，絕不會再次顯示。 |
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-| Category | Capabilities |
+## 代理可執行的工作
+
+| 類別 | 能力 |
 | --- | --- |
-| Messages | Send text and template messages from your business phone number |
-| Templates | List and manage message templates |
-| Contacts | Look up the contacts your business messages |
-| Phone numbers | Read the phone numbers on your WhatsApp Business Account |
+| Messages | 從您的企業電話號碼傳送文字和模板訊息 |
+| Templates | 列出和管理訊息模板 |
+| Contacts | 查詢您的企業訊息聯絡人 |
+| Phone numbers | 讀取您的 WhatsApp Business 帳戶上的電話號碼 |
 
-The server is the source of truth for tool names and schemas.
+伺服器是工具名稱和結構的來源。
 
 ## Notes
 
-- Access follows the system user token. The connector can reach only the WhatsApp Business Accounts assigned to that system user, within the token's permissions.
-- WhatsApp only allows free-form messages within 24 hours of a customer's last message. Outside that window, agents must send an approved template.
-- Messages go out from your real business number and can incur Meta's messaging charges. Review what agents send.
-- Disconnecting the connector in Cursor deletes your saved account ID, phone number ID, and access token. Revoking the token in Meta Business Settings ends Cursor's access to your account.
+- 存取權遵循系統使用者令牌。聯結器只能存取該系統使用者被授予的 WhatsApp Business 帳戶，並受限於令牌的許可權範圍。
+- WhatsApp 僅允許在客戶最後訊息後 24 小時內傳送自由格式訊息。超出該時間範圍，代理必須傳送已核准的模板。
+- 訊息從您的真實企業號碼發出，可能產生 Meta 的訊息費用。請審查代理傳送的內容。
+- 在 Cursor 中斷連線會刪除您儲存的帳戶 ID、電話號碼 ID 和存取令牌。在 Meta Business Settings 中撤銷令牌會終止 Cursor 對您的帳戶的存取。
 
 ## Docs
 
@@ -70,7 +80,7 @@ The server is the source of truth for tool names and schemas.
 - WhatsApp Cloud API: https://developers.facebook.com/docs/whatsapp/cloud-api
 - Model Context Protocol: https://modelcontextprotocol.io
 
-Logo is WhatsApp's official mark, from `whatsapp.com`.
+Logo 是 WhatsApp 的官方標誌，來自 `whatsapp.com`。
 
 ## License
 

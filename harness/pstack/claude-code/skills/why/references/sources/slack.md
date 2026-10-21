@@ -1,17 +1,23 @@
-# Slack Conversations
+<a id="slack-conversations"></a>
 
-## How to search it
+# Slack 對話
 
-Slack MCP tools vary. Check which Slack MCP is available and inspect its tool schema first. It may require `mcp_auth`. If authentication fails, stop and report the gap.
+<a id="how-to-search-it"></a>
 
-1. **Author-bounded search.** Messages from the PR author around the PR merge date. Limits scope dramatically and often hits gold.
-3. **PR URL search.** Slack often links PRs when they're reviewed or discussed. Search for the PR URL (or just `/pull/<number>`).
-4. **Error string search.** If the code handles a specific error, search for the error string. Incident threads often surface.
+## 如何搜尋
 
-## Common pitfalls
+Slack MCP 工具各不相同。先確認哪個 Slack MCP 可用，並檢查其工具結構。它可能需要 `mcp_auth`。如果驗證失敗，請停止並報告這個缺口。
 
-- **Channel archaeology limits.** Very old messages may be gone due to retention policies. If you can't find anything before a certain date, note the retention cliff.
-- **Unsearched DMs.** Many decisions happen in DMs that aren't searchable. You'll miss them. That's a known limitation.
-- **Speculative jokes as "decisions."** Slack is casual. "Lol just do the thing" isn't a decision, even if it preceded the commit. Look for considered discussion.
-- **Context collapse in single messages.** Without the thread, a single message often reads differently than in context. Always fetch threads.
-- **Auth failures.** If the MCP isn't authenticated, stop. Don't make up findings. Report that Slack wasn't searchable.
+1. **作者範圍搜尋。** 從 PR 作者在 PR 合併日期附近的訊息。大幅縮小範圍，常能找到關鍵資訊。
+3. **PR URL 搜尋。** Slack 常在審查或討論時連結 PR。搜尋 PR URL（或僅 `/pull/<number>`）。
+4. **錯誤訊息搜尋。** 如果程式碼處理特定錯誤，搜尋錯誤訊息。事件討論串常會出現。
+
+<a id="common-pitfalls"></a>
+
+## 常見陷阱
+
+- **頻道歷史限制。** 非常舊的訊息可能因保留政策而消失。如果在某日期之前找不到任何內容，請記錄這個保留斷崖。
+- **未搜尋的私訊。** 許多決定發生在無法搜尋的私訊中。你會漏掉這些。這是已知的限制。
+- **臆測玩笑被當成「決定」。** Slack 是輕鬆的環境。「哈哈就做那個吧」不是決定，即使它出現在 commit 之前。請尋找深思熟慮的討論。
+- **單一訊息中的上下文崩潰。** 沒有討論串，單一訊息常會與上下文中的意義不同。務必取得完整討論串。
+- **驗證失敗。** 如果 MCP 未驗證，請停止。不要臆造結果。報告 Slack 無法搜尋。

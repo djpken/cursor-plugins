@@ -1,18 +1,20 @@
 # etoro
 
-Cursor plugin that connects agents to [eToro](https://api-portal.etoro.com/core/vibe-code/cursor) through eToro's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server for the eToro Public API.
+Cursor 外掛，透過 eToro 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [eToro](https://api-portal.etoro.com/core/vibe-code/cursor) 的 eToro 公開 API。
 
-View your eToro portfolio, balances, positions, and watchlists, research instruments and traders, and prepare and place trades.
+檢視您的 eToro 投資組合、餘額、持倉和關注列表，研究工具和交易者，並準備和下達交易。
 
-This plugin is for operating an eToro account from chat. For writing code against the eToro Public API, install eToro's own [`etoro`](https://cursor.com/marketplace/etoro) plugin instead, which ships API-building rules, skills, and a documentation search server.
+此外掛用於從聊天中操作 eToro 帳戶。若要針對 eToro 公開 API 編寫程式碼，請安裝 eToro 自己的 [`etoro`](https://cursor.com/marketplace/etoro) 外掛，該外掛包含 API 構建規則、技能和文件搜尋伺服器。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **etoro**.
-3. Click **Install**, then complete the eToro sign-in prompt.
+## 安裝
 
-Or run `/add-plugin etoro-trading` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **etoro**。
+3. 點選 **安裝**，然後完成 eToro 登入提示。
+
+或在聊天中執行 `/add-plugin etoro-trading`。
 
 ## MCP
 
@@ -27,38 +29,48 @@ Or run `/add-plugin etoro-trading` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for eToro sign-in when the plugin connects — there is no client ID or API key to configure. Each user signs in with their own eToro account and consents to the scopes the connection may use; the `get-my-profile-and-scopes` tool shows which account is connected and which scopes were granted.
+認證採用 OAuth。當外掛連線時，Cursor 會提示 eToro 登入，無需設定客戶端 ID 或 API 金鑰。每個使用者以自己的 eToro 帳戶登入，並同意連線可能使用的許可權範圍；`get-my-profile-and-scopes` 工具會顯示已連線的帳戶和授予的許可權範圍。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need an eToro account. The server operates on both **Demo** (virtual money) and **Real** accounts, and the same tools work against either, so confirm which account type a request targets before letting the agent place a trade.
+## 連線前
 
-## What agents can do
+您需要一個 eToro 帳戶。伺服器同時操作 **Demo**（虛擬資金）和 **Real** 帳戶，相同的工具適用於兩種帳戶，因此請確認請求目標的帳戶型別，再讓代理下達交易。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Portfolio | Full portfolio summary with totals and per-instrument P&L, balances across every account type (Trading, Cash, Crypto, Options, and others), current positions and pending orders including copy-trading mirrors, and closed-trade history |
-| Trading | `prepare-trade` validates an order against live eligibility, quotes, costs, and available balance and returns a confirmation block; `place-trade` submits exactly that order and waits for the outcome. `prepare-close` / `place-close` do the same for closing a position |
-| Research | Batch overview of up to 100 instruments (price, spread, performance, tradability), public profiles and performance of up to 100 traders for copy-trading research, and the user's watchlists |
-| API access | Browse the Public API route catalog by tag or keyword, read any route's OpenAPI spec, and run read or write requests against any route |
+| 投資組合 | 完整投資組合摘要，包含總計和每種工具的盈虧、所有帳戶型別（交易、現金、加密貨幣、期權及其他）的餘額、當前持倉和待處理訂單（包括跟單交易映象）以及已結束交易歷史 |
+| 交易 | `prepare-trade` 根據實時資格、報價、成本和可用餘額驗證訂單，並返回確認塊；`place-trade` 提交該訂單並等待結果。`prepare-close` / `place-close` 對關閉持倉執行相同操作 |
+| 研究 | 批次檢視最多 100 種工具（價格、差價、表現、可交易性）、最多 100 位交易者的公開資料和表現（用於跟單交易研究）以及使用者關注列表 |
+| API 存取 | 按標籤或關鍵字瀏覽公開 API 路由目錄，讀取任何路由的 OpenAPI 規格，並對任何路由執行讀取或寫入請求 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱和結構的來源真相。
 
-## Notes
+<a id="notes"></a>
 
-- **You are responsible for every trade the agent places.** The server gates trades behind a short-lived confirmation token issued by `prepare-trade` / `prepare-close`, and its tool descriptions instruct the agent to show you the confirmation block and get explicit approval before each `place-*` or `execute-write` call. If you instruct the agent to act without asking, it can still place orders.
-- Orders placed on a Real account are live. eToro recommends starting on a Demo account.
-- `execute-write` can reach any state-changing route in the Public API, including transfers and social posts, not only trades.
+## 注意事項
 
-## Docs
+- **您對代理下達的每一筆交易負有責任。** 伺服器將交易限制在 `prepare-trade` / `prepare-close` 發出的短期確認令牌之後，其工具描述指示代理向您顯示確認塊並在每次 `place-*` 或 `execute-write` 呼叫前獲得明確批准。如果您指示代理不詢問而直接行動，它仍可以下達訂單。
+- 在 Real 帳戶上下達的訂單是實時交易。eToro 建議先在 Demo 帳戶上開始。
+- `execute-write` 可以訪問公開 API 中任何改變狀態的路線，包括轉帳和社交帖子，不僅限於交易。
 
-- Cursor integration guide: https://api-portal.etoro.com/core/vibe-code/cursor
-- Agent skill and server overview: https://api-portal.etoro.com/core/ai-agents/etoro-skill
-- API reference: https://api-portal.etoro.com/
-- Server URL: https://mcp.public-api.etoro.com
+<a id="docs"></a>
 
-Logo is eToro's official mark.
+## 文件
 
-## License
+- Cursor 整合指南：https://api-portal.etoro.com/core/vibe-code/cursor
+- 代理技能和伺服器概述：https://api-portal.etoro.com/core/ai-agents/etoro-skill
+- API 參考：https://api-portal.etoro.com/
+- 伺服器 URL：https://mcp.public-api.etoro.com
+
+標誌是 eToro 的官方標誌。
+
+<a id="license"></a>
+
+## 許可
 
 MIT

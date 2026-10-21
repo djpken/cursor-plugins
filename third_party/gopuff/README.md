@@ -1,15 +1,17 @@
 # Gopuff
 
-Connects Grok Bot to Gopuff's official MCP server at
+將 Grok Bot 連線到 Gopuff 的官方 MCP 伺服器，位於
 `https://mcp.gopuff.com/mcp`.
 
-## About this connector
+<a id="about-this-connector"></a>
 
-- **Sign-in:** you sign in with your Gopuff account through Gopuff's own
-  OAuth server (`https://goauth.gopuff.com`, email magic link or one-time
-  code). Grok Bot never sees your Gopuff credentials.
-- **What you share:** searches, carts, and orders go to Gopuff under your
-  account. An order you place is charged and delivered like any other Gopuff
-  order.
-- **Disconnect anytime:** remove the account from the plugin's Accounts
-  section in Grok Bot.
+## 關於此聯結器
+
+- **登入：** 您透過 Gopuff 自己的
+  OAuth 伺服器（`https://goauth.gopuff.com`、電子郵件魔法連結或一次性
+  程式碼）使用您的 Gopuff 帳戶登入。Grok Bot 永遠不會看到您的 Gopuff 憑證。
+- **您分享的資訊：** 搜尋、購物車和訂單會在您的帳戶下傳送至 Gopuff。您下達的訂單會像其他 Gopuff 訂單一樣被計費和配送。
+  訂單。
+  **隨時斷開連線：** 從 Grok Bot 外掛中的 Accounts
+- 區段移除帳戶。
+  區段移除帳戶。

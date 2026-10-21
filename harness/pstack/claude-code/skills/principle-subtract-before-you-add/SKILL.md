@@ -1,18 +1,20 @@
 ---
 name: principle-subtract-before-you-add
-description: "Apply when sequencing an addition, refactor, or rewrite. Remove dead code, redundant validators, and stub references first, then build on the simpler base."
+description: "在進行新增、重構或重寫時，先移除死程式碼、冗餘的驗證器和殘留的引用，然後在更簡化的基礎上進行構建。"
 disable-model-invocation: true
 ---
 
-# Subtract Before You Add
+<a id="subtract-before-you-add"></a>
 
-When evolving a system, remove complexity first, then build. Default to subtraction.
+# 先減後加
 
-Make simplification a continual investment. Leave the design slightly simpler and more capable behind the same or smaller surface than you found it.
+在演化系統時，先移除複雜性，再進行構建。預設採用減法。
 
-- Sequence removal before construction
-- Cut before you polish (get to the minimum before investing in quality)
-- Design for observed usage, not speculative edge cases
-- No speculative validators, parsers, or guards beyond what the spec demands
-- Simplify prompts (remove redundant instructions, excessive templates)
-- When a reference has no novel content, delete it rather than leaving a stub
+讓簡化成為持續的投資。讓設計在相同或更小的表面下，比你發現它時更簡潔且更具能力。
+
+- 先移除，再構建
+- 先裁剪再打磨（先達到最小規模，再投資品質）
+- 根據實際觀察的使用情況設計，而非臆測的邊界情況
+- 不新增超出規格要求的臆測性驗證器、解析器或保護機制
+- 簡化提示（移除冗餘的指令、過多的模板）
+- 當引用沒有新內容時，刪除它，而不是留下殘留引用

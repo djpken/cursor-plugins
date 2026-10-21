@@ -1,71 +1,85 @@
-# Continual Learning
+<a id="continual-learning"></a>
 
-Automatically and incrementally keeps `AGENTS.md` up to date from transcript changes.
+# 持續學習
 
-The plugin combines:
+自動且增量地根據 transcript 的變更，讓 `AGENTS.md` 保持最新狀態。
 
-- A `stop` hook that decides when to trigger learning.
-- A `continual-learning` skill that orchestrates the learning flow.
-- An `agents-memory-updater` subagent that mines new or changed transcripts and updates `AGENTS.md`.
+此 plugin 結合了以下元件：
 
-It is designed to avoid noisy rewrites by:
+- 一個 `stop` hook，用於決定何時觸發學習。
+- 一個 `continual-learning` skill，用於協調學習流程。
+- 一個 `agents-memory-updater` subagent，用於挖掘新增或變更的 transcript，並更新 `AGENTS.md`。
 
-- Reading existing `AGENTS.md` first and updating matching bullets in place.
-- Processing only new or changed transcript files.
-- Writing plain bullet points only (no evidence/confidence metadata).
+它透過以下方式設計，以避免雜訊過多的重寫：
 
-## Installation
+- 先讀取現有的 `AGENTS.md`，並就地更新相符的專案。
+- 僅處理新增或變更的 transcript 檔案。
+- 僅寫入純文字專案（不包含證據或信心度 metadata）。
+
+<a id="installation"></a>
+
+## 安裝
 
 ```bash
 /add-plugin continual-learning
 ```
 
-## How it works
+<a id="how-it-works"></a>
 
-On eligible `stop` events, the hook may emit a `followup_message` that asks the agent to run the `continual-learning` skill.
+## 運作方式
 
-The skill is marked `disable-model-invocation: true`, so it will not be auto-selected during normal model invocation. When it does run, it delegates the full memory update flow to `agents-memory-updater`.
+在符合條件的 `stop` 事件中，hook 可能會發出 `followup_message`，要求 agent 執行 `continual-learning` skill。
 
-The hook keeps local runtime state in:
+此 skill 被標記為 `disable-model-invocation: true`，因此在正常的模型呼叫期間不會被自動選取。當它執行時，會將完整的 memory 更新流程委派給 `agents-memory-updater`。
 
-- `.cursor/hooks/state/continual-learning.json` (cadence state)
+hook 在以下位置保留本機 runtime 狀態：
 
-The updater uses an incremental transcript index at:
+- `.cursor/hooks/state/continual-learning.json`（cadence 狀態）
+
+updater 使用位於以下位置的增量 transcript 索引：
 
 - `.cursor/hooks/state/continual-learning-index.json`
 
-## Trigger cadence
+<a id="trigger-cadence"></a>
 
-Default cadence:
+## 觸發頻率
 
-- minimum 10 completed turns
-- minimum 120 minutes since the last run
-- transcript mtime must advance since the previous run
+預設頻率：
 
-Trial mode defaults (enabled in this plugin hook config):
+- 最少 10 個已完成的回合
+- 距離上次執行至少 120 分鐘
+- transcript 的 mtime 必須自上次執行以來有所推進
 
-- minimum 3 completed turns
-- minimum 15 minutes
-- automatically expires after 24 hours, then falls back to default cadence
+試行模式預設值（在此 plugin hook 設定中啟用）：
 
-## Optional env overrides
+- 最少 3 個已完成的回合
+- 最少 15 分鐘
+- 24 小時後自動過期，然後回退至預設頻率
 
-- `CONTINUAL_LEARNING_MIN_TURNS` (or legacy `CONTINUOUS_LEARNING_MIN_TURNS`)
-- `CONTINUAL_LEARNING_MIN_MINUTES` (or legacy `CONTINUOUS_LEARNING_MIN_MINUTES`)
-- `CONTINUAL_LEARNING_TRIAL_MODE` (or legacy `CONTINUOUS_LEARNING_TRIAL_MODE`)
-- `CONTINUAL_LEARNING_TRIAL_MIN_TURNS` (or legacy `CONTINUOUS_LEARNING_TRIAL_MIN_TURNS`)
-- `CONTINUAL_LEARNING_TRIAL_MIN_MINUTES` (or legacy `CONTINUOUS_LEARNING_TRIAL_MIN_MINUTES`)
-- `CONTINUAL_LEARNING_TRIAL_DURATION_MINUTES` (or legacy `CONTINUOUS_LEARNING_TRIAL_DURATION_MINUTES`)
+<a id="optional-env-overrides"></a>
 
-## Output format in AGENTS.md
+## 選用的環境變數覆寫
 
-The memory updater writes only:
+- `CONTINUAL_LEARNING_MIN_TURNS`（或舊版 `CONTINUOUS_LEARNING_MIN_TURNS`）
+- `CONTINUAL_LEARNING_MIN_MINUTES`（或舊版 `CONTINUOUS_LEARNING_MIN_MINUTES`）
+- `CONTINUAL_LEARNING_TRIAL_MODE`（或舊版 `CONTINUOUS_LEARNING_TRIAL_MODE`）
+- `CONTINUAL_LEARNING_TRIAL_MIN_TURNS`（或舊版 `CONTINUOUS_LEARNING_TRIAL_MIN_TURNS`）
+- `CONTINUAL_LEARNING_TRIAL_MIN_MINUTES`（或舊版 `CONTINUOUS_LEARNING_TRIAL_MIN_MINUTES`）
+- `CONTINUAL_LEARNING_TRIAL_DURATION_MINUTES`（或舊版 `CONTINUOUS_LEARNING_TRIAL_DURATION_MINUTES`）
+
+<a id="output-format-in-agentsmd"></a>
+
+## AGENTS.md 中的輸出格式
+
+memory updater 僅寫入：
 
 - `## Learned User Preferences`
 - `## Learned Workspace Facts`
 
-Each item is a plain bullet point.
+每個專案都是一個純文字專案。
 
-## License
+<a id="license"></a>
+
+## 授權條款
 
 MIT

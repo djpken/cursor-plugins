@@ -1,51 +1,63 @@
 ---
 name: add-dictation
 description: >-
-  Use when the user runs /add-dictation or wants speech turned into text with
-  Grok speech-to-text: a mic button that dictates into the composer, live
-  captions, or transcribing recorded audio (files, uploads, URLs) with word
-  timestamps, diarization, subtitles, meeting notes. STT, transcribe,
-  transcription. For a voice agent that talks back use /add-voice.
+  當使用者執行 /add-dictation 或希望將語音轉換為文字時使用
+  Grok 語音轉文字：一個麥克風按鈕，可將口述內容輸入至編輯器、即時
+  字幕，或轉錄已錄製的音訊（檔案、上傳、URL），並包含單字
+  時間戳記、講者分離、字幕、會議記錄。STT、轉錄、
+  轉錄文字。若要使用會回應的語音代理，請使用 /add-voice.
 ---
 
-# Add Dictation
+<a id="add-dictation"></a>
 
-Add Grok Speech to Text to an existing app: a mic button that dictates into the composer, live captions, or transcripts of recorded audio. Run on `/add-dictation`, typed **Dictate**, or clear “transcribe” intent. Cursor has no mic; wire the **app**, not the IDE.
+# 新增口述功能
 
-## Docs
+將 Grok 語音轉文字新增至現有應用程式：一個麥克風按鈕，可將口述內容輸入至編輯器、即時字幕，或已錄製音訊的轉錄文字。在 `/add-dictation` 上執行，輸入 **Dictate**，或明確的「轉錄」意圖。Cursor 沒有麥克風；請連線 **應用程式**，而非 IDE。
+
+<a id="docs"></a>
+
+## 檔案
 
 - https://docs.x.ai/developers/model-capabilities/audio/speech-to-text
-- Model selection (read first): https://docs.x.ai/developers/model-capabilities/audio/speech-to-text#model-selection
-- Pricing (cite docs only): https://docs.x.ai/developers/pricing
+- 模型選擇（請先閱讀）：https://docs.x.ai/developers/model-capabilities/audio/speech-to-text#model-selection
+- 定價（僅引用檔案）：https://docs.x.ai/developers/pricing
 
-## Model
+<a id="model"></a>
 
-Before any STT call, read the model-selection section and pass the **latest listed** model as `model`. Do not invent ids or reuse a stale one from this skill. REST: form field before `file`. Streaming: query param. Official examples currently send `grok-voice-transcribe-2.0`. Listed today: `grok-voice-transcribe-2.0` (best), `grok-voice-transcribe-1.0` (original; API default when `model` is omitted).
+## 模型
 
-## Pick the path
+在任何 STT 呼叫之前，請閱讀模型選擇章節，並將**最新列出**的模型作為 `model` 傳遞。請勿捏造 ID 或重複使用此 skill 中過時的 ID。REST：在 `file` 之前的表單欄位。串流：查詢引數。官方範例目前傳送 `grok-voice-transcribe-2.0`。今日列出：`grok-voice-transcribe-2.0`（最佳）、`grok-voice-transcribe-1.0`（原始版本；當省略 `model` 時的 API 預設值）。
 
-| Need | Path |
+<a id="pick-the-path"></a>
+
+## 選擇路徑
+
+| 需求 | 路徑 |
 | --- | --- |
-| Tap, speak, tap, text appears. Uploaded files. URLs. | **Batch** `POST https://api.x.ai/v1/stt` (default) |
-| Text appears while speaking: captions, long dictation, push-to-talk | **Streaming** `wss://api.x.ai/v1/stt` through a backend relay |
+| 點選、說話、點選、文字出現。上傳的檔案。URL。 | **批次** `POST https://api.x.ai/v1/stt`（預設） |
+| 說話時文字出現：字幕、長篇口述、按下說話 | **串流** `wss://api.x.ai/v1/stt` 透過後端中繼 |
 
-Batch is the default for a composer mic button: one request, no socket, the key never leaves the server. Go streaming only when the UX needs interim text.
+批次是編輯器麥克風按鈕的預設選項：單一請求、無 socket、金鑰永不離開伺服器。僅當 UX 需要暫定文字時才使用串流。
 
-## Auth
+<a id="auth"></a>
 
-- Bearer `XAI_API_KEY`, server side only. The STT docs document no ephemeral-token flow, and browsers cannot set WebSocket headers, so browser streaming goes through your backend relay. Do not invent a token flow.
-- Never put the key in a client bundle. Do not paste keys in chat.
+## 驗證
 
-## Steps
+- Bearer `XAI_API_KEY`，僅限伺服器端。STT 檔案未記載任何臨時金鑰流程，且瀏覽器無法設定 WebSocket 標頭，因此瀏覽器串流需透過您的後端中繼。請勿捏造金鑰流程。
+- 切勿將金鑰放入客戶端 bundle。請勿在聊天中貼上金鑰。
 
-1. **Map the app**
-   - Composer or input component, where the text should land (insert at cursor vs replace), server framework, package manager.
-   - The **microphone icon belongs to dictation**. If `/add-voice` is installed, its waveform primary button stays as is; add the mic as a secondary ghost button beside it.
-   - Existing mic capture? If `/add-voice` ran, its PCM capture can feed streaming STT; pass its rate as `sample_rate`. 16 kHz is the model’s native rate; other supported rates (8000, 16000, 22050, 24000, 44100, 48000) are resampled server side.
+<a id="steps"></a>
 
-2. **Batch path (default)**
-   - Client: `MediaRecorder` → `Blob` → `POST` to your own route. The endpoint auto-detects containers (WAV, MP3, OGG, Opus, FLAC, AAC, MP4, M4A, MKV, WebM), so send whatever `MediaRecorder` produces.
-   - Server: forward as `multipart/form-data`. Option fields first, **`file` last**; fields after `file` may be ignored. `file` or `url`, max 500 MB. `model` from docs (latest listed).
+## 步驟
+
+1. **對應應用程式**
+   - 編輯器或輸入元件、文字應放置的位置（在遊標處插入 vs 取代）、伺服器框架、套件管理器。
+   - **麥克風圖示屬於口述功能**。如果已安裝 `/add-voice`，其波形主要按鈕保持不變；在旁邊新增麥克風作為次要幽靈按鈕。
+   - 現有的麥克風擷取？如果 `/add-voice` 已執行，其 PCM 擷取可供應串流 STT；將其速率作為 `sample_rate` 傳遞。16 kHz 是模型的原生速率；其他支援的速率（8000、16000、22050、24000、44100、48000）會在伺服器端重新取樣。
+
+2. **批次路徑（預設）**
+   - 客戶端：`MediaRecorder` → `Blob` → `POST` 至您自己的路由。端點會自動偵測容器（WAV、MP3、OGG、Opus、FLAC、AAC、MP4、M4A、MKV、WebM），因此請傳送 `MediaRecorder` 產生的任何內容。
+   - 伺服器：作為 `multipart/form-data` 轉發。選項欄位優先，**`file` 最後**；`file` 之後的欄位可能被忽略。`file` 或 `url`，最大 500 MB。`model` 來自檔案（最新列出）。
 
 ```ts
 // server (any runtime with fetch + FormData)
@@ -85,8 +97,8 @@ rec.onstop = async () => {
 rec.start(); // second tap: rec.stop()
 ```
 
-3. **Streaming path**
-   - Relay: server holds the key, upgrades the browser socket, forwards binary frames and client control messages up, JSON events down. Build the query string server side. `model` from docs (latest listed).
+3. **串流路徑**
+   - 中繼：伺服器持有金鑰，升級瀏覽器 socket，向上轉發二進位框架和客戶端控制訊息，向下傳送 JSON 事件。在伺服器端建立查詢字串。`model` 來自檔案（最新列出）。
 
 ```ts
 import { WebSocketServer, WebSocket } from "ws";
@@ -101,7 +113,7 @@ new WebSocketServer({ port: 8788 }).on("connection", (client) => {
 });
 ```
 
-   - Browser capture: PCM16 little-endian, mono, 16 kHz, **100 ms frames = 3,200 bytes**, raw binary, no base64. Wait for `transcript.created` before sending. `MediaRecorder` output is a container, not raw frames; do not stream it.
+   - 瀏覽器擷取：PCM16 小端、單聲道、16 kHz、**100 ms 框架 = 3,200 位元組**、原始二進位、無 base64。在傳送前等待 `transcript.created`。`MediaRecorder` 輸出是容器，而非原始框架；請勿串流它。
 
 ```ts
 const ws = new WebSocket(relayUrl); ws.binaryType = "arraybuffer";
@@ -128,24 +140,24 @@ ws.addEventListener("message", (e) => {
 // push-to-talk release: ws.send(JSON.stringify({ type: "Finalize" })) then keep streaming (docs show both `finalize` and `Finalize`; the examples use `Finalize`)
 ```
 
-4. **Options** (query params for streaming, form fields for batch)
+4. **選項**（串流為查詢引數，批次為表單欄位）
 
-| Want | Set |
+| 想要 | 設定 |
 | --- | --- |
-| Latest STT | Read docs #model-selection, pass that `model`. Snapshot: `grok-voice-transcribe-2.0`. Omit → `grok-voice-transcribe-1.0`. Batch: form field. Streaming: query param. |
-| Text while speaking | `interim_results=true` |
-| “one hundred dollars” → `$100` | streaming: `language=en`; batch: `format=true` + `language=en` |
-| Product names, jargon | `keyterm=` repeated |
-| Not cut off mid-sentence while dictating numbers | `smart_turn=0.7&smart_turn_timeout=3000` |
-| Faster or slower end of utterance | `endpointing=` ms, default 400 |
-| Who said what (meetings) | `diarize=true` → `words[].speaker` |
-| Agent and customer on separate channels | `multichannel=true&channels=2` (PCM only, not Opus) |
-| Keep “um”, “uh” | `filler_words=true` (removed by default) |
-| Low bandwidth or mobile | `encoding=opus`, exactly one raw Opus packet per frame, omit `sample_rate` |
-| Raw audio to batch | `audio_format=pcm|mulaw|alaw` + `sample_rate` |
-| Quiet or telephony audio | lower `vad_threshold` (streaming default 0.08, batch 0.5) |
+| 最新 STT | 閱讀檔案 #model-selection，傳遞該 `model`。快照：`grok-voice-transcribe-2.0`。省略 → `grok-voice-transcribe-1.0`。批次：表單欄位。串流：查詢引數。 |
+| 說話時顯示文字 | `interim_results=true` |
+| 「one hundred dollars」 → `$100` | 串流：`language=en`；批次：`format=true` + `language=en` |
+| 產品名稱、術語 | 重複 `keyterm=` |
+| 口述數字時未在句子中途截斷 | `smart_turn=0.7&smart_turn_timeout=3000` |
+| 較快或較慢的語句結束 | `endpointing=` ms，預設 400 |
+| 誰說了什麼（會議） | `diarize=true` → `words[].speaker` |
+| 代理和客戶在單獨的通道上 | `multichannel=true&channels=2`（僅限 PCM，非 Opus） |
+| 保留「um」、「uh」 | `filler_words=true`（預設移除） |
+| 低頻寬或行動裝置 | `encoding=opus`，每個框架精確一個原始 Opus 封包，省略 `sample_rate` |
+| 原始音訊至批次 | `audio_format=pcm|mulaw|alaw` + `sample_rate` |
+| 安靜或電話音訊 | 降低 `vad_threshold`（串流預設 0.08，批次 0.5） |
 
-5. **Python twin (only if the server is Python)**
+5. **Python 對應（僅當伺服器是 Python 時）**
 
 ```python
 import os, requests
@@ -159,13 +171,15 @@ r.raise_for_status(); text = r.json()["text"]
 # streaming: websockets.connect(url, additional_headers={"Authorization": f"Bearer {key}"}); await ws.send(pcm_bytes)
 ```
 
-6. **Smoke**
-   - Batch: latest `model` from docs (currently `grok-voice-transcribe-2.0`): `curl -X POST https://api.x.ai/v1/stt -H "Authorization: Bearer $XAI_API_KEY" -F model=grok-voice-transcribe-2.0 -F language=en -F file=@short.wav` → 200 with `text`. Same call with `-F format=true` and no `language` → 400.
-   - Streaming: dictate two sentences with a pause between them. Expect interim text, then a final; no duplicated or vanished words at the utterance boundary (if words vanish, the stitched `speech_final` text did not include the chunk finals: append instead of replacing `locked`). `audio.done` → `transcript.done`, socket closes.
-   - Search the client bundle for `XAI_API_KEY`; it must not be there.
-   - Debug from logs with `/debug-voice`; swap its hook points to `transcript.*` events.
+6. **冒煙測試**
+   - 批次：來自檔案的最新 `model`（目前為 `grok-voice-transcribe-2.0`）：`curl -X POST https://api.x.ai/v1/stt -H "Authorization: Bearer $XAI_API_KEY" -F model=grok-voice-transcribe-2.0 -F language=en -F file=@short.wav` → 200 並包含 `text`。使用 `-F format=true` 且無 `language` 的相同呼叫 → 400。
+   - 串流：口述兩句話，中間有暫停。預期會有暫定文字，然後是最終文字；在語句邊界沒有重複或消失的單字（如果單字消失，拼接的 `speech_final` 文字未包含區塊最終文字：請附加而非取代 `locked`）。`audio.done` → `transcript.done`，socket 關閉。
+   - 在客戶端 bundle 中搜尋 `XAI_API_KEY`；它不應存在。
+   - 使用 `/debug-voice` 從紀錄除錯；將其掛鉤點切換為 `transcript.*` 事件。
 
-## Out of scope
+<a id="out-of-scope"></a>
 
-- Speech that talks back (`/add-voice`), speaking text (`/add-read-aloud`)
-- Inventing an STT token flow, endpoints, model ids, or event names not in the docs
+## 超出範圍
+
+- 會回應的語音（`/add-voice`）、朗讀文字（`/add-read-aloud`）
+- 捏造檔案未記載的 STT 金鑰流程、端點、模型 ID 或事件名稱

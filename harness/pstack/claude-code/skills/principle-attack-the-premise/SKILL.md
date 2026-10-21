@@ -1,21 +1,23 @@
 ---
 name: principle-attack-the-premise
-description: "Apply when two or more fixes that share one premise have failed the same gate. Write the premise down and test it directly before you write another fix that assumes it."
+description: "當兩個或更多共享同一前提的修正在同一關卡失敗時，請將前提寫下來並直接測試它，再寫下另一個假定該前提的修正。"
 disable-model-invocation: true
 ---
 
-# Attack the Premise
+<a id="attack-the-premise"></a>
 
-When two or more fixes that share one premise have failed the same gate, suspect the premise, not the fixes.
+# 攻擊前提
 
-**Why:** Each failed fix is evidence against the belief it assumed. A third fix on the same premise spends effort where the evidence already says the cause is not.
+當兩個或更多共享同一前提的修正在同一關卡失敗時，應懷疑前提本身，而非修正。
 
-**Pattern:**
-- **Write the premise down.** The premise is the one sentence that every failed fix assumed.
-- **Test the premise before the next fix.** Find an observation that would come out differently if the premise were false, and make it. Look at how the failures are distributed, not only at how large they are. Make the check rerunnable per [Build the Lever](../principle-build-the-lever/SKILL.md).
-- **Follow the evidence.** If it contradicts the premise, the cause is elsewhere. Look for what the failures have in common that the premise did not predict. If it confirms the premise, ask the next "why" per [Fix Root Causes](../principle-fix-root-causes/SKILL.md). The earlier fixes may have treated a consequence instead of the cause.
-- **Remove the condition instead of compensating for it**, per the [Laziness Protocol](../principle-laziness-protocol/SKILL.md). If the evidence shows that one part always lands on the losing side, change what puts it there. A mechanism that cleans up after it leaves the cause in place and adds work on every run.
+**原因：** 每個失敗的修正都是對它所假定信念的證據。在同一前提上進行第三次修正，是在證據已表明原因不在那裡的情況下浪費精力。
 
-**Stop:** Do not start the next fix before the premise is written down and tested.
+**模式：**
+- **將前提寫下來。** 前提是每個失敗修正都假定的一句話。
+- **在下一個修正之前測試前提。** 尋找一個若前提為假則結果會不同的觀察，並進行該觀察。檢視失敗的分佈方式，而非僅看其規模。使檢查可重跑，依據 [Build the Lever](../principle-build-the-lever/SKILL.md)。
+- **遵循證據。** 若證據與前提矛盾，原因就在其他地方。尋找失敗的共同點，而非前提所未預測的部分。若證據確認前提，則依據 [Fix Root Causes](../principle-fix-root-causes/SKILL.md) 提出下一個「為什麼」。早期的修正可能處理了結果而非原因。
+- **移除條件而非補償它**，依據 [Laziness Protocol](../principle-laziness-protocol/SKILL.md)。若證據顯示某部分總是落在失敗的一方，改變導致它在那裡的因素。一個在之後清理的機制會留下原因並在每次執行增加工作量。
 
-This principle is distinct from [Redesign from First Principles](../principle-redesign-from-first-principles/SKILL.md), which rebuilds a design around a new requirement. It questions a fact the current design assumes.
+**停止：** 在前提寫下並測試之前，不要開始下一個修正。
+
+此原則與 [Redesign from First Principles](../principle-redesign-from-first-principles/SKILL.md) 不同，該原則根據新需求重建設計。它質疑當前設計所假定的一個事實。

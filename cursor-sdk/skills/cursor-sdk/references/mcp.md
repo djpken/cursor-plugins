@@ -1,8 +1,12 @@
-# MCP Servers
+<a id="mcp-servers"></a>
 
-MCP (Model Context Protocol) servers give the agent extra tools. The SDK supports them on both local and cloud runtimes, but the transport semantics and credential-handling rules differ, and getting them wrong is usually silent ("why doesn't the agent have my Linear tools?").
+# MCP 伺服器
 
-## Two transports, three deployment shapes
+MCP (Model Context Protocol) 伺服器為 agent 提供額外工具。SDK 支援本機與雲端 runtime，但傳輸語義與憑證處理規則有所不同，若設定錯誤通常不會發出警告（「為什麼 agent 沒有我的 Linear 工具？」）。
+
+<a id="two-transports-three-deployment-shapes"></a>
+
+## 兩種傳輸方式，三種部署形態
 
 ```typescript
 type McpServerConfig =
@@ -10,15 +14,17 @@ type McpServerConfig =
   | { type?: "http" | "sse"; url: string; headers?: Record<string,string>; auth?: { CLIENT_ID: string; CLIENT_SECRET?: string; scopes?: string[] } };
 ```
 
-Three patterns you'll actually use:
+三種實際會用到的模式：
 
-1. **Local stdio** — spawn a subprocess on the caller's machine. Default for most `@modelcontextprotocol/server-*` packages.
-2. **Local HTTP / remote HTTP** — a URL the SDK (local) or the backend (cloud) calls on behalf of the agent.
-3. **Cloud stdio** — subprocess spawned **inside the cloud VM**, not on the caller's machine.
+1. **本機 stdio**：在呼叫端機器上啟動子程式。大多數 `@modelcontextprotocol/server-*` 套件預設使用此方式。
+2. **本機 HTTP / 遠端 HTTP**：SDK（本機）或後端（雲端）代表 agent 呼叫的 URL。
+3. **雲端 stdio**：在**雲端 VM 內部**啟動的子程式，而非在呼叫端機器上。
 
-The shape looks similar in both runtimes; what changes is the execution location. One concrete delta worth knowing: cloud stdio servers reject `cwd` — the VM controls the working directory, and `cloud-mcp-utils.ts` throws `ConfigurationError("Cloud MCP server cannot include cwd.")` if you try to set it. Omit `cwd` for cloud stdio.
+兩種 runtime 的形態看起來相似，改變的是執行位置。一個值得注意的具體差異：雲端 stdio 伺服器會拒絕 `cwd`，因為 VM 控制工作目錄，若嘗試設定 `cloud-mcp-utils.ts` 會丟擲 `ConfigurationError("Cloud MCP server cannot include cwd.")`。雲端 stdio 請省略 `cwd`。
 
-## Local Runtime — MCP Config
+<a id="local-runtime--mcp-config"></a>
+
+## 本機 Runtime：MCP 設定
 
 ```typescript
 const agent = Agent.create({
@@ -42,11 +48,13 @@ const agent = Agent.create({
 });
 ```
 
-- Stdio servers run as child processes of your Node process. Make sure `command` is on PATH or use an absolute path. Dispose the agent cleanly to reap these.
-- HTTP servers are called directly from the local SDK. `headers` go on every request.
-- `auth: { CLIENT_ID, CLIENT_SECRET?, scopes? }` triggers OAuth flow — for first-party integrations that issue proper OAuth tokens. Most self-managed MCP servers just need `headers`.
+- Stdio 伺服器作為 Node 程式的子程式執行。請確保 `command` 在 PATH 中，或使用絕對路徑。妥善釋放 agent 以回收這些程式。
+- HTTP 伺服器由本機 SDK 直接呼叫。`headers` 會附加在每個請求上。
+- `auth: { CLIENT_ID, CLIENT_SECRET?, scopes? }` 會觸發 OAuth 流程，適用於發行正式 OAuth token 的第一方整合。大多數自管 MCP 伺服器只需要 `headers`。
 
-## Cloud Runtime — MCP Config
+<a id="cloud-runtime--mcp-config"></a>
+
+## 雲端 Runtime：MCP 設定
 
 ```typescript
 const agent = Agent.create({
@@ -71,17 +79,19 @@ const agent = Agent.create({
 });
 ```
 
-Critical differences from local:
+與本機環境的關鍵差異：
 
-- **HTTP `headers` and `auth` are proxied by the Cursor backend.** Sensitive header values are redacted server-side and do not reach the cloud VM. Safe place for OAuth tokens, API keys, etc.
-- **Stdio `env` values are injected into the cloud VM.** Treat them like any production secret — they will be visible to processes running inside the VM. Don't ship end-user credentials this way.
-- **`command`/`args` must resolve inside the cloud VM**, which has a standard Linux image. `npx`, `node`, and common binaries work; expect other tools to require a `command` that resolves in the VM or a container-provided binary.
+- **HTTP `headers` 與 `auth` 由 Cursor 後端代理。** 敏感的 header 值會在伺服器端被遮蔽，不會傳送到雲端 VM。這是存放 OAuth token、API 金鑰等資訊的安全位置。
+- **Stdio `env` 值會注入雲端 VM。** 請將其視為任何生產環境機密，因為 VM 內執行的程式會看到這些值。不要以此方式傳送終端使用者憑證。
+- **`command`/`args` 必須能在雲端 VM 內解析**，該 VM 使用標準 Linux 映像。`npx`、`node` 及常見二進位檔可正常運作；其他工具可能需要 `command` 才能在 VM 內解析，或使用容器提供的二進位檔。
 
-Dashboard-configured MCP servers are also respected on cloud. Users configure them once at [https://cursor.com/agents](https://cursor.com/agents); inline config on `Agent.create` stacks on top.
+在 Dashboard 設定的 MCP 伺服器在雲端也會被採用。使用者只需在 [https://cursor.com/agents](https://cursor.com/agents) 設定一次；`Agent.create` 上的內聯設定會疊加在其上。
 
-## Persistence Across `Agent.resume(...)`
+<a id="persistence-across-agentresume"></a>
 
-**Inline `mcpServers` are not persisted.** If you resume an agent and expect the same MCP tool access, pass the config again:
+## 跨 `Agent.resume(...)` 的永續性
+
+**內聯 `mcpServers` 不會持久化。** 若你恢復 agent 並期望擁有相同的 MCP 工具存取許可權，請再次傳入設定：
 
 ```typescript
 const baseMcp = { /* ... */ };
@@ -93,11 +103,13 @@ const agent = Agent.resume(agentId, {
 });
 ```
 
-Dashboard-configured servers do persist (they're keyed to the user, not the agent), so the common mistake is ceding convenience to inline config and then wondering why resume loses it.
+Dashboard 設定的伺服器會持久化（它們繫結到使用者而非 agent），因此常見錯誤是將便利性讓給內聯設定，然後疑惑為什麼恢復後會遺失。
 
-## Settings-sourced MCP servers
+<a id="settings-sourced-mcp-servers"></a>
 
-By default, local SDK agents do **not** load ambient user/team/project MCP config. Opt in via `settingSources`:
+## 來自設定的 MCP 伺服器
+
+預設情況下，本機 SDK agent **不會**載入環境中的使用者、團隊或專案 MCP 設定。透過 `settingSources` 選擇加入：
 
 ```typescript
 const agent = Agent.create({
@@ -110,44 +122,54 @@ const agent = Agent.create({
 });
 ```
 
-`settingSources` lives **inside `local`** — putting it at the top level will fail TypeScript and silently no-op in JavaScript. It has no effect on cloud agents; cloud always honors `project` / `team` / `plugins`.
+`settingSources` 位於 **`local` 內部**，放在頂層會導致 TypeScript 失敗，並在 JavaScript 中靜默無效。它對雲端 agent 無效；雲端永遠遵循 `project` / `team` / `plugins`。
 
-Valid sources: `"project"`, `"user"`, `"team"`, `"mdm"`, `"plugins"`, or `"all"` to include everything. Use the narrowest set that gives you what you need; `"all"` can pull in team policies and plugins that surprise production code.
+有效來源：`"project"`、`"user"`、`"team"`、`"mdm"`、`"plugins"`，或使用 `"all"` 包含所有專案。請使用能滿足需求的最小集合；`"all"` 可能會引入團隊策略與 plugin，進而影響生產程式碼。
 
-Inline `mcpServers` always win: they're explicit input, not ambient configuration. You can combine.
+內聯 `mcpServers` 永遠優先：它們是明確輸入，而非環境設定。你可以組合使用。
 
-## Choosing Between HTTP and stdio
+<a id="choosing-between-http-and-stdio"></a>
 
-For a remote service (Linear, GitHub, Jira, Figma, your own internal tool):
+## HTTP 與 stdio 的選擇
 
-- **Prefer HTTP** when the service has a stable MCP endpoint. Cursor's backend handles auth proxying on cloud; you don't have to ship secrets into the VM.
-- **Use stdio** when your integration is a local-first helper (filesystem, a CLI, a development tool) or when you need process-level isolation. On cloud, stdio servers run inside the Cursor VM — fine for stateless helpers, dangerous for anything that holds long-lived credentials.
+對於遠端服務（Linear、GitHub、Jira、Figma、你自己的內部工具）：
 
-For first-party MCP servers that support OAuth, use `auth: { CLIENT_ID, CLIENT_SECRET?, scopes? }` instead of hardcoding `Authorization` headers.
+- **優先使用 HTTP**，當服務有穩定的 MCP endpoint 時。Cursor 後端在雲端處理認證代理；你不需要將機密傳送到 VM。
+- **使用 stdio**，當你的整合是本機優先的輔助工具（檔案系統、CLI、開發工具），或需要程式層級隔離時。在雲端，stdio 伺服器在 Cursor VM 內執行，適用於無狀態輔助工具，但對持有長期憑證的任何東西來說都有危險。
 
-## Reloading MCP after file changes
+對於支援 OAuth 的第一方 MCP 伺服器，請使用 `auth: { CLIENT_ID, CLIENT_SECRET?, scopes? }`，而不是硬編碼 `Authorization` headers。
 
-If you change `.cursor/mcp.json` or other setting sources on local disk while an agent is running and want the agent to pick it up without recreating:
+<a id="reloading-mcp-after-file-changes"></a>
+
+## 檔案變更後重新載入 MCP
+
+若你在 agent 執行期間變更本機磁碟上的 `.cursor/mcp.json` 或其他設定來源，並希望 agent 在不重新建立的情況下採用變更：
 
 ```typescript
 await agent.reload();
 ```
 
-This only affects future `send()` calls; in-flight runs use the config they started with.
+這隻影響未來的 `send()` 呼叫；進行中的執行會使用其啟動時的設定。
 
-## Debugging MCP failures
+<a id="debugging-mcp-failures"></a>
 
-MCP setup problems tend to show up as "the agent doesn't have the tool" rather than a thrown error. Checklist:
+## 偵錯 MCP 失敗
 
-1. **Did the server actually register?** Watch the `system` event at stream start — it sometimes includes the tool catalog. If not, the server isn't wired up.
-2. **Stdio on cloud** — is the `command` available in the cloud VM image? `npx` is. Your custom `/usr/local/bin/…` isn't.
-3. **HTTP headers missing?** On cloud, sensitive headers are redacted but still forwarded; missing headers mean the SDK config didn't include them. Double-check the spelling (`Authorization`, not `authorization` in some servers).
-4. **Resume without re-passing MCP?** You lost the inline servers. Re-pass them on the resume options.
-5. **`settingSources` not set?** The agent isn't loading your project's `.cursor/mcp.json`. Add `"project"`.
+MCP 設定問題通常表現為「agent 沒有該工具」，而非丟擲錯誤。檢查清單：
 
-## Copy-paste starters
+1. **伺服器是否真的註冊了？** 觀察流開始時的 `system` 事件，有時它包含工具目錄。若沒有，表示伺服器未正確連線。
+2. **雲端上的 stdio**：`command` 在雲端 VM 映像中可用嗎？`npx` 可用。你的自訂 `/usr/local/bin/…` 不可用。
+3. **HTTP headers 缺失？** 在雲端，敏感 headers 會被遮蔽但仍會轉發；缺失的 headers 表示 SDK 設定未包含它們。請再次檢查拼寫（某些伺服器是 `Authorization`，而非 `authorization`）。
+4. **恢復時未重新傳入 MCP？** 你遺失了內聯伺服器。請在恢復選項中重新傳入它們。
+5. **未設定 `settingSources`？** Agent 未載入你專案的 `.cursor/mcp.json`。請新增 `"project"`。
 
-### Local filesystem helper
+<a id="copy-paste-starters"></a>
+
+## 複製貼上起始範例
+
+<a id="local-filesystem-helper"></a>
+
+### 本機檔案系統輔助工具
 
 ```typescript
 mcpServers: {
@@ -159,7 +181,9 @@ mcpServers: {
 },
 ```
 
-### Cloud + Linear (HTTP, cloud-proxied auth)
+<a id="cloud--linear-http-cloud-proxied-auth"></a>
+
+### 雲端 + Linear（HTTP，雲端代理認證）
 
 ```typescript
 mcpServers: {
@@ -171,7 +195,9 @@ mcpServers: {
 },
 ```
 
-### Cloud + GitHub (stdio, secret injected into the VM)
+<a id="cloud--github-stdio-secret-injected-into-the-vm"></a>
+
+### 雲端 + GitHub（stdio，機密注入 VM）
 
 ```typescript
 mcpServers: {
@@ -184,6 +210,8 @@ mcpServers: {
 },
 ```
 
-### Cursor dashboard-configured server (no inline config needed)
+<a id="cursor-dashboard-configured-server-no-inline-config-needed"></a>
 
-Users with a dashboard-configured server get it for free as long as the cloud agent is allowed to use team MCP. No inline config required; stack it only if you also want an additional server.
+### Cursor Dashboard 設定的伺服器（無需內聯設定）
+
+擁有 Dashboard 設定伺服器的使用者，只要雲端 agent 被允許使用團隊 MCP，即可免費獲得該伺服器。無需內聯設定；僅在你想要額外伺服器時才疊加。

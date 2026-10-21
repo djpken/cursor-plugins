@@ -1,11 +1,13 @@
-### Visual parity
+<a id="visual-parity"></a>
 
-**You own pixel-exact equivalence. The baseline is the spec. You do not touch it.** Equivalence is verified by image diff, not by eye.
+### 視覺一致性
 
-1. Establish the baseline first, before any migration: a visual regression harness that screenshots the current component across its states, plus the target when matching two implementations. No baseline, no parity claim. A blocking prerequisite, not a follow-up.
-2. Anti-shortcut clauses, stated and held: no harness modifications, no baseline tampering, no component restructuring to make a diff pass. If the baseline looks wrong, stop and ask, don't edit it.
-3. Migrate one component at a time. Parallelize across worktrees, one owner per component (the **separate-before-serializing-shared-state** principle skill). Shared primitives migrate first as a blocking phase.
-4. Verify each component against its baseline via image diff on the matching surface via the control skill. A nonzero diff is a fail. Investigate the pixel delta. `/loop` per component until the diff is zero.
-5. Run **Opening a PR** per component or per safe batch.
+**你負責畫素級完全一致。基準是規格。你不能修改它。**一致性透過影像差異驗證，而非肉眼判斷。
 
-**Reply:** components migrated, the diff result for each, the baseline harness location, what's left.
+1. 先建立基準，在任何遷移之前：一個視覺回歸測試工具，擷取當前元件在各狀態下的畫面，以及在匹配兩個實作時的目標畫面。沒有基準，就不能聲稱一致性。這是前置的必要條件，不是後續事項。
+2. 明確並堅持反捷徑條款：不得修改測試工具、不得篡改基準、不得重構元件來讓差異測試透過。如果基準看起來有誤，停止並詢問，不要編輯它。
+3. 一次遷移一個元件。在不同工作樹間平行作業，每個元件一個負責人（**先分離再序列化共享狀態**原則技能）。共享基礎元件先遷移，作為一個阻塞階段。
+4. 透過控制技能，在匹配表面上以影像差異驗證每個元件與其基準。非零差異即失敗。調查畫素差異。每個元件執行 `/loop` 直到差異為零。
+5. 每個元件或每個安全批次執行**開啟 PR**。
+
+**回應：**已遷移的元件、每個元件的差異結果、基準測試工具位置、剩餘事項。

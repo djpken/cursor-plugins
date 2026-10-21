@@ -1,23 +1,25 @@
 ---
 name: principle-the-algorithm
 description: >-
-  Apply to any non-trivial change before designing it. Make the requirement
-  less dumb, delete, optimize, accelerate, automate, in that order, then run
-  it again on the result. The reply names the requirement you questioned and
-  what you deleted.
+  在設計任何非微不足道的變更之前，先套用此原則。將需求
+  變得較不愚蠢、刪除、最佳化、加速、自動化，依此順序執行，然後對結果
+  再次執行。回覆中需指出你質疑的需求，以及
+  你刪除了什麼。
 disable-model-invocation: true
 ---
 
-# The Algorithm
+<a id="the-algorithm"></a>
 
-Five steps, in order, for any change bigger than an edit you can see at a glance. The order is the principle. Each step is cheap only after the one before it, and the common failure is doing a late step on something an early step would have removed. Adapted from Elon Musk's five-step engineering process.
+# 演演算法
 
-1. **Make the requirements less dumb.** Assume the requirement is wrong and make it less wrong. It comes from a person, not a department. "The ticket", "the linter", "the reviewer", or "the old code did it" is a source, not a reason; find the person and their reasoning. If you do not agree with the reasoning, do not accept the requirement, however smart the person who gave it, the human included. No is a valid outcome.
-2. **Delete the part or process step.** Try hardest to delete the part, flag, layer, retry, or step entirely before touching step 3. Optimizing something that should not exist is the biggest mistake smart people make. If you never add anything back, you did not delete enough. Leaf: pstack `principle-subtract-before-you-add`.
-3. **Optimize** what survived. Third step, not first. Have one part do many things instead of a parallel copy per caller. Look hardest at boundaries between owners and layers, where a wrapper wraps a wrapper. Leaves: pstack `principle-laziness-protocol`, `principle-minimize-reader-load`.
-4. **Accelerate.** Be the part: walk one change through edit, build, check, and review yourself and note where you wait, crawl, or bounce. Tighten that. Leaf: pstack `principle-sequence-verifiable-units`.
-5. **Automate** last, or you automate something that should not exist. Volume alone does not justify it; precision and reviewability do. pstack `principle-build-the-lever` still applies. It runs on what survived.
+對於任何大於一眼就能看出的編輯的變更，依序執行以下五個步驟。順序即是原則。每個步驟只有在完成前一個步驟後才顯得輕量，而常見的失敗在於對早期步驟本可移除的事物執行後期步驟。改編自 Elon Musk 的五步工程流程。
 
-**Run it again.** This is not a one-time gate. Rerun it on the result before you ship; the second pass deletes more.
+1. **讓需求變得較不愚蠢。** 假設需求是錯誤的，並讓它變得較不錯誤。需求來自個人，而非部門。「該工單」、「該 linter」、「該審查者」或「舊程式碼是這樣做的」是來源，而非理由；找到提出者及其推理。如果你不同意該推理，就不要接受該需求，無論提出者多麼聰明，包括人類在內。「不」是一個有效的結果。
+2. **刪除該部分或流程步驟。** 在觸及步驟 3 之前，盡最大努力完全刪除該部分、旗標、層級、重試或步驟。最佳化一個本不該存在的事物，是聰明人犯的最大的錯誤。如果你從未加回任何東西，代表你刪除得不夠。Leaf: pstack `principle-subtract-before-you-add`。
+3. **最佳化**倖存下來的部分。這是第三步，而非第一步。讓一個部分執行許多功能，而不是為每個呼叫者建立平行副本。最仔細檢查擁有者與層級之間的邊界，那裡往往是一個包裝器包著另一個包裝器。Leaves: pstack `principle-laziness-protocol`, `principle-minimize-reader-load`。
+4. **加速。** 成為該部分：親自走過一次變更的編輯、建置、檢查與審查流程，並記錄你在哪裡等待、緩慢或反彈。緊縮該處。Leaf: pstack `principle-sequence-verifiable-units`。
+5. **自動化**放在最後，否則你會自動化一個本不該存在的事物。僅憑數量不足以證明其合理性；精確度與可審查性才可以。pstack `principle-build-the-lever` 仍然適用。它作用於倖存下來的部分。
 
-**The tell.** A citation of this principle names the requirement you made less dumb, who owned it, and what you deleted. A citation with neither means you skipped it.
+**再次執行。** 這不是一次性的閘門。在發布前對結果重新執行；第二次執行會刪除更多。
+
+**跡象。** 引用此原則時，需指出你讓其變得較不愚蠢的需求、其擁有者，以及你刪除了什麼。若引用中兩者皆無，代表你跳過了此步驟。

@@ -1,8 +1,12 @@
-# Error Handling
+<a id="error-handling"></a>
 
-The single most common source of integration bugs: treating "agent couldn't start" and "agent did work and that work failed" as the same error. They aren't.
+# 錯誤處理
 
-## The Two Failure Axes
+整合錯誤最常見的單一來源：將「agent 無法啟動」與「agent 已執行工作且該工作失敗」視為同一種錯誤。它們並非如此。
+
+<a id="the-two-failure-axes"></a>
+
+## 兩個失敗軸
 
 ```
                didn't start                 started, didn't finish cleanly
@@ -12,7 +16,7 @@ The single most common source of integration bugs: treating "agent couldn't star
                .code / .protoErrorCode      .durationMs   .git   .result
 ```
 
-Always handle both. A try/catch alone won't catch a failed run; checking `result.status` alone won't catch auth failures.
+務必同時處理兩者。僅使用 try/catch 無法捕捉失敗的執行；僅檢查 `result.status` 無法捕捉驗證失敗。
 
 ```typescript
 import { Agent, CursorAgentError } from "@cursor/sdk";
@@ -50,33 +54,35 @@ async function runOnce(): Promise<void> {
 }
 ```
 
-## `CursorAgentError` Subtypes
+<a id="cursoragenterror-subtypes"></a>
 
-Every SDK-thrown error extends `CursorAgentError`. Check the concrete subclass to decide what to do.
+## `CursorAgentError` 子類別
+
+所有由 SDK 丟擲的錯誤都繼承自 `CursorAgentError`。請檢查具體的子類別以決定後續操作。
 
 
-| Class                 | Typical HTTP | What it means                                       | Fix                                                        |
+| 類別                 | 典型 HTTP | 含義                                       | 修復方式                                                        |
 | --------------------- | ------------ | --------------------------------------------------- | ---------------------------------------------------------- |
-| `AuthenticationError` | 401          | Invalid/expired/missing key, wrong permissions      | Fix `CURSOR_API_KEY` (see `[auth.md](auth.md)`)            |
-| `RateLimitError`      | 429          | Hit request or usage cap                            | Backoff; the error carries `isRetryable`                   |
-| `ConfigurationError`  | 400/404      | Bad model id, malformed request, resource not found | Don't retry. Fix the call.                                 |
-| `NetworkError`        | 503/504      | Upstream timeout, transient infra                   | Retry with jitter if `isRetryable`                         |
-| `UnknownAgentError`   | —            | Classified neither by proto code nor HTTP code      | Log and surface; check `.cause` for the raw `ConnectError` |
+| `AuthenticationError` | 401          | 金鑰無效、過期或缺失，許可權錯誤      | 修復 `CURSOR_API_KEY`（參見 `[auth.md](auth.md)`）            |
+| `RateLimitError`      | 429          | 達到請求或使用量上限                            | 退避；錯誤中攜帶 `isRetryable`                   |
+| `ConfigurationError`  | 400/404      | 模型 ID 錯誤、請求格式錯誤、資源未找到 | 請勿重試。修復該呼叫。                                 |
+| `NetworkError`        | 503/504      | 上游逾時、暫時性基礎設施問題                   | 若為 `isRetryable`，請加入抖動進行重試                         |
+| `UnknownAgentError`   | 無            | 無法透過 proto 程式碼或 HTTP 程式碼進行分類      | 記錄並顯示；請檢查 `.cause` 以檢視原始 `ConnectError` |
 
 
-They all carry:
+它們都攜帶：
 
-- `message` — user-facing description (already stripped of Connect's `[unknown]` prefix)
-- `isRetryable` — authoritative from the backend, not a heuristic
-- `code` — the underlying Connect/gRPC `Code` when relevant
-- `protoErrorCode` — fine-grained backend error code; stable enum values
-- `cause` — original `ConnectError` for deep debugging; don't leak it to end users
+- `message` 是面向使用者的描述，已移除 Connect 的 `[unknown]` 字首
+- `isRetryable` 來自後端的權威資訊，而非啟發式判斷
+- `code` 在相關情況下，代表底層的 Connect/gRPC `Code`
+- `protoErrorCode` 是細粒度的後端錯誤程式碼，屬於穩定的列舉值
+- `cause` 是用於深入除錯的原始 `ConnectError`，請勿將其洩露給終端使用者
 
 ### `UnsupportedRunOperationError`
 
-Distinct base — it's about the SDK, not the backend. Thrown when you call `run.stream()`, `run.wait()`, `run.cancel()`, or `run.conversation()` on a `Run` that doesn't support that operation. Common trigger: `cancel()`/`stream()` on a detached handle obtained from `Agent.getRun(...)` after the live event store closed. (Cloud `conversation()` IS supported — it accumulates best-effort from the stream.)
+不同的基底類別與 SDK 有關，而非後端。當您在一個不支援該操作的 `Run` 上呼叫 `run.stream()`、`run.wait()`、`run.cancel()` 或 `run.conversation()` 時，會丟擲此錯誤。常見觸發條件包括：在 live event store 關閉後，從 `Agent.getRun(...)` 取得的已分離 handle 上執行 `cancel()`/`stream()`。Cloud `conversation()` 是受支援的，它會從串流中盡力累積。
 
-Always prefer `run.supports(...)` over `try/catch`:
+請始終優先使用 `run.supports(...)` 而非 `try/catch`：
 
 ```typescript
 if (run.supports("cancel")) {
@@ -86,21 +92,23 @@ if (run.supports("cancel")) {
 }
 ```
 
-## Retry Patterns
+<a id="retry-patterns"></a>
 
-**Do retry** (with backoff + jitter):
+## 重試模式
 
-- `NetworkError` with `isRetryable === true`
-- `RateLimitError` with `isRetryable === true` (rare; usually the backend wants you to wait longer than a tight retry)
-- `UnknownAgentError` with `isRetryable === true` — the backend is telling you it was transient
+**應重試**（使用退避 + 抖動）：
 
-**Don't retry**:
+- `NetworkError` 且 `isRetryable === true`
+- `RateLimitError` 且 `isRetryable === true`（罕見；通常表示後端希望您等待的時間比緊密重試更長）
+- `UnknownAgentError` 且 `isRetryable === true` 表示後端正在告知您這是暫時性的
 
-- `AuthenticationError` — the key won't get better
-- `ConfigurationError` — bad input won't get better
-- Anything with `isRetryable === false` — the backend is telling you it's terminal
+**請勿重試**：
 
-Keep retries small (≤3) for agent startup; agents are expensive to re-launch. If the first attempt fails `RateLimitError` with `isRetryable === true`, back off at least 30 seconds.
+- `AuthenticationError` 表示金鑰不會變好
+- `ConfigurationError` 表示錯誤的輸入不會變好
+- 任何包含 `isRetryable === false` 的情況都表示後端正在告知您這是終止性的
+
+agent 啟動的重試次數請保持較少（≤3）；重新啟動 agent 的代價高昂。若首次嘗試以 `isRetryable === true` 失敗於 `RateLimitError`，請至少退避 30 秒。
 
 ```typescript
 import { Agent, CursorAgentError, RateLimitError, NetworkError } from "@cursor/sdk";
@@ -124,44 +132,51 @@ async function createWithRetry(options: Parameters<typeof Agent.create>[0]) {
 }
 ```
 
-`Agent.create` is lazy — it doesn't hit the backend until `send()`. Most "startup" errors surface there. Wrap `agent.send(...)` with retries, not just `Agent.create(...)`.
+`Agent.create` 是惰性的，在 `send()` 之前不會存取後端。大多數「啟動」錯誤會在那裡出現。請為 `agent.send(...)` 加上重試，而不僅是 `Agent.create(...)`。
 
-## `RunResult.status === "error"` — What To Do
+<a id="runresultstatus--error--what-to-do"></a>
 
-The run executed at least partially, hit something the agent couldn't recover from, and reported error. There's no stack trace in `result`; the signal is:
+## `RunResult.status === "error"` 是應採取的行動
 
-- `result.id` — the run ID. Fetch it with `Agent.getRun(result.id, { runtime: "cloud", agentId, apiKey })` (cloud) or `Agent.getRun(result.id, { runtime: "local", cwd })` (local), then read `run.conversation()` to see what the agent tried.
-- `result.durationMs` — if 0 or tiny, the failure was very early (unlikely runtime issue).
-- `result.git` — on cloud, tells you whether a branch was created before failing.
-- `result.model` — confirms which model ran; useful when you're testing multiple.
+執行至少部分完成，遇到了 agent 無法恢復的問題，並報告了錯誤。`result` 中沒有堆疊追蹤；訊號是：
 
-You usually *don't* retry `status: "error"` automatically. The agent already burned tokens and committed to a direction; a blind retry is likely to do the same thing. Design for human triage: log the ID, surface a dashboard link, and escalate.
+- `result.id` 是執行 ID。請使用 `Agent.getRun(result.id, { runtime: "cloud", agentId, apiKey })`（cloud）或 `Agent.getRun(result.id, { runtime: "local", cwd })`（local）擷取它，然後讀取 `run.conversation()` 以檢視 agent 嘗試了什麼。
+- `result.durationMs` 若為 0 或極小，表示失敗發生得很早，不太可能是 runtime 問題。
+- `result.git` 在 cloud 上，用於告知您在失敗前是否已建立分支。
+- `result.model` 用於確認執行了哪個模型，在測試多個模型時很有用。
 
-Retry is defensible when:
+您通常*不會*自動重試 `status: "error"`。agent 已經消耗了 tokens 並承諾了某個方向；盲目重試很可能會做同樣的事情。請為人工分診進行設計：記錄 ID、顯示儀錶板連結，並升級處理。
 
-- You're doing bulk/fan-out work and a small error rate is acceptable.
-- The prompt is purely read-only and idempotent.
-- You've also inspected the conversation and know the failure was environmental (e.g., a flaky MCP server).
+在以下情況下，重試是合理的：
 
-## `status: "cancelled"` — What To Do
+- 您正在執行大量/扇出工作，且可接受較低的錯誤率。
+- 提示詞是純唯讀且冪等的。
+- 您也檢查了對話，並知道失敗是環境性的（例如，不穩定的 MCP 伺服器）。
 
-Runs report this after a successful `run.cancel()` (local or cloud). Treat cancellation as non-fatal: log, clean up, move on. For cloud runs that were cancelled server-side (e.g., via the dashboard or a sibling caller), you'll also see `"cancelled"` when you eventually `wait()`.
+<a id="status-cancelled--what-to-do"></a>
 
-## Debugging in Production
+## `status: "cancelled"` 是應採取的行動
 
-Always log at least:
+在成功的 `run.cancel()`（local 或 cloud）之後，執行會報告此狀態。請將取消視為非致命性：記錄、清理、繼續進行。對於在伺服器端被取消的 cloud 執行（例如，透過儀錶板或同級呼叫者），當您最終 `wait()` 時，也會看到 `"cancelled"`。
 
-- `agent.agentId` — right after create/resume, before any `send()`
-- `run.id` — right after `send()`, before the stream
-- `result.status`, `result.durationMs`, `result.git` — after `wait()`
-- On error: the full `err.message`, `err.constructor.name`, `err.isRetryable`, and (for internal logs only) `err.protoErrorCode`
+<a id="debugging-in-production"></a>
 
-Those five are enough to correlate anything a user reports with a specific run in the Cursor dashboard.
+## 生產環境除錯
 
-## Don't
+請始終至少記錄：
 
-- **Don't `process.exit(1)` on every error**. A `RateLimitError` with `isRetryable: true` wants a backoff loop, not an exit.
-- **Don't log `err.cause`** to end users — it's the raw `ConnectError` with internal fields. Log `err.message` to humans, `err.cause` to internal observability only.
-- **Don't swallow `CursorAgentError`** silently into a generic `console.warn`. The subclass is the signal.
-- **Don't retry `AuthenticationError` more than once** even if `isRetryable: true` — it almost always means the key is still bad.
+- `agent.agentId` 發生在 create/resume 之後，在任何 `send()` 之前
+- `run.id` 發生在 `send()` 之後，在串流之前
+- `result.status`、`result.durationMs`、`result.git` 發生在 `wait()` 之後
+- 發生錯誤時：完整的 `err.message`、`err.constructor.name`、`err.isRetryable`，以及（僅供內部紀錄使用）`err.protoErrorCode`
 
+這五項足以將使用者報告的任何問題與 Cursor 儀錶板中的特定執行進行關聯。
+
+<a id="dont"></a>
+
+## 請勿
+
+- **請勿在每個錯誤上都 `process.exit(1)`**。帶有 `isRetryable: true` 的 `RateLimitError` 需要退避迴圈，而不是退出。
+- **請勿將 `err.cause` 記錄給終端使用者**，因為它是包含內部欄位的原始 `ConnectError`。請將 `err.message` 記錄給人類，並將 `err.cause` 僅記錄給內部可觀測性。
+- **請勿將 `CursorAgentError` 靜默吞沒**為通用的 `console.warn`。子類別才是訊號。
+- **請勿重試 `AuthenticationError` 超過一次**，即使 `isRetryable: true` 也是如此，因為這幾乎總是表示金鑰仍然無效。

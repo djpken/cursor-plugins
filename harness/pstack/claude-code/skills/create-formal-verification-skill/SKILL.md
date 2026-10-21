@@ -1,43 +1,57 @@
 ---
 name: create-formal-verification-skill
-description: "Generate a project-local skill that formally verifies the code where a bug costs the most and tests reach the least, in any language, with whichever verification tool fits. Use for /create-formal-verification-skill, \"model-check this race\", \"prove this invariant\", or when concurrency, retries, state machines, parsers, or unsafe code need more than tests."
+description: "產生一個專案本機 skill，以正式驗證的方式檢查程式碼中錯誤代價最高且測試覆蓋率最低的部分，適用於任何語言，並選擇合適的驗證工具。適用於 /create-formal-verification-skill、「對這個競態條件進行模型檢查」、「證明這個不變數」，或當並行處理、重試、狀態機、解析器或不安全程式碼需要超越測試的保證時使用。"
 disable-model-invocation: true
 ---
 
-# Create a formal verification skill
+<a id="create-a-formal-verification-skill"></a>
+
+# 建立正式驗證 skill
 
 In Claude Code, read [the Claude Code adapter](../../docs/harness/claude-code.md) once per session before you follow this skill. It maps the Cursor names in pstack skills to Claude Code.
 
-A test checks the cases that someone thought to write. Formal verification checks every case in a stated scope: every order of steps in a model, every input up to a bound, or every input. This skill finds the part of the repo where that matters most, verifies one property of it, and leaves a project-local skill that lets the next agent check a change against that property. Write that skill for an agent who reads it cold, mid-change, and has never seen your work. The user must be able to trust the result and act on it without learning the verification language.
+測試檢查的是有人想到要撰寫的案例。正式驗證檢查的是指定範圍內的每個案例：模型中步驟的每個順序、上限以內的每個輸入，或每個輸入。這個 skill 會找出儲存庫中該範圍最重要的部分，驗證其中一個屬性，並留下一個專案本機 skill，讓下一個 agent 能夠根據該屬性檢查變更。請為一個冷啟動閱讀、在變更中途且從未見過你工作的 agent 撰寫該 skill。使用者必須能夠信任結果並據以採取行動，而無需學習驗證語言。
 
-## Choose the target from the code
+<a id="choose-the-target-from-the-code"></a>
 
-Answer from the codebase, and ask the user only what you cannot observe. If the user named an area or a bug, start there.
+## 從程式碼中選擇目標
 
-A good target is a promise the code makes, where a break harms users and tests rarely reach the case that breaks it. Choose the strongest such target in the repo, not the one that is easiest to verify.
+從程式碼庫中回答，僅詢問你無法觀察到的事項。如果使用者指定了區域或錯誤，請從那裡開始。
 
-## Let the question choose the tool
+好的目標是程式碼做出的一個承諾，其中違規會損害使用者，且測試很少觸及導致違規的案例。請選擇儲存庫中最強力的此類目標，而不是最容易驗證的目標。
 
-Pick the tool that answers the question at the lowest cost: a model checker, a proof assistant, an SMT-backed verifier, or another tool. Whether events can happen in a bad order usually suits a model checker over a small model of the design, and TLA+ is the default for that in any language. Whether the code itself behaves for every input, as with memory safety, overflow, or a data-structure invariant, usually suits a verifier that runs on the code. If no verifier runs on this language, say so, and test the real code with generated inputs, not a hand model of the function. A property that must hold at every size, where a bound is not enough, can need a proof. Prefer a tool that the repo's developers can install and run, and tell the user why you chose it.
+<a id="let-the-question-choose-the-tool"></a>
 
-## What makes it good
+## 讓問題選擇工具
 
-- **True to the code.** Every part of the model or proof points to code that a reviewer can open. What the verification treats as one indivisible step is one indivisible step in the code. Names come from this repo.
-- **Able to fail.** A check that you have never seen fail proves nothing. Show each property failing on a broken variant of the code it guards, such as a removed check or a reordered step.
-- **Findings stay findings.** When the current code breaks the property, report it with the counterexample in the code's terms. Do not weaken the property or the model until it passes, and do not change product code unless the user asks.
-- **Honest about scope.** Say what is verified, under which bounds and assumptions, and what is left out. A pass covers the model or the bound, not the whole system.
-- **Readable without the tool.** State the property and the harm in one plain sentence each. Tell a counterexample as a short sequence of steps in the code's words.
-- **Cheap to rerun.** One command, a reproducible tool version, and a run short enough that the next agent will use it on every relevant change.
-- **Kept in step with the code.** Record which files and functions each check covers, and the commit at which you last confirmed that the verification describes them. When the covered code changes after that commit, the next agent can see that the verification needs another look.
+選擇能以最低成本回答問題的工具：模型檢查器、證明助手、基於 SMT 的驗證器或其他工具。事件是否可能以不良順序發生，通常適合對設計進行小型模型的模型檢查器，而 TLA+ 是任何語言中此類情況的預設選擇。程式碼本身是否對每個輸入都正確運作（例如記憶體安全性、溢位或資料結構不變數），通常適合在程式碼上執行的驗證器。如果沒有驗證器支援此語言，請說明，並使用產生的輸入測試實際程式碼，而非函式的簡易模型。必須在每個規模下都成立的屬性，若上限不足，可能需要證明。請優先選擇儲存庫開發人員可以安裝並執行的工具，並告知使用者你選擇它的原因。
 
-## Generate the verify skill
+<a id="what-makes-it-good"></a>
 
-Write a project-local skill with frontmatter that names the area and says when to use it. Without frontmatter, the skill never registers. From the skill alone, the next agent must be able to tell whether a change touches the verified code, run the check, tell a real bug from a modeling error, and update the verification when a change is intended. Put the coverage record and the sync commit in the skill, and tell the next agent to move the sync commit forward only after it confirms that the verification describes the code at the new commit. Use this repo's real commands, paths, and nouns, and leave no placeholders.
+## 什麼使其良好
 
-## Prove it before you hand off
+- **忠於程式碼。** 模型或證明的每個部分都指向審查人員可以開啟的程式碼。驗證視為一個不可分割步驟的部分，在程式碼中也是一個不可分割步驟。名稱來自此儲存庫。
+- **能夠失敗。** 你從未見過失敗的檢查證明不了任何事。展示每個屬性在它所保護的程式碼的損壞變體上失敗，例如移除檢查或重新排序步驟。
+- **發現保持為發現。** 當目前程式碼違反屬性時，請以程式碼的術語報告反例。不要削弱屬性或模型直到它透過，除非使用者要求，否則不要變更產品程式碼。
+- **誠實說明範圍。** 說明驗證了什麼、在哪些邊界和假設下，以及遺漏了什麼。透過僅涵蓋模型或邊界，而非整個系統。
+- **無需工具即可閱讀。** 用一句簡潔的句子說明屬性和危害。用程式碼的詞彙將反例描述為一組短步驟。
+- **重新執行成本低。** 一條命令、可重現的工具版本，以及執行時間短到下一個 agent 會在每個相關變更上使用它。
+- **與程式碼保持同步。** 記錄每個檢查涵蓋哪些檔案和函式，以及你最後確認驗證描述它們的 commit。當涵蓋的程式碼在該 commit 之後變更時，下一個 agent 可以看到驗證需要再次檢查。
 
-Follow the generated skill once, as the next agent would, on a scratch change that breaks the property in the real code. It must catch the break. Then drop the scratch change and confirm that the check is back where it started: passing, or failing only on the findings you will report. A verify skill that was never run is a draft. If the skill misses the break or a step does not run, fix the skill or the verification, not the scratch change.
+<a id="generate-the-verify-skill"></a>
 
-## Hand off
+## 產生 verify skill
 
-Tell the user what you verified, which tool you used and why, the bounds, what the check found in plain words, how to run it, and what it does not cover. Suggest a second target only if you found a close one. Point the user at `/maintain-formal-verification-skill` for bringing the verification back in line after changes that did not recheck it.
+撰寫一個專案本機 skill，其 frontmatter 需指明區域並說明何時使用。沒有 frontmatter，skill 永遠不會註冊。僅憑該 skill，下一個 agent 必須能夠判斷變更是否觸及已驗證的程式碼、執行檢查、區分真實錯誤與建模錯誤，並在變更為預期時更新驗證。將覆蓋記錄和同步 commit 放入 skill，並告知下一個 agent 僅在確認驗證描述了新 commit 的程式碼後，才將同步 commit 向前推進。使用此儲存庫的實際命令、路徑和名詞，不要留下佔位符。
+
+<a id="prove-it-before-you-hand-off"></a>
+
+## 在移交前證明它
+
+像下一個 agent 一樣，遵循產生的 skill 一次，在一個損壞實際程式碼中屬性的草稿變更上進行操作。它必須捕捉到該損壞。然後移除草稿變更，並確認檢查回到起始狀態：透過，或僅在你將報告的發現上失敗。從未執行的 verify skill 只是草稿。如果 skill 未捕捉到損壞或某步驟未執行，請修正 skill 或驗證，而非草稿變更。
+
+<a id="hand-off"></a>
+
+## 移交
+
+告知使用者你驗證了什麼、使用了哪個工具及原因、邊界、檢查以簡潔語言發現了什麼、如何執行它，以及它不涵蓋什麼。僅當你找到一個接近的目標時，才建議第二個目標。指引使用者參考 `/maintain-formal-verification-skill`，以便在未重新檢查的變更後使驗證保持一致。

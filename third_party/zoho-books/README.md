@@ -1,59 +1,71 @@
 # Zoho Books
 
-Cursor plugin that connects agents to [Zoho Books](https://www.zoho.com/books/) through a [Model Context Protocol](https://modelcontextprotocol.io/) server that Cursor hosts and credentials.
+Cursor 外掛，透過 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Zoho Books](https://www.zoho.com/books/)，該伺服器由 Cursor 託管並負責憑證處理。
 
-Work with your accounting data: contacts, invoices, estimates, and items.
+處理您的會計資料：聯絡人、發票、估價單和專案。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Zoho Books**.
-3. Click **Install**, pick your Zoho data center, then sign in to Zoho when Cursor prompts you.
+## 安裝
 
-Or run `/add-plugin zoho-books` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Zoho Books**。
+3. 點選 **安裝**，選擇您的 Zoho 資料中心，然後在 Cursor 提示時登入 Zoho。
+
+或在聊天中執行 `/add-plugin zoho-books`。
 
 ## MCP
 
-This plugin ships no `mcp.json`, and that is deliberate.
+此外掛不包含任何 `mcp.json`，這是刻意設計。
 
-Every other connector in this repository either points at a vendor's hosted endpoint or runs a package locally over stdio, so it carries its own server definition. Zoho Books does not: Cursor runs the server, and the plugin exists only as the opt-in that turns it on for your account. Installing the plugin is what makes the server available; there is no command to run, no endpoint to reach, and no API key or client secret to paste.
+此儲存庫中的每個其他聯結器，不是指向供應商的託管端點，也不是透過 stdio 在本地執行套件，因此它自帶伺服器定義。Zoho Books 則不同：Cursor 執行伺服器，外掛僅作為選項，為您的帳戶啟用該伺服器。安裝外掛即可讓伺服器可用；沒有需要執行的命令、沒有需要連線的端點，也沒有需要貼上的 API 金鑰或客戶金鑰。
 
-One consequence worth knowing: because the server is not declared here, you will not find it in a local `mcp.json` and you cannot point another MCP client at it. It is reachable from Cursor only.
+一個值得知道的後果：因為伺服器未在此處宣告，您不會在本地 `mcp.json` 中找到它，也無法將其他 MCP 客戶端指向它。它僅可從 Cursor 存取。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-Nothing to prepare. Cursor owns the OAuth client, so you do not need a Zoho developer account or an app of your own.
+## 連線前
 
-Pick the data center your Zoho account lives in before you sign in. It matches the domain you use for Zoho, such as `zoho.com` or `zoho.eu`. Zoho Books is available in the United States, Europe, India, Australia, Japan, Saudi Arabia, and the United Arab Emirates.
+無需準備任何事項。Cursor 擁有 OAuth 客戶端，因此您不需要 Zoho 開發者帳戶或自己的應用程式。
 
-Every Zoho Books call runs against one organization. Cursor finds it when you sign in. If you belong to more than one, it uses the one Zoho marks as your default.
+在登入之前，選擇您的 Zoho 帳戶所在的資料中心。它與您使用的 Zoho 域名相符，例如 `zoho.com` 或 `zoho.eu`。Zoho Books 在美國、歐洲、印度、澳洲、日本、沙烏地阿拉伯和阿拉伯聯合大公國均可用。
 
-## What agents can do
+每個 Zoho Books 呼叫都針對一個組織執行。Cursor 在您登入時會找到它。如果您屬於多個組織，它會使用 Zoho 標記為您的預設組織。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 分類 | 功能 |
 | --- | --- |
-| Contacts | Read, create, update, and delete customers and vendors |
-| Invoices | Read, create, update, and delete invoices |
-| Estimates | Read, create, update, and delete estimates |
-| Items | Read, create, update, and delete items |
-| Organization | Read organization details |
+| 聯絡人 | 讀取、建立、更新和刪除客戶與供應商 |
+| 發票 | 讀取、建立、更新和刪除發票 |
+| 估價單 | 讀取、建立、更新和刪除估價單 |
+| 專案 | 讀取、建立、更新和刪除專案 |
+| 組織 | 讀取組織詳細資訊 |
 
-The server is the source of truth for tool names and schemas.
+伺服器是工具名稱和結構的來源真相。
 
-## Notes
+<a id="notes"></a>
 
-- Access follows whatever the signed-in Zoho user can see in the organization. The connector cannot reach data that user has no access to.
-- Some tools create, update, and delete accounting records. Review every tool call before you approve it.
-- Disconnecting is two independent steps: uninstalling the plugin stops Cursor from offering the server, and revoking Cursor's access in your Zoho account settings ends Cursor's access to your data.
+## 注意事項
 
-## Docs
+- 存取範圍遵循登入的 Zoho 使用者在組織中可見的資料。聯結器無法存取使用者無權檢視的資料。
+- 某些工具會建立、更新和刪除會計記錄。在批准每個工具呼叫之前，請檢視它。
+- 斷開連線是兩個獨立步驟：解除安裝外掛會停止 Cursor 提供伺服器，而在您的 Zoho 帳戶設定中撤銷 Cursor 的存取權，會結束 Cursor 對您的資料的存取。
+
+<a id="docs"></a>
+
+## 文件
 
 - Zoho Books: https://www.zoho.com/books/
 - Zoho Books API: https://www.zoho.com/books/api/v3/
 - Model Context Protocol: https://modelcontextprotocol.io
 
-Logo is Zoho Books' official mark, from `zoho.com`.
+標誌是 Zoho Books 的官方標誌，來自 `zoho.com`。
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

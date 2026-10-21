@@ -1,10 +1,12 @@
-### Pause safely
+<a id="pause-safely"></a>
 
-**You own a clean stop. Leave a checkpoint a cold-start agent can resume from.** This is explicit only. On "keep going", "going to bed, keep going", or "don't stop", do not pause.
+### 安全暫停
 
-1. Stop at a safe boundary. Finish the current atomic step or back out of it. Start nothing new, and cancel any nested subagents.
-2. Take no irreversible action to pause. No PR and no push unless you already had one out.
-3. Make the work durable. Commit uncommitted edits as one clear `wip:` commit on the current branch so nothing is lost. If the tree is broken, say so in the commit body in one line.
-4. Write the resume note off-context. Capture intent, what you were doing, progress and what's verified, current state, next steps, key files, and gotchas. For the compaction trigger write it to a file like `/tmp/<slug>-resume.md`. If a show-me-your-work trail exists, point at it instead of duplicating it.
+**您擁有一個乾淨的停止點。留下一個冷啟動代理可以從中恢復的檢查點。** 這僅明確說明。在“繼續”、“去睡覺，繼續”或“不要停止”時，不要暫停。
 
-**Reply:** where you are in the loop, what's on disk versus still in your head (paths, no diff dumps), the commits you made and whether the tree is clean, and the first action on resume. This is a pause, not a final report.
+1. 在安全邊界處停止。完成當前的原子步驟或退出它。不要開始任何新事物，並取消任何巢狀的子代理。
+2. 不要採取不可逆的暫停行動。除非您已經有一個PR或推送在外，否則不要進行PR或推送。
+3. 使工作持久化。將未提交的編輯作為一個清晰的`wip:`提交在當前分支上，以免丟失任何內容。如果樹已損壞，在提交正文中用一行說明。
+4. 在上下文之外寫恢復筆記。捕捉意圖、您正在做什麼、進度和已驗證的內容、當前狀態、下一步、關鍵檔案和注意事項。對於壓縮觸發器，將其寫入檔案如`/tmp/<slug>-resume.md`。如果存在展示您工作的痕跡，指向它而不是重複它。
+
+**回覆：**您在迴圈中的位置，磁碟上與仍在您腦海中（路徑，不顯示差異輸出）的內容，您所做的提交以及樹是否乾淨，以及恢復時的第一個行動。這是暫停，不是最終報告。

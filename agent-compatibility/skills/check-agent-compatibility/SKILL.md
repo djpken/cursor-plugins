@@ -1,46 +1,56 @@
 ---
 name: check-agent-compatibility
-description: Run the full repository compatibility pass: scanner score, startup path, validation loop, and docs reliability.
+description: "執行完整的儲存庫相容性檢查：掃描器評分、啟動路徑、驗證迴圈，以及檔案可靠性。"
 ---
 
-# Check agent compatibility
+<a id="check-agent-compatibility"></a>
 
-## Trigger
+# 檢查 agent 相容性
 
-Use when the user wants the full compatibility pass for a repo.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發條件
 
-1. Launch `compatibility-scan-review` to run the CLI and capture the raw repository score and main issues.
-2. Launch `startup-review` to verify whether the repo can actually be booted by an agent.
-3. Launch `validation-review` to check whether an agent can verify a small change without an unnecessarily heavy loop.
-4. Launch `docs-reliability-review` to see whether the documented setup and run paths reliably match reality.
-5. Use one subagent per task. Do not collapse these checks into one agent prompt.
-6. Compute an internal workflow score as the rounded average of:
+當使用者希望對儲存庫執行完整的相容性檢查時使用。
+
+<a id="workflow"></a>
+
+## 工作流程
+
+1. 啟動 `compatibility-scan-review` 以執行 CLI，並擷取原始儲存庫評分與主要問題。
+2. 啟動 `startup-review` 以驗證該儲存庫是否真的能被 agent 啟動。
+3. 啟動 `validation-review` 以檢查 agent 是否能在沒有不必要繁重迴圈的情況下驗證小型變更。
+4. 啟動 `docs-reliability-review` 以檢視檔案中的設定與執行路徑是否可靠地符合實際情況。
+5. 每個任務使用一個 subagent。不要將這些檢查合併到一個 agent 提示中。
+6. 計算內部工作流程評分，取以下數值的四捨五入平均值：
    - `Startup Compatibility Score`
    - `Validation Loop Score`
    - `Docs Reliability Score`
-7. Compute an `Agent Compatibility Score` as:
+7. 計算 `Agent Compatibility Score` 的方式如下：
    - `round((deterministic_score * 0.7) + (workflow_score * 0.3))`
-8. Synthesize the results into one final response.
+8. 將結果綜合為一個最終回應。
 
-When scoring internally, use specific non-round workflow scores for the behavioral checks rather than coarse round buckets. If startup, validation, or docs mostly work, treat them as good-with-friction rather than defaulting to the mid-60s. Do not create a low workflow score just because logs are noisy or the error text is rough.
+在內部評分時，針對行為檢查使用具體的非整數工作流程評分，而非粗略的整數區間。如果啟動、驗證或檔案大致運作正常，應視為「良好但有摩擦」，而非預設為 60 分中段。不要僅因為紀錄雜訊多或錯誤文字粗糙就給出低工作流程評分。
 
-## Output
+<a id="output"></a>
 
-Respond in markdown, but keep it minimal. Do not use fenced code blocks.
+## 輸出
 
-Show only one score, as a level-two heading: `## Agent Compatibility Score: N/100`. Do not show how it was computed, including weights, formula, deterministic score, workflow score, per-check scores, or arithmetic, unless the user explicitly asks for a breakdown.
+以 markdown 格式回應，但保持精簡。不要使用圍欄程式碼區塊。
 
-Then a flat, prioritized list labeled `Top fixes` with one issue per line, each line starting with `- `.
+僅顯示一個評分，作為二級標題：`## Agent Compatibility Score: N/100`。除非使用者明確要求詳細說明，否則不要顯示其計算方式，包括權重、公式、確定性評分、工作流程評分、各檢查項評分或算術過程。
 
-If the deterministic scanner cannot be run because of tool environment issues, say that separately and do not treat it as a repo defect or penalize the repo. Fold deterministic and behavioral findings into that one list instead of separate sections. Focus on the fixes that would most improve real agent workflows. Do not include a separate summary unless the user asks for more detail.
+接著是一個扁平的優先順序清單，標題為 `Top fixes`，每行一個問題，每行以 `- ` 開頭。
 
-Example shape:
+如果確定性掃描器因工具環境問題無法執行，請單獨說明，不要將其視為儲存庫缺陷或對儲存庫進行扣分。將確定性與行為發現合併到該單一清單中，而非分成不同章節。專注於最能改善實際 agent 工作流程的修復。除非使用者要求更多細節，否則不要包含單獨的摘要。
 
-## Agent Compatibility Score: 72/100
+範例格式：
 
-Top fixes
-- First issue
-- Second issue
-- Third issue
+<a id="agent-compatibility-score-72100"></a>
+
+## Agent 相容性評分：72/100
+
+首要修復專案
+- 第一個問題
+- 第二個問題
+- 第三個問題

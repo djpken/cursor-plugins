@@ -1,16 +1,18 @@
 # Otter.ai
 
-Cursor plugin that connects agents to [Otter.ai](https://otter.ai) through Otter.ai's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Otter.ai 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Otter.ai](https://otter.ai)。
 
-Search your Otter meeting history and pull full transcripts into the editor to summarize decisions and pull out action items.
+搜尋您的 Otter 會議歷史，並將完整逐字稿拉入編輯器，以總結決策並提取行動專案。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Otter.ai**.
-3. Click **Install**, then complete the Otter.ai sign-in prompt.
+## 安裝
 
-Or run `/add-plugin otter` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Otter.ai**。
+3. 點選 **安裝**，然後完成 Otter.ai 登入提示。
+
+或在聊天中執行 `/add-plugin otter`。
 
 ## MCP
 
@@ -25,31 +27,39 @@ Or run `/add-plugin otter` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for Otter sign-in when the plugin connects. Otter does not offer a public API key, so OAuth is the only path.
+驗證方式為 OAuth。Cursor 會在外掛連線時提示 Otter 登入。Otter 不提供公開 API 金鑰，因此 OAuth 是唯一途徑。
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-| Category | Capabilities |
+## 代理可執行的工作
+
+| 分類 | 能力 |
 | --- | --- |
-| Identity | Confirm the signed-in Otter user |
-| Search | Search across your meeting history |
-| Transcripts | Fetch a full transcript by ID |
+| 身份 | 確認已登入的 Otter 使用者 |
+| 搜尋 | 搜尋您的會議歷史 |
+| 逐字稿 | 依 ID 取得完整逐字稿 |
 
-The hosted runtime is the source of truth for tool names and schemas. Call `get_user_info` as a read-only smoke test after connecting.
+託管執行環境是工具名稱與結構的來源基準。連線後，請以 `get_user_info` 作為僅讀的冒煙測試。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Otter user who authorizes the connection.
-- All three tools are read-only — the server cannot edit or delete Otter content.
-- Despite launching under the "Otter for Enterprise" banner, the MCP server is listed as a Basic-tier feature.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Otter 使用者身份執行。
+- 三個工具皆為僅讀，伺服器無法編輯或刪除 Otter 內容。
+- 儘管以「Otter for Enterprise」標誌推出，MCP 伺服器被列為 Basic 層級功能。
 
-- Otter MCP server: https://help.otter.ai/hc/en-us/articles/35287607569687-Otter-MCP-Server
-- Server URL: https://mcp.otter.ai/mcp
+<a id="docs"></a>
 
-Logo is Otter.ai's official mark, from the `otter-ai` GitHub organization.
+## 檔案
 
-## License
+- Otter MCP 伺服器：https://help.otter.ai/hc/en-us/articles/35287607569687-Otter-MCP-Server
+- 伺服器 URL：https://mcp.otter.ai/mcp
+
+標誌為 Otter.ai 官方標記，來自 `otter-ai` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

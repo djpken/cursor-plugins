@@ -1,16 +1,18 @@
 # GoDaddy
 
-Cursor plugin that connects agents to [GoDaddy](https://www.godaddy.com) through GoDaddy's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 GoDaddy 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [GoDaddy](https://www.godaddy.com)。
 
-Brainstorm domain names, check availability and pricing in bulk, and get registration links — all from public domain data.
+從公開域名資料中，腦力激盪域名名稱、批次檢查可用性與價格，並取得註冊連結。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **GoDaddy**.
-3. Click **Install**. There is no sign-in step.
+## 安裝
 
-Or run `/add-plugin godaddy` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **GoDaddy**。
+3. 點選 **安裝**。不需要登入步驟。
+
+或在聊天中執行 `/add-plugin godaddy`。
 
 ## MCP
 
@@ -25,30 +27,38 @@ Or run `/add-plugin godaddy` in chat.
 }
 ```
 
-No auth. GoDaddy's domain MCP server uses public domain data only, so there is no account, API key, or sign-in step. It is rate-limited per client IP.
+無需驗證。GoDaddy 的域名 MCP 伺服器僅使用公開域名資料，因此不需要帳號、API 金鑰或登入步驟。每個客戶 IP 有速率限制。
 
-## What agents can do
+<a id="what-agents-can-do"></a>
 
-| Category | Capabilities |
+## 代理可執行的工作
+
+| 類別 | 功能 |
 | --- | --- |
-| Availability | Check one domain or up to 1,000 at a time, with pricing and registration links |
-| Suggestions | Generate alternative domain names from keywords or a business description |
+| 可用性 | 檢查一個域名或一次最多 1,000 個域名，包含價格與註冊連結 |
+| 建議 | 從關鍵字或商業描述產生替代域名名稱 |
 
-The hosted runtime is the source of truth for tool names and schemas. Call `domains_check_availability` as a read-only smoke test after connecting.
+託管執行環境是工具名稱與結構的來源。連線後，將 `domains_check_availability` 作為僅讀的冒煙測試呼叫。
 
-## Notes
+<a id="notes"></a>
 
-- The server is strictly read-only over public data. It cannot register or transfer domains, change DNS, or make purchases.
-- Because there is no account context, it cannot see or manage domains you already own.
-- Community `godaddy-mcp` packages that ask for `GODADDY_API_KEY` are unrelated third-party projects wrapping the REST API — this plugin uses GoDaddy's own hosted endpoint.
+## 注意事項
 
-## Docs
+- 伺服器嚴格僅讀公開資料。無法註冊或轉移域名、更改 DNS 或進行購買。
+- 因為沒有帳號上下文，無法檢視或管理您已擁有的域名。
+- 要求 `GODADDY_API_KEY` 的社群 `godaddy-mcp` 套件是包覆 REST API 的第三方專案，與此外掛無關。此外掛使用 GoDaddy 自家的託管端點。
 
-- GoDaddy MCP server: https://developer.godaddy.com/en/docs/api-users/mcp
-- Server URL: https://api.godaddy.com/v1/domains/mcp
+<a id="docs"></a>
 
-Logo is GoDaddy's official mark, from the `godaddy` GitHub organization.
+## 檔案
 
-## License
+- GoDaddy MCP 伺服器：https://developer.godaddy.com/en/docs/api-users/mcp
+- 伺服器 URL：https://api.godaddy.com/v1/domains/mcp
+
+標誌是 GoDaddy 官方標誌，來自 `godaddy` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

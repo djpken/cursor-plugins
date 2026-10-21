@@ -1,16 +1,18 @@
 # Google Drive
 
-Cursor plugin that connects agents to [Google Drive](https://drive.google.com) through Cursor's remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Cursor 的遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Google Drive](https://drive.google.com)。
 
-Search Drive, read file metadata and contents, create or update files, and manage sharing.
+搜尋 Drive、讀取檔案元資料與內容、建立或更新檔案，以及管理分享。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Google Drive**.
-3. Click **Install**, then complete the Google sign-in prompt.
+## 安裝
 
-Or run `/add-plugin google-drive` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Google Drive**。
+3. 點選 **安裝**，然後完成 Google 登入提示。
+
+或在聊天中執行 `/add-plugin google-drive`。
 
 ## MCP
 
@@ -25,16 +27,20 @@ Or run `/add-plugin google-drive` in chat.
 }
 ```
 
-Auth is OAuth 2.0 against Google. Cursor prompts for Google sign-in when the plugin connects.
+驗證是針對 Google 的 OAuth 2.0。當外掛連線時，Cursor 會提示 Google 登入。
 
-## Docs
+<a id="docs"></a>
 
-- Google Drive API: https://developers.google.com/workspace/drive/api/reference/rest/v3
-- Google Drive overview: https://developers.google.com/workspace/drive
+## 檔案
 
-Logo is the official Google Drive product icon, placed on a white tile with padding so it reads well in the Cursor UI:
+- Google Drive API：https://developers.google.com/workspace/drive/api/reference/rest/v3
+- Google Drive 概覽：https://developers.google.com/workspace/drive
+
+標誌是官方 Google Drive 產品圖示，放置在白色圖塊上並留有邊距，以便在 Cursor 介面中清晰呈現：
 https://www.gstatic.com/images/branding/productlogos/drive_2026/v1/192px.svg
 
-## License
+<a id="license"></a>
+
+## 授權
 
 MIT

@@ -1,16 +1,18 @@
 # Gong
 
-Cursor plugin that connects agents to [Gong](https://www.gong.io) through Gong's official hosted [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Gong 官方託管的 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Gong](https://www.gong.io)。
 
-Pull account summaries, deal insights, and call briefs into chat.
+將帳戶摘要、交易洞察和電話簡報拉入聊天中。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Gong**.
-3. Click **Install**, then set the client ID and secret (below) and complete the Gong sign-in prompt.
+## 安裝
 
-Or run `/add-plugin gong` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Gong**。
+3. 點選 **安裝**，然後設定客戶端 ID 和密碼（如下），並完成 Gong 登入提示。
+
+或在聊天中執行 `/add-plugin gong`。
 
 ## MCP
 
@@ -28,23 +30,29 @@ Or run `/add-plugin gong` in chat.
 }
 ```
 
-## Setup
+<a id="setup"></a>
 
-Gong's MCP server uses static OAuth client credentials plus a per-user OAuth login, so an administrator has to register Cursor before anyone can connect.
+## 設定
 
-1. A Gong technical administrator creates an MCP integration under **Company Settings → Ecosystem → API → Integrations** and enables the MCP scope.
-2. Register both redirect URIs on that integration:
-   - Desktop: `http://localhost:8787/callback`
-   - Web and Cloud Agents: `https://www.cursor.com/agents/mcp/oauth/callback`
-3. In **Dashboard → Plugins → Configure**, set **Gong Client ID** and **Gong Client Secret** from that integration.
-4. Complete the Gong OAuth login when Cursor prompts.
+Gong 的 MCP 伺服器使用靜態 OAuth 客戶端憑證，加上每個使用者各自的 OAuth 登入，因此必須由管理者先註冊 Cursor，才能讓任何人連線。
 
-On a team marketplace an admin sets the client ID and secret once for everyone; each member still completes their own Gong OAuth login, so tool calls run with that member's Gong permissions.
+1. Gong 技術管理者在 **公司設定 → 生態系統 → API → 整合** 下建立 MCP 整合，並啟用 MCP 範圍。
+2. 在該整合上註冊兩個 redirect URI：
+   - 桌面：`http://localhost:8787/callback`
+   - Web 和 Cloud Agents：`https://www.cursor.com/agents/mcp/oauth/callback`
+3. 在 **Dashboard → 外掛 → 設定** 中，從該整合設定 **Gong 客戶端 ID** 和 **Gong 客戶端密碼**。
+4. 當 Cursor 提示時，完成 Gong OAuth 登入。
 
-## Docs
+在團隊 marketplace 中，管理者為所有人設定一次客戶端 ID 和密碼；每位成員仍需完成各自的 Gong OAuth 登入，因此工具呼叫會以該成員的 Gong 許可權執行。
 
-- Gong MCP server overview: https://help.gong.io/docs/about-gong-mcp-server
+<a id="docs"></a>
 
-## License
+## 文件
+
+- Gong MCP 伺服器概述：https://help.gong.io/docs/about-gong-mcp-server
+
+<a id="license"></a>
+
+## 授權
 
 MIT

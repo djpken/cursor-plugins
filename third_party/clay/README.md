@@ -1,16 +1,18 @@
 # Clay
 
-Cursor plugin that connects agents to [Clay](https://www.clay.com) through Clay's official hosted [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Clay 官方託管的 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Clay](https://www.clay.com)。
 
-Find and enrich people and companies across 150+ data providers, run AI research agents (Claygent), and trigger your team's approved Clay workflows from the signed-in Clay workspace.
+在 150 多個資料提供商中尋找並豐富個人和公司資訊，執行 AI 研究代理（Claygent），並從已登入的 Clay 工作區觸發團隊核准的 Clay 工作流程。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Clay**.
-3. Click **Install**, then complete the Clay sign-in prompt.
+## 安裝
 
-Or run `/add-plugin clay` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Clay**。
+3. 點選 **安裝**，然後完成 Clay 登入提示。
+
+或在聊天中執行 `/add-plugin clay`。
 
 ## MCP
 
@@ -25,35 +27,45 @@ Or run `/add-plugin clay` in chat.
 }
 ```
 
-Auth is OAuth 2.1 against Clay with Dynamic Client Registration (DCR) and PKCE. Cursor registers itself and prompts for Clay sign-in when the plugin connects — there is no API key or client ID to configure.
+驗證是針對 Clay 的 OAuth 2.1，使用 Dynamic Client Registration（DCR）和 PKCE。當外掛連線時，Cursor 會自行註冊並提示 Clay 登入，不需要設定 API 金鑰或客戶 ID。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need a Clay account with access to a workspace.
+## 連線前
 
-Your Clay workspace admin may need to allow MCP client connections under Clay workspace **Settings → MCP**. If sign-in succeeds but tools fail, check with your admin.
+你需要一個 Clay 帳戶，並能存取一個工作區。
 
-## What agents can do
+你的 Clay 工作區管理員可能需要在 Clay 工作區 **設定 → MCP** 中允許 MCP 客戶端連線。如果登入成功但工具失敗，請與管理員確認。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理能做什麼
+
+| 類別 | 功能 |
 | --- | --- |
-| People & companies | Search Clay's data universe with natural-language criteria |
-| Enrichment | Pull emails, phone numbers, firmographics, technographics, and other data points across 150+ providers |
-| Research | Ask Claygent open-ended questions about accounts and contacts |
-| Workflows | Trigger Clay tables and workflows your team has approved for MCP access |
+| 個人與公司 | 以自然語言條件搜尋 Clay 的資料宇宙 |
+| 豐富資料 | 在 150 多個提供商中提取電子郵件、電話號碼、公司統計資料、技術統計資料及其他資料點 |
+| 研究 | 向 Claygent 詢問關於帳戶和聯絡人的開放式問題 |
+| 工作流程 | 觸發團隊已核准供 MCP 存取使用的 Clay 表格和工作流程 |
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Clay user who authorizes the connection and cannot exceed that user's permissions.
-- Workflow triggers are limited to workflows approved for MCP access in the Clay workspace.
-- Connections appear in your Clay workspace's MCP client list, labeled with the Cursor client name.
-- Revoke access at any time from Clay workspace **Settings → MCP**.
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Clay 使用者身份執行，且不能超過該使用者許可權。
+- 工作流程觸發僅限於在 Clay 工作區中核準供 MCP 存取的工作流程。
+- 連線會出現在你的 Clay 工作區的 MCP 客戶端列表中，標示為 Cursor 客戶端名稱。
+- 隨時從 Clay 工作區 **設定 → MCP** 撤銷存取權。
 
-- Connect to Clay MCP: https://university.clay.com/docs/connect-to-clay-mcp
-- Server URL: https://api.clay.com/v3/mcp
+<a id="docs"></a>
 
-## License
+## 檔案
+
+- 連線 Clay MCP：https://university.clay.com/docs/connect-to-clay-mcp
+- 伺服器 URL：https://api.clay.com/v3/mcp
+
+<a id="license"></a>
+
+## 授權
 
 MIT

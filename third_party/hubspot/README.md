@@ -1,18 +1,20 @@
 # HubSpot
 
-Cursor plugin that connects agents to [HubSpot](https://www.hubspot.com) through HubSpot's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 HubSpot 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [HubSpot](https://www.hubspot.com)。
 
-Search and update CRM records, work with activities and conversations, and manage marketing email drafts in the signed-in HubSpot account.
+在已登入的 HubSpot 帳戶中搜尋和更新 CRM 記錄、處理活動與對話，以及管理行銷電子郵件草稿。
 
-This is HubSpot's remote CRM MCP server — not the [developer MCP server](https://developers.hubspot.com/docs/developer-tooling/local-development/developer-mcp/setup), which helps build apps and CMS assets locally.
+這是 HubSpot 的遠端 CRM MCP 伺服器，而非 [開發者 MCP 伺服器](https://developers.hubspot.com/docs/developer-tooling/local-development/developer-mcp/setup)，該伺服器用於在本機建立應用程式和 CMS 資產。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **HubSpot**.
-3. Click **Install** and complete the HubSpot sign-in prompt. Leave the client ID and secret blank to use Grok's HubSpot app where it is available; otherwise set them from your own app (below).
+## 安裝
 
-Or run `/add-plugin hubspot` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **HubSpot**。
+3. 點選 **安裝** 並完成 HubSpot 登入提示。若可用，將客戶 ID 和金鑰留空以使用 Grok 的 HubSpot 應用；否則從你自己的應用設定（如下）。
+
+或在聊天中執行 `/add-plugin hubspot`。
 
 ## MCP
 
@@ -31,35 +33,43 @@ Or run `/add-plugin hubspot` in chat.
 }
 ```
 
-## Setup
+<a id="setup"></a>
 
-Cursor is rolling out Grok's HubSpot app. Where it is available, leave **HubSpot Client ID** and **HubSpot Client Secret** blank and skip the steps below. If Cursor reports that the plugin's OAuth client is not configured, set up your own app.
+## 設定
 
-HubSpot's remote MCP server requires a dedicated MCP auth app with OAuth (PKCE). An administrator or developer has to create that app before anyone can connect.
+Cursor 正在推出 Grok 的 HubSpot 應用。若可用，將 **HubSpot 客戶 ID** 和 **HubSpot 客戶金鑰** 留空並略過以下步驟。如果 Cursor 報告外掛 OAuth 客戶未設定，請設定你自己的應用。
 
-1. In HubSpot, go to **Development → MCP Auth Apps** (or open [app.hubspot.com/l/mcp-auth-apps](https://app.hubspot.com/l/mcp-auth-apps/)) and click **Create MCP auth app**.
-2. Register both redirect URLs on that app:
-   - Desktop: `http://localhost:8787/callback`
-   - Web and Cloud Agents: `https://www.cursor.com/agents/mcp/oauth/callback`
-3. In **Dashboard → Plugins → Configure**, set **HubSpot Client ID** and **HubSpot Client Secret** from that app.
-4. Complete the HubSpot OAuth login when Cursor prompts. Select the account to connect and grant permissions.
+HubSpot 的遠端 MCP 伺服器需要一個專用的 MCP 認證應用，使用 OAuth（PKCE）。管理員或開發者必須先建立該應用，才能讓任何人連線。
 
-On a team marketplace an admin sets the client ID and secret once for everyone; each member still completes their own HubSpot OAuth login, so tool calls run with that member's HubSpot permissions.
+1. 在 HubSpot 中，前往 **開發 → MCP 認證應用**（或開啟 [app.hubspot.com/l/mcp-auth-apps](https://app.hubspot.com/l/mcp-auth-apps/)）並點選 **建立 MCP 認證應用**。
+2. 在該應用上註冊兩個 redirect URL：
+   - 桌面：`http://localhost:8787/callback`
+   - Web 和 Cloud Agents：`https://www.cursor.com/agents/mcp/oauth/callback`
+3. 在 **Dashboard → 外掛 → 設定** 中，從該應用設定 **HubSpot 客戶 ID** 和 **HubSpot 客戶金鑰**。
+4. 當 Cursor 提示時完成 HubSpot OAuth 登入。選擇要連線的帳戶並授予許可權。
 
-Scopes are not declared on the app up front — they come from the MCP server's available tools and the permissions the installing user grants. If HubSpot adds tools later, users may need to reinstall to pick up new scopes.
+在團隊 marketplace 中，管理員為所有人設定一次客戶 ID 和金鑰；每個成員仍需完成自己的 HubSpot OAuth 登入，因此工具呼叫會以該成員的 HubSpot 許可權執行。
 
-## Notes
+應用上不會事先宣告 scopes，它們來自 MCP 伺服器的可用工具以及安裝使用者授予的許可權。如果 HubSpot 之後新增工具，使用者可能需要重新安裝以取得新的 scopes。
 
-- If the HubSpot account has Sensitive Data turned on, activity objects and conversation data are blocked through the MCP server (this does not affect the standard CRM APIs).
-- Help desk conversations are visible to all users; conversations-inbox access follows the same team/user restrictions as in HubSpot.
+<a id="notes"></a>
 
-## Docs
+## 注意事項
 
-- Remote HubSpot MCP server: https://developers.hubspot.com/docs/apps/developer-platform/build-apps/integrate-with-the-remote-hubspot-mcp-server
-- Server URL: https://mcp.hubspot.com
+- 如果 HubSpot 帳戶啟用了 Sensitive Data，活動物件和對話資料會透過 MCP 伺服器被阻止（這不會影響標準 CRM API）。
+- 客服對話對所有使用者可見；對話收件匣的存取遵循與 HubSpot 相同的團隊/使用者限制。
 
-Logo is HubSpot's official inverted favicon (white sprocket on the brand orange tile) from https://www.hubspot.com/hubfs/HubSpot_Logos/HubSpot-Inversed-Favicon.png.
+<a id="docs"></a>
 
-## License
+## 文件
+
+- 遠端 HubSpot MCP 伺服器：https://developers.hubspot.com/docs/apps/developer-platform/build-apps/integrate-with-the-remote-hubspot-mcp-server
+- 伺服器 URL：https://mcp.hubspot.com
+
+Logo 是 HubSpot 官方反色 favicon（品牌橙色底上的白色齒輪），取自 https://www.hubspot.com/hubfs/HubSpot_Logos/HubSpot-Inversed-Favicon.png.
+
+<a id="license"></a>
+
+## 授權
 
 MIT

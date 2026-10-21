@@ -1,21 +1,23 @@
-### Hillclimb
+<a id="hillclimb"></a>
 
-**You own the metric and the experiment's integrity. Supervise and review. Delegate the attempts.** For sustained, iterative improvement of one measurable thing against a target. A one-off fix is Bug fix or Perf issue. This is the loop.
+### 爬坡
 
-Core discipline: one change, one measurement, keep or revert. Never stack untested changes, and never claim a win from code inspection (the **prove-it-works** principle skill).
+**你負責這個指標和實驗的完整性。監督與審查。委派嘗試。** 針對一個可測量的事物，持續、迭代地改善，以達成目標。一次性修正屬於 Bug 修正或效能問題。這是迴圈流程。
 
-1. Ground the workload and architecture before choosing the metric. Run the **how** skill over the target, name the realistic workload dimensions that can move the result (data size, history, state, concurrency), and select a case that reproduces the user's complaint. If no case reproduces it, fix the repro instead of hillclimbing. Then fix one metric, the direction that counts as better, and a checkable stop predicate that pairs a target with a floor on attempts so a lucky early win can't end the run (the example "at least 50% better than baseline and at least 10 iterations" is this shape). Use the user's numbers when given, otherwise agree them.
-2. Build the measurement harness, prove its sensitivity, then freeze it (the **build-the-lever** principle skill). Run contrasting realistic workloads and confirm the target case reproduces the symptom while easier cases separate as expected. If the harness cannot distinguish them, revise the workload or metric. Vet the harness with the **benchmark-checklist** skill before you freeze it, and make it print its error count and a count of the work done. Once frozen, one repeatable command emits the metric, sampled enough to clear the noise (median of N, not a single run). Record the baseline metric and a green run of the regression gate (the tests that must keep passing) before any change.
-3. Open the decision log via the **show-me-your-work** skill. A `decision.tsv`, one row per attempt: id, hypothesis, change, before, after, delta, tests, verdict (kept or reverted), note. Read it before each attempt. Keep it out of the tree (gitignored).
-4. Ground each hypothesis in the architecture model from step 1, so it names a specific mechanism ("defer X off the boot path because it blocks first paint"), not "try memoizing something". For a perf metric, order hypotheses by the performance mantras in step 2 of the Perf issue playbook (`playbooks/perf-issue.md`). Borrow only their order, not that step's stop rule.
-5. Loop, one hypothesis per iteration:
-   - Hand the change to a subagent using your configured hillclimb model (default `grok-4.7-xhigh-fast`) with a tight scope. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section. Supervise and review the diff rather than typing it (the **guard-the-context-window** principle skill). When several independent hypotheses are live, fan them to parallel subagents, each in its own worktree (the **separate-before-serializing-shared-state** principle skill).
-   - Measure before and after with the frozen harness, and run the regression gate.
-   - Accept only when the metric moves past noise and the gate stays green. Otherwise revert the change in full. A tweak that "might help" is not kept.
-   - One commit per accepted fix, staging only the files you changed (`git add <files>`, never `-A`). Log the row either way, kept or reverted.
-   Each iteration ends in a check before the next begins (the **sequence-verifiable-units** principle skill). If the run is unattended, borrow only the wake mechanism from the Autonomous run playbook (`playbooks/autonomous-run.md`), not its stop rule.
-6. Push past the first plateau. On a stall, several rejects in a row, pivot category, combine near-misses, re-read the source, or try something more radical before concluding the hill is climbed. Correctness and simplicity outrank the number. Revert a win that breaks behavior, and keep a simplification that holds the number (the **laziness-protocol** principle skill).
-7. Stop when the predicate is met, or when the remaining ideas are marginal and not worth their cost. Don't relax the predicate to meet it, and don't quit while cheap untried hypotheses remain. If you are stuck, surface it instead of spinning.
-8. Run **Opening a PR** with the accepted commits stacked in the order they landed.
+核心紀律：一次變更、一次測量、保留或回復。絕不堆疊未測試的變更，也絕不從程式碼檢視中宣稱勝利（**證明它有效**原則技能）。
 
-**Reply:** the metric and target, baseline to final with the percent delta, iterations run (kept vs reverted), each accepted fix on one line, the `decision.tsv` path, and the best idea you would try next if pushed further.
+1. 在選擇指標之前，先確立工作量與架構。執行 **如何**技能於目標上，命名可能影響結果的實際工作量維度（資料大小、歷史、狀態、併發），並選擇一個能重現使用者抱怨的案例。如果沒有案例能重現，則先修正重現問題，而不是進行爬坡。然後固定一個指標、一個代表更好的方向，以及一個可檢查的停止條件，該條件將目標與嘗試次數下限配對，以免幸運的早期勝利結束整個過程（範例「至少比基準改善 50% 且至少 10 次迭代」就是這種形式）。當使用者提供數字時使用它們，否則需雙方同意。
+2. 建立測量工具，證明其敏感性，然後凍結它（**建立槓桿**原則技能）。執行對比的實際工作量，並確認目標案例重現症狀，而較簡單的案例則如預期地分離。如果工具無法區分它們，則修改工作量或指標。在凍結之前，用 **基準檢查清單**技能審查工具，並使其輸出錯誤計數和已完成工作量計數。一旦凍結，一個可重複的命令會產生指標，並進行足夠的取樣以清除噪音（取 N 的中位數，而非單次執行）。在任何變更之前，記錄基準指標和迴歸門的綠色執行（必須持續透過的測試）。
+3. 透過 **展示你的工作**技能開啟決策紀錄。一個 `decision.tsv`，每個嘗試一行：id、假說、變更、之前、之後、差異、測試、判定（保留或回復）、註記。每次嘗試前閱讀它。將其保持在樹外（gitignore）。
+4. 將每個假說建立在步驟 1 的架構模型中，使其命名一個特定機制（「將 X 從啟動路徑中延後，因為它阻塞首次繪製」），而非「嘗試記憶化某個東西」。對於效能指標，按效能問題劇本步驟 2 中的效能原則排序假說（`playbooks/perf-issue.md`）。僅借用其排序，而非該步驟的停止規則。
+5. 迴圈，每個迭代一個假說：
+   - 將變更改交給子代理，使用你設定的爬坡模型（預設 `grok-4.7-xhigh-fast`）並設定緊密的範圍。根據子代理章節，為每個子代理選擇推理等級和快速或標準速度。監督並審查差異，而非親自輸入（**保護上下文視窗**原則技能）。當多個獨立假說同時進行時，將它們分散到平行子代理，每個在自己的工作樹中（**先分離再序列共享狀態**原則技能）。
+   - 使用凍結的工具測量之前和之後，並執行迴歸門。
+   - 僅當指標移動超過噪音且門保持綠色時才接受。否則完全回復變更。一個「可能有幫助」的調整不會保留。
+   - 每個接受的修正一個 commit，僅暫存你變更的檔案（`git add <files>`，絕不 `-A`）。無論保留或回復，都記錄該行。
+   每個迭代結束時，在下一迭代開始前進行檢查（**序列可驗證單位**原則技能）。如果執行無人監督，僅借用自主執行劇本中的喚醒機制（`playbooks/autonomous-run.md`），而非其停止規則。
+6. 突破第一個高原。當停滯時，連續多次拒絕，轉換類別、結合接近成功、重新閱讀來源，或嘗試更激進的方法，再結論山已爬完。正確性和簡潔性優先於數字。回復破壞行為的勝利，並保留維持數字簡化（**懶惰協議**原則技能）。
+7. 當條件滿足時停止，或當剩餘想法微不足道且不值得成本時停止。不要放寬條件來滿足它，也不要在便宜的未嘗試假說存在時退出。如果被困住，則表面化它，而非原地轉。
+8. 執行 **開啟 PR**，將接受的 commits 按落地順序堆疊。
+
+**回應：**指標和目標、基準到最終的百分比差異、執行迭代（保留 vs 回復）、每個接受的修正一行、`decision.tsv`路徑，以及如果進一步推進，你會嘗試的最佳想法。

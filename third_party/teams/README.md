@@ -1,16 +1,18 @@
 # Teams
 
-Cursor plugin that connects agents to [Microsoft Teams](https://www.microsoft.com/microsoft-teams) through Cursor's remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Cursor 的遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Microsoft Teams](https://www.microsoft.com/microsoft-teams)。
 
-Search chats and channel messages, read conversations, send messages, and react in the signed-in Microsoft account.
+搜尋聊天和頻道訊息、閱讀對話、傳送訊息，以及在已登入的 Microsoft 帳戶中回應。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Teams**.
-3. Click **Install**, then complete the Microsoft sign-in prompt.
+## 安裝
 
-Or run `/add-plugin teams` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Teams**。
+3. 點選 **安裝**，然後完成 Microsoft 登入提示。
+
+或在聊天中執行 `/add-plugin teams`。
 
 ## MCP
 
@@ -25,14 +27,14 @@ Or run `/add-plugin teams` in chat.
 }
 ```
 
-Auth is OAuth 2.0 against Microsoft (Entra ID). Cursor prompts for Microsoft sign-in when the plugin connects. A work or school account is required. Reading channel messages needs tenant admin consent before the plugin can connect.
+驗證是針對 Microsoft（Entra ID）的 OAuth 2.0。當外掛連線時，Cursor 會提示 Microsoft 登入。需要工作或學校帳戶。讀取頻道訊息需要租戶管理員同意，才能讓外掛連線。
 
 ## Docs
 
-- Teams API (Microsoft Graph): https://learn.microsoft.com/en-us/graph/api/resources/teams-api-overview
-- Microsoft Graph overview: https://learn.microsoft.com/en-us/graph/overview
+- Teams API（Microsoft Graph）：https://learn.microsoft.com/en-us/graph/api/resources/teams-api-overview
+- Microsoft Graph 概覽：https://learn.microsoft.com/en-us/graph/overview
 
-Logo is the official Microsoft Teams product icon from Microsoft's Fluent brand icon CDN, placed on a white tile with padding so it reads well in the Cursor UI:
+標誌是 Microsoft Teams 官方產品圖示，取自 Microsoft Fluent 品牌圖示 CDN，放置在白色底板上並留有邊距，以便在 Cursor 介面中清晰呈現：
 https://res-1.cdn.office.net/files/fabric-cdn-prod_20240411.001/assets/brand-icons/product/svg/teams_48x1.svg
 
 ## License

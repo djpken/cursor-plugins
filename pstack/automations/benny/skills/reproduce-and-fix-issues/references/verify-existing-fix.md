@@ -1,93 +1,113 @@
-# Verify an existing fix
+<a id="verify-an-existing-fix"></a>
 
-Use this mode when an open pull request or merged commit plausibly fixes the report.
+# 驗證現有的修正
 
-The existing artifact owns the fix. Verify it. Do not edit it, author a competing patch, or open another pull request.
+當一個未合併的 pull request 或已合併的 commit 似乎能修正該報告時，請使用此模式。
 
-## Qualify the artifact
+現有的 artifact 擁有此修正。請驗證它。不要編輯它、撰寫競爭性的 patch，或開啟另一個 pull request。
 
-Require one concrete artifact:
+<a id="qualify-the-artifact"></a>
 
-- An open pull request with code changes that address the symptom
-- A merged pull request
-- A merged commit with matching code and intent
+## 確認 artifact 的資格
 
-A thread claim, tracker status, branch name, or cause hypothesis without a pull request or commit is not enough.
+需要一個具體的 artifact：
 
-When several artifacts exist, choose the one linked from the source thread or tracker. Otherwise choose the closest match to the affected code and state why.
+- 一個包含能解決症狀之程式碼變更的未合併 pull request
+- 一個已合併的 pull request
+- 一個程式碼與意圖相符的已合併 commit
 
-## Protect the working tree
+僅有討論串宣告、追蹤器狀態、分支名稱或原因假設，而沒有 pull request 或 commit，是不夠的。
 
-Use an isolated worktree or another clean checkout when the repository supports it. Do not overwrite user changes.
+當存在多個 artifact 時，請選擇從來源討論串或追蹤器連結的那一個。否則，請選擇與受影響程式碼最接近的匹配項，並說明原因。
 
-Record:
+<a id="protect-the-working-tree"></a>
 
-- Baseline revision
-- Patched revision
-- Pull request or commit URL
-- Build and environment inputs shared by both runs
+## 保護工作樹
 
-Use regular `github.com` pull request links.
+當儲存庫支援時，請使用隔離的 worktree 或其他乾淨的 checkout。不要覆蓋使用者的變更。
 
-## Measure the baseline
+記錄：
 
-For an open pull request, use its base branch as the baseline.
+- 基準修訂版本
+- 已修正的修訂版本
+- Pull request 或 commit 的 URL
+- 兩次執行共用的建置與環境輸入
 
-For a merged fix, use the revision immediately before the fix when that revision builds and represents the old behavior.
+使用標準的 `github.com` pull request 連結。
 
-Through the configured control adapter:
+<a id="measure-the-baseline"></a>
 
-1. Bring up the baseline app.
-2. Confirm the correct app and environment.
-3. Run the reported path through real UI actions.
-4. Observe the discriminating symptom.
-5. Reset and repeat it.
-6. Capture baseline recording, screenshot, and state check.
+## 測量基準
 
-If the symptom does not appear twice on the baseline, there is no baseline. Do not claim that the fix works.
+對於未合併的 pull request，請使用其 base branch 作為基準。
 
-## Measure the patched build
+對於已合併的修正，若該修訂版本可建置且代表舊有行為，請使用修正前緊鄰的修訂版本。
 
-Build and run the pull request or fix commit with the same environment and data.
+透過已設定的控制介面卡：
 
-1. Run the same UI path.
-2. Repeat it twice.
-3. Confirm that the broken state is gone.
-4. Confirm the expected state appears.
-5. Capture after recording, screenshot, and the same state check.
+1. 啟動基準應用程式。
+2. 確認正確的應用程式與環境。
+3. 透過實際的 UI 操作執行報告中的路徑。
+4. 觀察具有鑑別性的症狀。
+5. 重設並重複執行。
+6. 擷取基準錄製、螢幕截圖與狀態檢查。
 
-Do not stop at compilation or tests. The after result must come from a running patched app.
+如果症狀在基準上未出現兩次，則沒有基準。不要聲稱修正有效。
 
-## Outcomes
+<a id="measure-the-patched-build"></a>
 
-### Confirmed
+## 測量已修正的建置
 
-The baseline reproduces twice and the patched build resolves it twice.
+使用相同的環境與資料，建置並執行該 pull request 或修正 commit。
 
-- Mark operations status as verified.
-- Link the artifact.
-- Post one concise source-thread reply after the source preflight.
-- Include the before and after result.
-- Open no pull request.
+1. 執行相同的 UI 路徑。
+2. 重複執行兩次。
+3. 確認損壞的狀態已消失。
+4. 確認預期狀態出現。
+5. 擷取事後錄製、螢幕截圖與相同的狀態檢查。
 
-### Insufficient fix
+不要僅止於編譯或測試。事後結果必須來自正在執行的已修正應用程式。
 
-The symptom appears on both baseline and patched builds.
+<a id="outcomes"></a>
 
-- Mark operations status as reproduced but not fixed.
-- Link the artifact and say it did not resolve the symptom.
-- Post the normal confirmed-repro source update if the run has not already used it.
-- Open no competing pull request.
+## 結果
 
-### Inconclusive
+<a id="confirmed"></a>
 
-The baseline does not reproduce, the patched app cannot run, or the evidence does not show the discriminating state.
+### 已確認
 
-- Do not claim success.
-- State which half could not be measured.
-- Keep the result in the operations thread or run output.
-- Post nothing in the source thread unless a direct question requires an answer.
+基準重複出現兩次，且已修正的建置解決了兩次。
 
-## Cleanup
+- 將操作狀態標記為已驗證。
+- 連結該 artifact。
+- 在來源預檢後，於來源討論串釋出一則簡潔的回覆。
+- 包含事前與事後的結果。
+- 不要開啟任何 pull request。
 
-Stop both builds, remove temporary profiles and captures according to retention policy, and return the repository to its prior state without discarding user work.
+<a id="insufficient-fix"></a>
+
+### 修正不足
+
+症狀在基準與已修正的建置中均出現。
+
+- 將操作狀態標記為已重現但未修正。
+- 連結該 artifact，並說明它未解決症狀。
+- 如果此次執行尚未使用，請釋出標準的已確認重現來源更新。
+- 不要開啟任何競爭性的 pull request。
+
+<a id="inconclusive"></a>
+
+### 無法定論
+
+基準無法重現、已修正的應用程式無法執行，或證據未顯示具有鑑別性的狀態。
+
+- 不要聲稱成功。
+- 說明哪一半無法測量。
+- 將結果保留在操作討論串或執行輸出中。
+- 除非直接提問需要回答，否則不要在來源討論串釋出任何內容。
+
+<a id="cleanup"></a>
+
+## 清理
+
+停止兩個建置，根據保留政策移除暫存設定檔與擷取內容，並將儲存庫恢復到先前狀態，同時不丟棄使用者的工作。

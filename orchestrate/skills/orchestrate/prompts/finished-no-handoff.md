@@ -7,15 +7,19 @@ resultStatus: {{resultStatus}}
 terminatedAt: {{terminatedAt}}
 -->
 
-# {{taskName}} finished without handoff
+<a id="taskname-finished-without-handoff"></a>
 
-Status: {{resultStatus}} (cloud agent ended cleanly but never wrote a `## Status` handoff)
-Cloud agent: {{agentId}}
-Run: {{runId}}
-Branch: {{branch}}
-Terminated: {{terminatedAt}}
+# {{taskName}} 已完成，但未進行交接
 
-## Suggested next steps
-- Inspect the raw handoff at `handoffs/{{taskName}}.md` to see what the worker actually emitted.
-- Retry as-is if this looks like a prompt-misfire (worker produced prose but not the structured template).
-- Abandon: skip task, replan around it if the goal genuinely has no acceptable output.{{rawSnippetBlock}}
+狀態：{{resultStatus}}（雲端 agent 已正常結束，但從未寫入 `## Status` 交接）
+雲端 agent：{{agentId}}
+執行：{{runId}}
+分支：{{branch}}
+終止時間：{{terminatedAt}}
+
+<a id="suggested-next-steps"></a>
+
+## 建議的後續步驟
+- 檢視 `handoffs/{{taskName}}.md` 中的原始交接內容，以檢視 worker 實際輸出的內容。
+- 如果這看起來像是提示詞失誤（worker 產生了散文，但未產生結構化模板），請原樣重試。
+- 放棄：跳過此任務，如果目標確實沒有可接受的輸出，請重新規劃以繞過它。{{rawSnippetBlock}}

@@ -1,16 +1,18 @@
 # Salesforce
 
-Cursor plugin that connects agents to [Salesforce](https://www.salesforce.com) through [Salesforce Hosted MCP](https://developer.salesforce.com/docs/platform/hosted-mcp-servers/), Salesforce's first-party [Model Context Protocol](https://modelcontextprotocol.io/) service.
+Cursor 外掛，透過 [Salesforce Hosted MCP](https://developer.salesforce.com/docs/platform/hosted-mcp-servers/) 將代理連線到 [Salesforce](https://www.salesforce.com)，這是 Salesforce 的第一方 [Model Context Protocol](https://modelcontextprotocol.io/) 服務。
 
-Run SOQL and SOSL, inspect object schemas, traverse relationships, and create, update, or delete records — all under the signed-in user's own permissions and field-level security.
+執行 SOQL 和 SOSL、檢查物件結構、瀏覽關係，以及建立、更新或刪除記錄，全部都在登入使用者自身的許可權和欄位層級安全性之下。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Salesforce**.
-3. Click **Install**, then set the server URL and consumer key (below) and complete the Salesforce sign-in prompt.
+## 安裝
 
-Or run `/add-plugin salesforce` in chat.
+1. 開啟 **Cursor Settings → Plugins**。
+2. 搜尋 **Salesforce**。
+3. 點選 **Install**，然後設定伺服器 URL 和消費者金鑰（如下），並完成 Salesforce 登入提示。
+
+或在聊天中執行 `/add-plugin salesforce`。
 
 ## MCP
 
@@ -29,67 +31,81 @@ Or run `/add-plugin salesforce` in chat.
 }
 ```
 
-## Setup
+<a id="setup"></a>
 
-Salesforce Hosted MCP requires an **External Client App** in your org. Connected Apps are not supported.
+## 設定
 
-### 1. Create the External Client App
+Salesforce Hosted MCP 需要在您的組織中建立一個 **External Client App**。Connected Apps 不受支援。
 
-From Setup, go to **External Client App Manager → New External Client App**, fill in the basics, then expand **API (Enable OAuth Settings)** and check **Enable OAuth**.
+<a id="1-create-the-external-client-app"></a>
 
-Add every callback URL you need — Cursor uses different ones per surface:
+### 1. 建立 External Client App
 
-| Surface | Callback URL |
+從 Setup 前往 **External Client App Manager → New External Client App**，填寫基本資訊，然後展開 **API (Enable OAuth Settings)** 並勾選 **Enable OAuth**。
+
+加入所有需要的 callback URL，Cursor 在不同介面使用不同的 URL：
+
+| 介面 | Callback URL |
 |:--------|:-------------|
 | Desktop | `http://localhost:8787/callback` |
-| Web and Cloud Agents | `https://www.cursor.com/agents/mcp/oauth/callback` |
-| Older desktop builds | `cursor://anysphere.cursor-mcp/oauth/callback` |
+| Web 和 Cloud Agents | `https://www.cursor.com/agents/mcp/oauth/callback` |
+| 舊版桌面版本 | `cursor://anysphere.cursor-mcp/oauth/callback` |
 
-Under **OAuth Scopes**, select exactly these two and nothing broader:
+在 **OAuth Scopes** 下，僅選取這兩個，不要選更廣泛的範圍：
 
 - **Access Salesforce hosted MCP servers** (`mcp_api`)
 - **Perform requests at any time** (`refresh_token`, `offline_access`)
 
-The second one is easy to miss because the picker labels scopes by description rather than by value. Without it the plugin cannot refresh, and every user has to re-authenticate when their access token expires. Do not add **Full access** (`full`) — Hosted MCP does not need it.
+第二個很容易漏掉，因為選擇器以描述而非值來標示範圍。沒有它，外掛無法重新整理，每個使用者都必須在存取令牌到期時重新驗證。不要加入 **Full access** (`full`)，Hosted MCP 不需要它。
 
-Under **Security**, select **Issue JSON Web Token (JWT)-based access tokens for named users**. This is required: without it Salesforce issues opaque tokens and every tool call fails with `JWT Token is required`. Leave **Require Secret for Web Server Flow** off — Cursor authenticates as a public client using PKCE, so no client secret is involved. Do not enable the **JWT Bearer Flow**, which is a different feature and needs a certificate.
+在 **Security** 下，選取 **Issue JSON Web Token (JWT)-based access tokens for named users**。這是必要的：沒有它，Salesforce 會發出不透明的令牌，每個工具呼叫都會失敗並出現 `JWT Token is required`。將 **Require Secret for Web Server Flow** 保持關閉，Cursor 以公開客戶端使用 PKCE 驗證，因此不涉及客戶端密碼。不要啟用 **JWT Bearer Flow**，這是不同的功能且需要憑證。
 
-Finally, copy the **Consumer Key** from **Settings → Consumer Key and Secret**.
+最後，從 **Settings → Consumer Key and Secret** 複製 **Consumer Key**。
 
-A new External Client App can take up to 30 minutes to propagate. Until it does, authentication fails with `invalid_client_id`; wait rather than recreating the app.
+新的 External Client App 可能需要最多 30 分鐘才能傳播。在此之前，驗證會失敗並出現 `invalid_client_id`；請等待，而不是重新建立應用程式。
 
-### 2. Activate a server and copy its URL
+<a id="2-activate-a-server-and-copy-its-url"></a>
 
-In Setup, open **MCP Servers**, activate the server you want, and copy its **Server URL**. The URL encodes both the org type and the server:
+### 2. 啟用伺服器並複製其 URL
 
-| Org type | Standard server | Custom server |
+在 Setup 中，開啟 **MCP Servers**，啟用您想要的伺服器，並複製其 **Server URL**。URL 同時包含組織型別與伺服器：
+
+| 組織型別 | 標準伺服器 | 自訂伺服器 |
 |:---------|:----------------|:--------------|
-| Production, Developer, Enterprise | `https://api.salesforce.com/platform/mcp/v1/platform/sobject-all` | `https://api.salesforce.com/platform/mcp/v1/custom/myserver` |
-| Sandbox or scratch | `https://api.salesforce.com/platform/mcp/v1/sandbox/platform/sobject-all` | `https://api.salesforce.com/platform/mcp/v1/sandbox/custom/myserver` |
+| Production、Developer、Enterprise | `https://api.salesforce.com/platform/mcp/v1/platform/sobject-all` | `https://api.salesforce.com/platform/mcp/v1/custom/myserver` |
+| Sandbox 或 scratch | `https://api.salesforce.com/platform/mcp/v1/sandbox/platform/sobject-all` | `https://api.salesforce.com/platform/mcp/v1/sandbox/custom/myserver` |
 
-Salesforce ships several standard servers with different blast radii — `sobject-reads` for read-only access, `sobject-mutations` for reads plus create and update, `sobject-deletes`, and `sobject-all` for everything. Point the plugin at the narrowest one that does the job.
+Salesforce 提供幾個標準伺服器，影響範圍不同：`sobject-reads` 僅限讀取，`sobject-mutations` 支援讀取、建立和更新，`sobject-deletes`，以及 `sobject-all` 支援所有操作。請將外掛指向能完成任務的最小範圍伺服器。
 
-### 3. Configure the plugin
+<a id="3-configure-the-plugin"></a>
 
-In **Dashboard → Plugins → Configure**, set **Salesforce MCP server URL** and **Salesforce Consumer Key**, then complete the Salesforce login when Cursor prompts.
+### 3. 設定外掛
 
-On a team marketplace an admin sets both values once. Each member still authenticates individually, so tools run with that member's own object and field permissions.
+在 **Dashboard → Plugins → Configure** 中，設定 **Salesforce MCP server URL** 和 **Salesforce Consumer Key**，然後在 Cursor 提示時完成 Salesforce 登入。
 
-## Troubleshooting
+在團隊 marketplace 中，管理者設定兩個值一次。每個成員仍會各自驗證，因此工具會以該成員自身的物件和欄位許可權執行。
 
-| Symptom | Cause |
+<a id="troubleshooting"></a>
+
+## 疑難排解
+
+| 症狀 | 原因 |
 |:--------|:------|
-| `invalid_client_id` | The External Client App has not finished propagating. Wait up to 30 minutes. |
-| `invalid_scope` | The app is missing **Access Salesforce hosted MCP servers** or **Perform requests at any time**. |
-| `JWT Token is required` or `Invalid token` after a successful login | **Issue JSON Web Token (JWT)-based access tokens for named users** is not enabled. |
-| Auth succeeds but the server 404s | The MCP server is not activated in Setup, or the URL's org type does not match the org you logged into. |
+| `invalid_client_id` | External Client App 尚未完成傳播。請等待最多 30 分鐘。 |
+| `invalid_scope` | 應用程式缺少 **Access Salesforce hosted MCP servers** 或 **Perform requests at any time**。 |
+| 登入成功後出現 `JWT Token is required` 或 `Invalid token` | **Issue JSON Web Token (JWT)-based access tokens for named users** 未啟用。 |
+| 驗證成功但伺服器回應 404 | MCP 伺服器未在 Setup 中啟用，或 URL 的組織型別與您登入的組織不符。 |
 
-## Docs
+<a id="docs"></a>
 
-- Configure Cursor: https://developer.salesforce.com/docs/platform/hosted-mcp-servers/guide/cursor.html
-- Create an External Client App: https://developer.salesforce.com/docs/platform/hosted-mcp-servers/guide/create-external-client-app.html
-- Available servers: https://developer.salesforce.com/docs/platform/hosted-mcp-servers/references/reference/sobject-all.html
+## 檔案
 
-## License
+- 設定 Cursor：https://developer.salesforce.com/docs/platform/hosted-mcp-servers/guide/cursor.html
+- 建立 External Client App：https://developer.salesforce.com/docs/platform/hosted-mcp-servers/guide/create-external-client-app.html
+- 可用伺服器：https://developer.salesforce.com/docs/platform/hosted-mcp-servers/references/reference/sobject-all.html
+
+<a id="license"></a>
+
+## 授權
 
 MIT

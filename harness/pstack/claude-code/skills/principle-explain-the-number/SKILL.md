@@ -1,17 +1,19 @@
 ---
 name: principle-explain-the-number
-description: "Apply before you trust, report, or act on a number you measured: a speedup, a regression, a throughput, a latency, or an eval result. Find what limits it, and rule out that it measured something other than the work you think."
+description: "在信任、報告或依據你所測得的數字採取行動之前，請先驗證：加速、回歸、吞吐量、延遲或評估結果。找出限制它的因素，並排除它測得的內容並非你所認為的工作。"
 disable-model-invocation: true
 ---
 
-# Explain the Number
+<a id="explain-the-number"></a>
 
-- **Ask "why not double?"** Name the resource or code path that bounds the result, such as a core, a lock, the disk, the network, or the load generator itself. Get it from a profile or from system counters taken during a run, then map it to source. A guess from reading the code is not a limiter. If you cannot say why the number is not twice as good, you do not know what you measured.
-- **List what else the number could be measuring, and rule out each one with evidence.** The usual suspects are errors, skipped or cached work, code that never ran, an untuned side (one left on default settings), noise, and a piece too small to matter end to end.
-- **Keep the evidence with the number.** Put the run count, the spread, and the limiter in the notes or a linked artifact.
+# 解釋數字
 
-For a performance number, run the full procedure with the [benchmark-checklist](../benchmark-checklist/SKILL.md) skill. For an eval result, ask the same of the trials: did every run do the task, does the gap hold across trials and models, and does the scenario matter.
+- **問「為何不是兩倍？」** 指出限制結果的資源或程式碼路徑，例如核心、鎖、磁碟、網路或負載產生器本身。從執行期間的 profile 或系統計數器取得資訊，然後將其對映到來源。從閱讀程式碼得到的猜測並非限制因素。如果你無法說明為何數字不是兩倍好，你就不知道你測得的內容。
+- **列出數字可能測得的其他內容，並用證據排除每一項。** 常見嫌疑是錯誤、被跳過或快取的工作、未執行的程式碼、未調整的一方（保留預設設定）、噪音，以及端到端影響過小的片段。
+- **將證據與數字一起保留。** 在註記或連結的檔案中記錄執行次數、分佈範圍和限制因素。
 
-You skipped this when the evidence behind a number has no run count, no spread, or no named limiter, or when the time saved is larger than the time the changed piece took.
+對於效能數字，請使用 [benchmark-checklist](../benchmark-checklist/SKILL.md)] skill 執行完整流程。對於評估結果，請對試驗提出同樣的要求：每次執行是否完成任務，差距是否在試驗和模型之間保持一致，以及場景是否重要。
 
-Distinct from [Prove It Works](../principle-prove-it-works/SKILL.md), which checks that an output is real.
+當數字背後的證據沒有執行次數、分佈範圍或明確的限制因素，或當節省的時間大於變動片段所耗的時間，你就跳過了這一步。
+
+與 [Prove It Works](../principle-prove-it-works/SKILL.md)] 不同，該項檢查輸出是否真實。

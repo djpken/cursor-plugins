@@ -1,40 +1,50 @@
 ---
 name: control-cli
-description: Build or adapt a local harness to drive, inspect, and profile an interactive CLI or TUI without external services. Use for CLI UX checks, startup regressions, memory leaks, hangs, prompt flows, or terminal demos.
+description: "建置或調整本地測試框架，以驅動、檢查並分析互動式 CLI 或 TUI，且不需依賴外部服務。適用於 CLI 使用者體驗檢查、啟動回歸測試、記憶體洩漏、掛起、提示流程或終端機示範。"
 ---
 
-# Control CLI
+<a id="control-cli"></a>
 
-Use a repeatable local harness to exercise an interactive CLI instead of poking at it manually. First reuse the repo's own test/demo harness if it exists; otherwise assemble a temporary harness from standard local tools.
+# 控制 CLI
 
-## What It Is Used For
+使用可重複執行的本地測試框架來操作互動式 CLI，而非手動進行測試。若儲存庫中已有測試或示範框架，請優先重用；否則，請使用標準本地工具組裝一個暫時的測試框架。
 
-- Reproducing CLI/TUI bugs with deterministic input.
-- Verifying keyboard flows, prompts, interrupts, resize behavior, and terminal layout.
-- Capturing before/after transcripts for bug fixes.
-- Profiling startup time, slow operations, hangs, or memory growth.
-- Recording a short terminal demo when output is easier to show than explain.
+<a id="what-it-is-used-for"></a>
 
-## Harness Loop
+## 用途
 
-1. Identify the command under test and the smallest reproducible workspace.
-2. Discover existing local harnesses: package scripts, e2e tests, demo recorders, expect scripts, or PTY helpers.
-3. If no harness exists, launch the CLI in an isolated terminal session with deterministic env vars.
-4. Capture the current screen before interacting.
-5. Send one action at a time: text, Enter, arrows, Escape, Ctrl-C, resize.
-6. Wait for a concrete screen pattern or prompt before the next action.
-7. Save the transcript and any profile artifacts.
-8. Kill the session cleanly.
+- 使用確定性輸入重現 CLI 或 TUI 的錯誤。
+- 驗證鍵盤流程、提示、中斷、調整大小行為以及終端機版面設定。
+- 為錯誤修復擷取修復前後的記錄。
+- 分析啟動時間、緩慢操作、掛起或記憶體增長。
+- 當輸出比說明更容易展示時，錄製一段簡短的終端機示範。
 
-## Harness Options
+<a id="harness-loop"></a>
 
-- Repo-native harness: prefer checked-in scripts because they know the app's startup, env, and prompts.
-- `tmux`: managed sessions, `capture-pane`, `send-keys`, attach/detach.
-- PTY probe: use a short Python, Node, or Expect script when tmux is unavailable.
-- Runtime inspector: use Node or Bun inspector for CPU profiles, heap snapshots, and live evaluation.
-- Terminal recorder: use repo-local demo tools or asciinema-compatible tools when the user asks for a demo.
+## 測試框架迴圈
 
-## Minimal tmux Harness
+1. 識別待測試的命令以及最小的可重現工作區。
+2. 發現現有的本地測試框架：套件指令碼、端到端測試、示範錄製器、expect 指令碼或 PTY 輔助工具。
+3. 若不存在測試框架，請在隔離的終端機會話中啟動 CLI，並使用確定性的環境變數。
+4. 在進行互動之前，擷取目前的螢幕畫面。
+5. 一次傳送一個動作：文字、Enter、方向鍵、Escape、Ctrl-C、調整大小。
+6. 在執行下一個動作之前，等待出現具體的螢幕模式或提示。
+7. 儲存記錄以及任何分析產出物。
+8. 乾淨地終止會話。
+
+<a id="harness-options"></a>
+
+## 測試框架選項
+
+- 儲存庫原生測試框架：優先使用已簽入的指令碼，因為它們瞭解應用程式的啟動、環境和提示。
+- `tmux`：管理會話、`capture-pane`、`send-keys`、附加/分離。
+- PTY 偵測：當 tmux 不可用時，使用簡短的 Python、Node 或 Expect 指令碼。
+- 執行時檢查器：使用 Node 或 Bun 檢查器進行 CPU 分析、堆積快照和即時評估。
+- 終端機錄製器：當使用者要求示範時，使用儲存庫本地的示範工具或相容於 asciinema 的工具。
+
+<a id="minimal-tmux-harness"></a>
+
+## 最小 tmux 測試框架
 
 ```bash
 SESSION="cli-harness-$(date +%s)"
@@ -45,17 +55,19 @@ tmux capture-pane -pt "$SESSION"
 tmux kill-session -t "$SESSION"
 ```
 
-For Node CLIs:
+對於 Node CLI：
 
 ```bash
 NODE_OPTIONS="--inspect=127.0.0.1:0" tmux new-session -d -s "$SESSION" -- <node-cli-command>
 ```
 
-Read the terminal output to find the inspector URL, then use Chrome DevTools-compatible tooling if profiling is needed.
+讀取終端機輸出以找到檢查器 URL，若需要分析，請使用相容於 Chrome DevTools 的工具。
 
-## Minimal PTY Harness
+<a id="minimal-pty-harness"></a>
 
-Use a PTY script when you need deterministic waits in a repo that does not have tmux or a demo harness. Keep it temporary unless the user asks to add a reusable test.
+## 最小 PTY 測試框架
+
+當需要在沒有 tmux 或示範測試框架的儲存庫中進行確定性等待時，請使用 PTY 指令碼。除非使用者要求新增可重用的測試，否則請保持其為暫時性的。
 
 ```python
 import os
@@ -91,19 +103,23 @@ proc.terminate()
 os.close(master_fd)
 ```
 
-If the CLI needs richer terminal control, use `pty.fork()` or an existing PTY library.
+若 CLI 需要更豐富的終端機控制，請使用 `pty.fork()` 或現有的 PTY 函式庫。
 
-## Profiling Recipes
+<a id="profiling-recipes"></a>
 
-- Startup regression: capture baseline and treatment startup timings under the same machine, env, and command.
-- Slow operation: start a CPU profile, perform the operation, stop the profile, and compare top self-time functions.
-- Memory leak: force GC if available, take a heap snapshot, perform the operation repeatedly, force GC again, and take another snapshot.
-- Hang: capture the screen, active handles/resources, and a stack/CPU sample before interrupting.
+## 分析配方
 
-## Guardrails
+- 啟動回歸：在相同的機器、環境和命令下，擷取基準和處理後的啟動時間。
+- 緩慢操作：啟動 CPU 分析，執行該操作，停止分析，並比較頂層自我時間函式。
+- 記憶體洩漏：若可用，強制執行 GC，取得堆積快照，重複執行該操作，再次強制執行 GC，並取得另一個快照。
+- 掛起：在中斷之前，擷取螢幕、活動的處理常式/資源以及堆疊/CPU 樣本。
 
-- Prefer deterministic waits over sleeps. If you must sleep, explain why.
-- Do not send credentials or destructive commands into a controlled session.
-- Keep the harness in `/tmp` unless the repo already has a testing/demo harness.
-- Do not hard-code paths from another repository. Adapt commands to the current repo's scripts and runtime.
-- Clean up tmux sessions, temp dirs, inspector processes, and demo artifacts unless the user asks to keep them.
+<a id="guardrails"></a>
+
+## 防護措施
+
+- 優先使用確定性等待而非睡眠。若必須使用睡眠，請說明原因。
+- 不要將憑證或破壞性命令傳送至受控會話中。
+- 除非儲存庫已有測試或示範測試框架，否則請將測試框架保留在 `/tmp` 中。
+- 不要硬編碼來自其他儲存庫的路徑。請根據目前儲存庫的指令碼和執行時環境調整命令。
+- 除非使用者要求保留，否則請清理 tmux 會話、暫存資料夾、檢查器程式以及示範產出物。

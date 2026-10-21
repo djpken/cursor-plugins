@@ -1,25 +1,27 @@
-### Perf issue
+<a id="perf-issue"></a>
 
-**You own the measurement story. Plan, review, verify the numbers.** Tie every fix to a measurement, don't read source instead of measuring.
+### 效能問題
 
-1. Capture a baseline trace via the matching control skill. Vet the baseline, and each later number, with the **benchmark-checklist** skill.
-2. `how` to ground hypotheses. Don't claim a perf ceiling without running it first.
-   Try the performance mantras in order, cheapest first:
-   1. Don't do it. Stop work whose result nothing uses rather than cheapening it.
-   2. Do it, but don't do it again.
-   3. Do it less.
-   4. Do it later.
-   5. Do it when they're not looking.
-   6. Do it concurrently.
-   7. Do it cheaper.
+**你負責整個測量流程。規劃、審核、驗證數字。** 每個修正都要與測量結果連結，不要只讀程式碼而不實際測量。
 
-   When an earlier mantra meets the target, stop.
-3. Plan the fix from the trace. If it crosses a function boundary, `architect` first. Delegate implementation to a subagent using your configured perf-issue model (default `grok-4.7-xhigh-fast`). Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section. Review the diff. Capture a post-fix trace.
-   Apply the **sequence-verifiable-units** principle skill, verifying each attempt before trying the next.
-4. Parse and compare the artifacts (JSON to sqlite, diff). "Inconclusive" or wrong-surface is not a pass. Flag it.
-5. Cite the measurement in the PR.
-6. Run **Opening a PR**.
+1. 透過相符的控制技能捕捉基準追蹤。使用 **benchmark-checklist** 技能審核基準以及每個後續數字。
+2. 使用 `how` 來建立假設。不要先宣稱效能上限，除非先執行它。
+   依序嘗試效能原則，先嘗試最便宜的：
+   1. 不要做。停止那些結果無人使用的工作，而不是降低成本。
+   2. 做，但不要重做。
+   3. 做得更少。
+   4. 做得更晚。
+   5. 在他們不注意時做。
+   6. 同時進行。
+   7. 做得更便宜。
 
-For sustained improvement against a metric rather than a one-off fix, use the Hillclimb playbook (`playbooks/hillclimb.md`).
+   當較早的原則達到目標時，停止。
+3. 從追蹤結果規劃修正。如果跨越函式邊界，先使用 `architect`。委派實作給子代理，使用你設定的效能問題模型（預設 `grok-4.7-xhigh-fast`）。根據子代理章節，選擇每個子代理的推理等級以及快速或標準速度。審核差異。捕捉修正後的追蹤結果。
+   應用 **sequence-verifiable-units** 原則技能，在嘗試下一步之前驗證每個嘗試。
+4. 解析並比較產出（JSON 到 sqlite、差異）。「無法確定」或錯誤的層面不算透過。標記它。
+5. 在 PR 中引用測量結果。
+6. 執行 **Opening a PR**。
 
-**Reply:** baseline number, post-fix number, delta, artifact path.
+針對指標的持續改善而非一次性修正，使用 Hillclimb 操作手冊（`playbooks/hillclimb.md`）。
+
+**回應：** 基準數字、修正後數字、差異、產出路徑。

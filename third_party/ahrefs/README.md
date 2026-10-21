@@ -1,16 +1,18 @@
 # Ahrefs
 
-Cursor plugin that connects agents to [Ahrefs](https://ahrefs.com) through Ahrefs's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Ahrefs 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器，將代理連線到 [Ahrefs](https://ahrefs.com)。
 
-Query live Ahrefs SEO data — backlinks, keyword metrics, rank tracking, and site audits — from the signed-in Ahrefs account.
+從已登入的 Ahrefs 帳戶查詢最新的 Ahrefs SEO 資料：反向連結、關鍵字指標、排名追蹤與網站稽核。
 
-## Install
+<a id="install"></a>
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Ahrefs**.
-3. Click **Install**, then complete the Ahrefs sign-in prompt.
+## 安裝
 
-Or run `/add-plugin ahrefs` in chat.
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Ahrefs**。
+3. 點選 **安裝**，然後完成 Ahrefs 登入提示。
+
+或在聊天中執行 `/add-plugin ahrefs`。
 
 ## MCP
 
@@ -25,39 +27,49 @@ Or run `/add-plugin ahrefs` in chat.
 }
 ```
 
-Auth is OAuth. Cursor prompts for Ahrefs sign-in when the plugin connects, and the consent screen mints an MCP-scoped key on the Ahrefs side. Leave any OAuth client ID and secret blank.
+驗證方式為 OAuth。當外掛連線時，Cursor 會提示 Ahrefs 登入，同意畫面會在 Ahrefs 端產生 MCP 範圍的金鑰。請將任何 OAuth 客戶端 ID 與金鑰留為空白。
 
-## Before you connect
+<a id="before-you-connect"></a>
 
-You need a paid Ahrefs plan (Lite or higher). MCP calls consume the plan's Integration API units, and the row cap per response scales with the tier — 100 on Lite, 250 on Standard, 500 on Advanced, unlimited on Enterprise.
+## 連線前
 
-## What agents can do
+您需要付費的 Ahrefs 方案（Lite 或更高）。MCP 呼叫會消耗方案的 Integration API 單位，每個回應的資料行上限會隨等級調整：Lite 為 100，Standard 為 250，Advanced 為 500，Enterprise 為無限制。
 
-| Category | Capabilities |
+<a id="what-agents-can-do"></a>
+
+## 代理可執行的工作
+
+| 分類 | 功能 |
 | --- | --- |
-| Site Explorer | Backlink profiles, referring domains, organic traffic, and top pages |
-| Keywords Explorer | Keyword metrics, matching terms, and SERP overviews |
-| Rank Tracker | Tracked keyword positions and visibility over time |
-| Site Audit | Crawl results and technical SEO issues |
+| Site Explorer | 反向連結資料、來源域名、自然流量與熱門頁面 |
+| Keywords Explorer | 關鍵字指標、相關詞彙與 SERP 概覽 |
+| Rank Tracker | 追蹤關鍵字排名與長期可見度 |
+| Site Audit | 爬取結果與技術 SEO 問題 |
 
-The hosted runtime is the source of truth for tool names and schemas.
+託管執行環境是工具名稱與結構的來源真相。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run as the Ahrefs user who authorizes the connection and consume that account's API units.
-- Ahrefs MCP keys and API v3 keys are separate and not interchangeable. The OAuth consent screen mints the MCP-scoped key for you; you can also generate one under **Account Settings → API Keys → Generate MCP key** and skip OAuth by sending it as `"headers": {"Authorization": "Bearer <MCP_KEY>"}` instead.
-- The `@ahrefs/mcp` npm package is Ahrefs' old local server, and Ahrefs no longer supports local setup at all: "Local MCP setup is no longer supported. We only support remote MCP server for now."
+## 注意事項
 
-## Docs
+- 工具呼叫會以授權連線的 Ahrefs 使用者身份執行，並消耗該帳戶的 API 單位。
+- Ahrefs MCP 金鑰與 API v3 金鑰是分開的，無法互相替代。OAuth 同意畫面會自動產生 MCP 範圍的金鑰；您也可以在 **帳戶設定 → API 金鑰 → 產生 MCP 金鑰** 下自行產生，並以 `"headers": {"Authorization": "Bearer <MCP_KEY>"}` 傳送來跳過 OAuth。
+- `@ahrefs/mcp` npm 套件是 Ahrefs 舊的本地伺服器，Ahrefs 已不再支援本地設定：「本地 MCP 設定不再支援。我們目前僅支援遠端 MCP 伺服器。」
 
-- Ahrefs MCP: https://ahrefs.com/mcp
-- Getting started with Ahrefs MCP: https://help.ahrefs.com/en/articles/13913559-getting-started-with-ahrefs-mcp
-- Ahrefs for Developers: https://docs.ahrefs.com/
-- Connection settings (Copilot Studio): https://docs.ahrefs.com/mcp/docs/copilot-studio
-- Server URL: https://api.ahrefs.com/mcp/mcp
+<a id="docs"></a>
 
-Logo is Ahrefs's official mark, from the `ahrefs` GitHub organization.
+## 文件
 
-## License
+- Ahrefs MCP：https://ahrefs.com/mcp
+- Ahrefs MCP 入門指南：https://help.ahrefs.com/en/articles/13913559-getting-started-with-ahrefs-mcp
+- Ahrefs 開發者資源：https://docs.ahrefs.com/
+- 連線設定（Copilot Studio）：https://docs.ahrefs.com/mcp/docs/copilot-studio
+- 伺服器 URL：https://api.ahrefs.com/mcp/mcp
+
+標誌是 Ahrefs 的官方標誌，來自 `ahrefs` GitHub 組織。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

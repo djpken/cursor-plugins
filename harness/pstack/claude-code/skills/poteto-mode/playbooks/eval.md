@@ -1,25 +1,27 @@
-### Eval
+<a id="eval"></a>
 
-**You own the experiment design. Plan, blind, run, synthesize.**
+### 評估
 
-**Non-negotiables for blinding:**
+**您擁有實驗設計。規劃、盲測、執行、綜合分析。**
 
-- No `eval`, `test`, `judge`, `experiment`, `rubric`, `score`, `compare`, `benchmark`, `candidate`, or `arena` in any directory, file, or prompt the candidate sees.
-- The candidate prompt looks like an organic user request. State the goal, not the meta.
-- No chain-eliciting cues. Don't ask the candidate to list which skills, principles, or files they applied. Ask for design notes generally and grade chain-following from code shape, not self-report.
-- Sanitize directory and slug names. Use project-shaped names a user might pick.
-- Don't tell the candidate other candidates exist.
-- The judge can know it's judging but sees outputs by sanitized label only, never by model name.
-- Comparing two variants: one judge scores both sets in a single pass on one scale, blind to which set each came from.
+**盲測的不可妥協條件：**
 
-**Steps:**
+- 在候選者看到的任何目錄、檔案或提示中，不得包含 `eval`、`test`、`judge`、`experiment`、`rubric`、`score`、`compare`、`benchmark`、`candidate` 或 `arena`。
+- 候選者的提示看起來像是自然的使用者請求。說明目標，而非實驗的層級。
+- 不要提供誘導鏈的提示。不要要求候選者列出他們使用了哪些技能、原則或檔案。一般性地詢問設計說明，並從程式碼的形態評分鏈的遵循程度，而非自我報告。
+- 清理目錄和 slug 名稱。使用使用者可能選擇的具有專案形態的名稱。
+- 不要告訴候選者還有其他候選者存在。
+- 評審可以知道它正在評審，但只能看到以清理過的標籤標示的輸出，永遠不能看到模型名稱。
+- 比較兩個變體：一個評審在單次評分中對兩組進行評分，使用同一尺度，且不知道每組來自哪個變體。
 
-1. **Frame.** State what variant is under test and what behavior counts as success. Write the rubric (3-6 concrete criteria) for the judge only. Hold it back from candidates.
-2. **Set up sanitized environments.** Per-candidate working dir with the variant in place. Plant any context an organic task would have: a project skeleton, the skills the candidate would naturally read.
-3. **Author one organic prompt.** What a user would type. No leakage of what's being measured.
-4. **Spawn N parallel candidates** on different models per the **arena** skill's Phase B. Each works in its own sanitized dir. Same prompt to each. Pick each subagent's reasoning level and fast or standard speed for the job, per the Subagents section.
-5. **Spawn one blinded judge** on a different model family per the **arena** skill's Phase C. Judge sees outputs by sanitized label and the rubric, never a model name.
-6. **Verify the chain from transcripts, not self-report.** Read each candidate's local transcript under the active workspace's `agent-transcripts/` directory (the system prompt names this path). Do not glob across `~/.cursor/projects/*/`. That crosses workspace boundaries and reads private chats from unrelated projects. Look at which files each candidate actually opened. Grade chain-following from the files it really read plus the shape of the code, never from the candidate's own claims.
-7. **Read every candidate output yourself** end to end. Compare to the judge's verdict. Disagreement means a model is biased or the rubric is ambiguous. Synthesize.
+**步驟：**
 
-**Reply:** variant under test, rubric, per-candidate notes, judge's verdict, your synthesis, and a recommendation for whether to promote the variant.
+1. **框架。** 說明正在測試的變體以及哪些行為構成成功。僅為評審撰寫評分標準（3-6 個具體標準）。將其保留，不提供給候選者。
+2. **設定清理過的環境。** 每個候選者有一個工作目錄，並放置變體。植入一個自然任務會擁有的任何上下文：專案骨架、候選者自然會閱讀的技能。
+3. **撰寫一個自然的提示。** 使用者會輸入的內容。不洩露正在測量的內容。
+4. **根據 arena 技能的 Phase B，在不同模型上啟動 N 個平行候選者。** 每個候選者在自己的清理目錄中工作。對每個候選者使用相同的提示。根據 Subagents 部分，選擇每個子代理的推理層級以及快速或標準速度。
+5. **根據 arena 技能的 Phase C，啟動一個盲測評審，使用不同的模型家族。** 評審看到以清理過的標籤標示的輸出和評分標準，永遠看不到模型名稱。
+6. **從記錄驗證鏈，而非自我報告。** 在活動工作區的 `agent-transcripts/` 目錄下閱讀每個候選者的本地記錄（系統提示會命名此路徑）。不要跨 `~/.cursor/projects/*/` 進行全域搜尋。這會跨越工作區邊界並讀取來自不相關專案的私人聊天。檢視每個候選者實際開啟的檔案。從它真正讀取的檔案以及程式碼的形態評分鏈的遵循程度，永遠不從候選者自身的宣告評分。
+7. **親自閱讀每個候選者的輸出，從頭到尾。** 與評審的判定進行比較。不一致意味著模型有偏見或評分標準含糊。綜合分析。
+
+**回覆：** 正在測試的變體、評分標準、每個候選者的說明、評審的判定、您的綜合分析，以及關於是否推廣該變體的建議。

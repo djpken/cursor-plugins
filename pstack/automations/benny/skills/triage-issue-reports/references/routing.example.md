@@ -1,8 +1,10 @@
-# Routing map example
+<a id="routing-map-example"></a>
 
-Copy this file outside `.cursor/automations/benny/`, for example to `.cursor/benny/routing.md`, and replace every placeholder. Point `routing.map_path` at the copy. Pack refreshes must not overwrite it.
+# 路由地圖範例
 
-The triage skill treats this as data. A route needs evidence from the report or cause trace. A keyword match alone is not enough.
+將此檔案複製到 `.cursor/automations/benny/` 之外，例如複製到 `.cursor/benny/routing.md`，並取代所有佔位符。將 `routing.map_path` 指向該複製檔。Pack 更新時不得覆寫此檔案。
+
+分診 skill 將此視為資料。路由需要來自報告或原因追蹤的證據。僅憑關鍵字比對並不足夠。
 
 ```yaml
 routes:
@@ -51,11 +53,13 @@ ping_policy:
     - "unverified-owner"
 ```
 
-## Rules
+<a id="rules"></a>
 
-- Leave `fallback.destination` empty unless one team accepts all unmatched reports.
-- Use stable product areas, code paths, and error signatures.
-- Do not include private data in a public copy.
-- Do not paste raw user or channel IDs into an example that will be published.
-- Keep feature-owner pings off until the target team agrees to them.
-- A reroute tells the reporter where to go. The automation never cross-posts.
+## 規則
+
+- 除非有一個團隊接受所有未匹配的報告，否則請將 `fallback.destination` 留空。
+- 使用穩定的產品領域、程式碼路徑與錯誤特徵。
+- 請勿在公開複製檔中包含私人資料。
+- 請勿將原始的使用者或頻道 ID 貼上到即將發布的範例中。
+- 在目標團隊同意之前，請保持功能負責人通知功能關閉。
+- 重新路由會告知報告者應前往哪裡。自動化系統絕不會交叉發布。

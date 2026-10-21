@@ -1,54 +1,66 @@
 ---
 name: docs-canvas
 description: >-
-  Render a documentation-style Cursor Canvas that organizes architecture
-  notes, API references, walkthroughs, and how-tos into a navigable layout
-  with sections, tables of contents, and cross-references. Use when the
-  user asks for a docs canvas, documentation overview, architecture
-  walkthrough, API reference page, or wants to render structured
-  documentation as an interactive canvas.
+  渲染一個檔案風格的 Cursor Canvas，將架構
+  筆記、API 參考、操作指南與教學內容組織成可導覽的版面
+  包含章節、目錄與交叉參考。當
+  使用者要求檔案畫布、檔案概觀、架構
+  導覽、API 參考頁面，或希望將結構化
+  檔案渲染為互動式畫布時使用。
 ---
 
 # Docs Canvas
 
-Build a canvas that presents documentation — architecture notes, API references, design docs, runbooks, or codebase walkthroughs — as an interactive, navigable surface rather than as a flat markdown file.
+建立一個畫布，將檔案（架構筆記、API 參考、設計檔案、操作手冊或程式碼庫導覽）呈現為互動式、可導覽的介面，而非平坦的 markdown 檔案。
 
-> **Status:** placeholder. The skill structure is in place so the canvas
-> welcome page can surface this plugin via the marketplace query, but the
-> full skill body still needs to be written. Treat the steps below as a
-> starting outline and refine as the docs canvas pattern matures.
+> **狀態：** 佔位符。此 skill 結構已就位，以便畫布
+> 歡迎頁面能透過 marketplace 查詢顯示此 plugin，但
+> 完整的 skill 內容仍需撰寫。請將以下步驟視為
+> 起始大綱，並隨著 docs canvas 模式的成熟而調整。
 
-## Prerequisites
+<a id="prerequisites"></a>
 
-Read `~/.cursor/skills-cursor/canvas/SKILL.md` first. It contains the generation policy, design guidance, slop rules, self-check, and file-path conventions you must follow. The full component and hook surface is declared in `~/.cursor/skills-cursor/canvas/sdk/index.d.ts` and its sibling `.d.ts` files — read them to discover exact exports and prop shapes rather than guessing.
+## 先決條件
 
-## Gather the source material
+先閱讀 `~/.cursor/skills-cursor/canvas/SKILL.md`。其中包含您必須遵循的生成策略、設計指引、slop 規則、自我檢查與檔案路徑慣例。完整的元件與 hook 介面宣告於 `~/.cursor/skills-cursor/canvas/sdk/index.d.ts` 及其同級 `.d.ts` 檔案中，請閱讀這些檔案以發現確切的匯出與 prop 結構，而非憑猜測。
 
-Accept any of: a directory of markdown files, a single doc URL, an inline outline, or a question to answer from the codebase. Collect headings, code blocks, diagrams, and any cross-references between documents.
+<a id="gather-the-source-material"></a>
 
-## Plan the canvas layout
+## 收集來源素材
 
-Decide the top-level structure before writing any components. A docs canvas usually has:
+接受以下任一形式：markdown 檔案目錄、單一檔案 URL、內嵌大綱，或需從程式碼庫回答的問題。收集標題、程式碼區塊、圖表，以及檔案間的交叉參考。
 
-1. **Overview** — A short summary card with the purpose of the doc, scope, and audience.
-2. **Table of contents** — Navigable list of sections, ideally pinned or sticky so the reader can jump around.
-3. **Body sections** — One section per logical unit (architecture, API, examples, gotchas). Each section can mix prose, code blocks, diagrams, and callouts.
-4. **References** — Links to related docs, source files, RFCs, and external material.
+<a id="plan-the-canvas-layout"></a>
 
-## Render with canvas primitives
+## 規劃畫布版面
 
-Prefer built-in canvas components over raw HTML:
+在撰寫任何元件之前，先決定頂層結構。Docs canvas 通常包含：
 
-- Use cards/sections to group related content visually.
-- Use code blocks with syntax highlighting for snippets.
-- Use diagrams (DAG layout, mermaid) for architecture.
-- Use callouts for "Important", "Warning", "Note", "Deprecated".
-- Use tables for API parameter lists and option matrices.
+1. **概觀**：簡短摘要卡片，說明檔案目的、範圍與目標受眾。
+2. **目錄**：可導覽的章節清單，理想上應固定或黏著，讓讀者可以快速跳轉。
+3. **正文章節**：每個邏輯單元（架構、API、範例、注意事項）對應一個章節。每個章節可混合散文、程式碼區塊、圖表與提示框。
+4. **參考資料**：連結至相關檔案、來源檔案、RFC 與外部素材。
 
-## Tone and content
+<a id="render-with-canvas-primitives"></a>
 
-Write reader-facing prose. Lead with the answer or the headline, then explain. Keep examples small and runnable. Cite source files with `code references` so readers can jump in.
+## 使用畫布原語渲染
 
-## Be creative
+優先使用內建畫布元件，而非原始 HTML：
 
-The sections above are a floor, not a ceiling. The goal is the fastest possible path for the reader to understand the topic — so look at the source material in front of you and ask what representation would actually help. A diagram, a sequence chart, a side-by-side comparison, a decision tree, a glossary, a curated FAQ, a single large worked example — whatever fits.
+- 使用卡片/章節在視覺上分組相關內容。
+- 使用具語法高亮的程式碼區塊顯示程式碼片段。
+- 使用圖表（DAG 佈局、mermaid）呈現架構。
+- 使用提示框標示「重要」、「警告」、「注意」、「已棄用」。
+- 使用表格呈現 API 引數清單與選項矩陣。
+
+<a id="tone-and-content"></a>
+
+## 語氣與內容
+
+撰寫面向讀者的散文。先給出答案或標題，再進行說明。保持範例簡短且可執行。引用來源檔案時使用 `code references`，讓讀者可以快速跳轉。
+
+<a id="be-creative"></a>
+
+## 發揮創意
+
+上述章節是下限，而非上限。目標是讓讀者以最快的速度理解主題，因此請檢視眼前的來源素材，並思考哪種呈現方式真正有幫助。圖表、時序圖、並排比較、決策樹、詞彙表、精選 FAQ、單一大型實作範例，任何適合的形式皆可。

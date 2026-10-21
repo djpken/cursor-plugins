@@ -1,18 +1,24 @@
 ---
 name: pr-review-canvas
 disable-model-invocation: true
-description: Generate an interactive PR review walkthrough as an HTML page. Fetches PR data via gh API, categorizes files into core vs mechanical changes, adds reviewer annotations, and renders diffs with moved-code detection. Use when the user pastes a GitHub PR URL and asks for a review, walkthrough, or summary, or says "review this PR".
+description: "產生一個互動式 PR 審查導覽 HTML 頁面。透過 gh API 擷取 PR 資料，將檔案分類為核心變更與機械式變更，加入審查者註解，並呈現包含移動程式碼偵測的 diff。當使用者貼上 GitHub PR URL 並要求審查、導覽或摘要，或說「審查這個 PR」時使用。"
 ---
 
-# PR Review Canvas
+<a id="pr-review-canvas"></a>
 
-Generate an interactive HTML review of a GitHub PR that reads like a peer walking you through what matters.
+# PR 審查畫布
 
-## Workflow
+產生一個互動式 HTML 審查頁面，內容如同同事在向你說明 GitHub PR 中重要的部分。
 
-### 1. Fetch PR data
+<a id="workflow"></a>
 
-Run these `gh api` calls in parallel:
+## 工作流程
+
+<a id="1-fetch-pr-data"></a>
+
+### 1. 擷取 PR 資料
+
+並行執行這些 `gh api` 呼叫：
 
 ```bash
 gh api repos/{owner}/{repo}/pulls/{number} --jq '{title, body, user: .user.login, state, additions, deletions, changed_files, base: .base.ref, head: .head.ref}'
@@ -20,27 +26,29 @@ gh api repos/{owner}/{repo}/pulls/{number}/files --paginate --jq '.[] | {filenam
 gh api repos/{owner}/{repo}/pulls/{number}/comments --jq '.[] | {user: .user.login, body, path, line}'
 ```
 
-### 2. Analyze the PR and write the body HTML
+<a id="2-analyze-the-pr-and-write-the-body-html"></a>
 
-Read the diffs, understand the PR, and write the `<body>` content directly as HTML. You have full creative freedom -- the goal is to explain the PR clearly to a reviewer. Use whatever structure best fits the PR.
+### 2. 分析 PR 並撰寫主體 HTML
 
-**Typical structure** (adapt as needed):
-- Header with title, PR number, author, stats
-- Summary box explaining what the PR does in plain English
-- Core file sections with annotations and diffs
-- Mechanical/boilerplate files collapsed by default
-- Review checklist at the bottom
+閱讀 diff，理解 PR，並直接以 HTML 撰寫 `<body>` 內容。你擁有完全的創作自由，目標是向審查者清楚說明 PR。使用最適合該 PR 的結構。
 
-**But you can also add:**
-- **Pseudocode summaries** for verbose code -- show the algorithm in plain English or short pseudocode, with the real diff collapsed below (use a `.bp-section` card labeled "Show full implementation"). Great when 150 lines of retry/backoff/error-handling code is really just "fetch with exponential backoff and circuit breaker."
-- Diagrams (inline SVG, mermaid via CDN, ASCII art in `<pre>`)
-- Flowcharts showing before/after control flow
-- Tables comparing old vs new behavior
-- Callout boxes for warnings, questions, or gotchas
-- Interactive widgets if they help
-- Anything else that makes the review clearer
+**典型結構**（視需要調整）：
+- 包含標題、PR 編號、作者與統計資料的頁首
+- 用白話文解釋 PR 內容的摘要框
+- 包含註解與 diff 的核心檔案區段
+- 預設摺起的機械式或樣板檔案
+- 底部的審查檢查清單
 
-**Pseudocode pattern example:**
+**你也可以加入：**
+- **偽程式碼摘要** 用於冗長的程式碼，以白話文或簡短偽程式碼展示演演算法，並將實際 diff 摺起在下方（使用標記為「顯示完整實作」的 `.bp-section` 卡片）。當 150 行的重試、退避或錯誤處理程式碼其實只是「使用指數退避與斷路器的擷取」時，這非常實用。
+- 圖表（內嵌 SVG、透過 CDN 的 mermaid、`<pre>` 中的 ASCII 藝術）
+- 顯示變更前後控制流程的流程圖
+- 比較舊版與新版行為的表格
+- 用於警告、問題或注意事項的提示框
+- 有助理解的互動元件
+- 任何讓審查更清楚的其他內容
+
+**偽程式碼範例：**
 ```html
 <div class="file-card">
   <div class="file-hdr" onclick="toggle(this)">
@@ -70,48 +78,50 @@ fetch(url):
 </div>
 ```
 
-### 3. Available CSS classes and JS utilities
+<a id="3-available-css-classes-and-js-utilities"></a>
 
-Read [styles.css](styles.css) and [renderer.js](renderer.js) from this skill directory. These give you a prebuilt dark-themed toolkit. Inject them into [template.html](template.html) verbatim.
+### 3. 可用的 CSS 類別與 JS 工具
 
-**CSS classes you can use:**
+從這個 skill 目錄讀取 [styles.css](styles.css) 和 [renderer.js](renderer.js)。這些提供預先建置的深色主題工具包。將它們原封不動地注入 [template.html](template.html)。
 
-| Class | Purpose |
+**可用的 CSS 類別：**
+
+| 類別 | 用途 |
 |-------|---------|
-| `.header`, `.header h1`, `.header-meta` | Page header |
-| `.pill.add`, `.pill.del`, `.pill.files` | Stat badges (+N, -N, N files) |
-| `.content` | Centered content wrapper (max 900px) |
-| `.summary` | Summary/TL;DR box |
-| `.section-title` | Section heading with bottom border |
-| `.ic` | Inline code reference (mono, blue, dark bg) |
-| `.file-card`, `.file-hdr`, `.file-body` | Collapsible file card (use `onclick="toggle(this)"` on `.file-hdr`) |
-| `.file-note` | Sticky reviewer annotation inside a file card |
-| `.bp-section`, `.bp-hdr`, `.bp-body` | Collapsed boilerplate card (use `onclick="toggleBP(this)"`) |
-| `.bp-note` | Note inside a boilerplate card |
-| `.verdict` | Review checklist box |
+| `.header`, `.header h1`, `.header-meta` | 頁面頁首 |
+| `.pill.add`, `.pill.del`, `.pill.files` | 統計徽章（+N, -N, N 個檔案） |
+| `.content` | 置中內容包裝器（最大 900px） |
+| `.summary` | 摘要或 TL;DR 框 |
+| `.section-title` | 帶有底邊框的區段標題 |
+| `.ic` | 行內程式碼參考（等寬字型、藍色、深色背景） |
+| `.file-card`, `.file-hdr`, `.file-body` | 可摺起的檔案卡片（在 `.file-hdr` 上使用 `onclick="toggle(this)"`） |
+| `.file-note` | 檔案卡片內的固定審查者註解 |
+| `.bp-section`, `.bp-hdr`, `.bp-body` | 摺起的樣板卡片（使用 `onclick="toggleBP(this)"`） |
+| `.bp-note` | 樣板卡片內的註記 |
+| `.verdict` | 審查檢查清單框 |
 
-**JS functions available:**
+**可用的 JS 函式：**
 
-| Function | Usage |
+| 函式 | 用法 |
 |----------|-------|
-| `toggle(hdrElement)` | Toggle a `.file-body` open/closed |
-| `toggleBP(hdrElement)` | Toggle a `.bp-body` open/closed |
-| `renderDiff(target, diffInput)` | Render a unified diff. `target` can be a DOM element, string ID, or CSS selector. `diffInput` can be a raw patch string OR an array of lines -- both work. Automatically filters imports, collapses whitespace-only changes, detects moved code (blue/purple tint). |
-| `esc(string)` | HTML-escape a string |
+| `toggle(hdrElement)` | 切換 `.file-body` 的開啟或關閉狀態 |
+| `toggleBP(hdrElement)` | 切換 `.bp-body` 的開啟或關閉狀態 |
+| `renderDiff(target, diffInput)` | 呈現統一 diff。`target` 可以是 DOM 元素、字串 ID 或 CSS 選擇器。`diffInput` 可以是原始 patch 字串或行陣列，兩者皆可。自動過濾 import、摺起僅空白變更，並偵測移動的程式碼（藍色或紫色色調）。 |
+| `esc(string)` | HTML 轉義字串 |
 
-**Rendering diffs -- use `data-diff` attributes with auto-discovery.**
-Put `<div data-diff="KEY"></div>` placeholders in your body HTML wherever you want a diff rendered. The renderer finds them automatically after DOM load and fills them from the `<script id="pr-diffs-json" type="application/json">` element in `template.html`.
+**呈現 diff，使用 `data-diff` 屬性進行自動偵測。**
+在你想呈現 diff 的主體 HTML 位置放置 `<div data-diff="KEY"></div>` 佔位符。渲染器會在 DOM 載入後自動找到它們，並從 `template.html` 中的 `<script id="pr-diffs-json" type="application/json">` 元素填入內容。
 
-**CRITICAL: Patch strings can contain `</script>` in addition to newlines, backslashes, and quotes.** Even `json.dumps(...)` is not enough if you paste raw output into executable `<script>` because HTML parsing can terminate the tag early. Never manually embed patch strings in JS/JSON. Instead, use this safe approach:
+**重要：Patch 字串除了換行、反斜線和引號外，還可能包含 `</script>`。** 如果你將原始輸出貼入可執行的 `<script>`，即使有 `json.dumps(...)` 也不夠，因為 HTML 解析可能提前終止標籤。切勿手動將 patch 字串嵌入 JS 或 JSON。請改用以下安全方法：
 
-1. During the fetch step, save patches to a JSON file using `jq` (which handles escaping correctly):
+1. 在擷取步驟中，使用 `jq` 將 patch 儲存到 JSON 檔案（它能正確處理轉義）：
 ```bash
 gh api repos/{owner}/{repo}/pulls/{number}/files --paginate \
   --jq '[.[] | {key: (.filename | gsub("[^a-zA-Z0-9]"; "_")), value: (.patch // "")}] | from_entries' \
   > /tmp/pr-patches-{number}.json
 ```
 
-2. During assembly, use Python to safely inject the JSON into `template.html`:
+2. 在組裝期間，使用 Python 安全地將 JSON 注入 `template.html`：
 ```bash
 python3 <<'PY'
 import json
@@ -137,40 +147,46 @@ Path('/tmp/pr-review-{number}.html').write_text(out)
 PY
 ```
 
-This guarantees valid JSON and script-safe HTML embedding. The agent writes body HTML to a temp file, then Python assembles everything safely.
+這可確保有效的 JSON 與指令碼安全的 HTML 嵌入。Agent 將主體 HTML 寫入暫存檔案，然後 Python 安全地組裝所有內容。
 
-The diff data keys should match the `data-diff` attribute values in the HTML:
+Diff 資料的鍵應與 HTML 中的 `data-diff` 屬性值相符：
 ```html
 <div data-diff="path_to_file_ts"></div>
 ```
 
-Since renderer.js loads in `<head>`, you can also call `renderDiff(target, lines)` directly from inline `<script>` tags if needed for custom use cases. The function accepts a DOM element, ID string, or CSS selector as `target`, and a string or array as `lines`.
+由於 renderer.js 在 `<head>` 中載入，如有需要，你也可以從行內 `<script>` 標籤直接呼叫 `renderDiff(target, lines)` 以處理自訂用途。該函式接受 DOM 元素、ID 字串或 CSS 選擇器作為 `target`，並接受字串或陣列作為 `lines`。
 
-**You're not limited to these.** Add your own inline `<style>` blocks, `<script>` blocks, SVGs, diagrams, or anything else. The prebuilt pieces save time but don't constrain you.
+**你不受這些限制。** 加入你自己的行內 `<style>` 區塊、`<script>` 區塊、SVG、圖表或其他任何內容。預先建置的元件可節省時間，但不會限制你。
 
-### 4. Assemble and serve
+<a id="4-assemble-and-serve"></a>
 
-1. Write your body HTML (everything that goes inside `<body>`) to `/tmp/pr-review-{number}-body.html`
-2. Save patches to `/tmp/pr-patches-{number}.json` using the `jq` command from step 3 above
-3. Run the Python assembly script from step 3 above (reads styles.css, renderer.js, template.html from this skill directory, injects body + patches safely, writes final HTML)
-4. Start a local server on a fixed port:
+### 4. 組裝並提供服務
+
+1. 將你的主體 HTML（放入 `<body>` 內的所有內容）寫入 `/tmp/pr-review-{number}-body.html`
+2. 使用上述步驟 3 中的 `jq` 命令將 patch 儲存到 `/tmp/pr-patches-{number}.json`
+3. 執行上述步驟 3 中的 Python 組裝指令碼（從這個 skill 目錄讀取 styles.css、renderer.js、template.html，安全地注入主體與 patch，並寫入最終 HTML）
+4. 在固定埠啟動本地伺服器：
    ```bash
    cd /tmp && python3 -m http.server 8432 --bind 127.0.0.1
    ```
-   Run this backgrounded, then navigate the in-app browser to `http://127.0.0.1:8432/pr-review-{number}.html`.
+   在背景執行此命令，然後在應用程式內瀏覽器中導航至 `http://127.0.0.1:8432/pr-review-{number}.html`。
 
-   **Why a fixed port and `cd /tmp`:** Background shells have no TTY, so Python buffers its startup message ("Serving HTTP on...") indefinitely — using port 0 means you can never read which port was chosen. And `--directory /tmp` works but `cd /tmp` is more robust across Python versions. If port 8432 is taken, try 8433, 8434, etc.
+   **為什麼使用固定埠和 `cd /tmp`：** 背景 shell 沒有 TTY，因此 Python 會無限期緩衝其啟動訊息（「Serving HTTP on...」），使用埠 0 意味著你永遠無法讀取選擇了哪個埠。`--directory /tmp` 可行，但 `cd /tmp` 在不同 Python 版本中更穩健。如果埠 8432 被佔用，請嘗試 8433、8434 等。
 
-### Diff features (handled automatically by renderer.js)
+<a id="diff-features-handled-automatically-by-rendererjs"></a>
 
-- Filters out import-only lines
-- Collapses whitespace-only changes into context lines
-- Detects moved code blocks (3+ consecutive lines deleted in one place and added identically elsewhere) -- renders in blue/purple instead of red/green
-- Near-matches (moved + small edit) get a different purple tint
+### Diff 功能（由 renderer.js 自動處理）
 
-### Style notes
+- 過濾掉僅包含 import 的行
+- 將僅空白變更摺起為上下文行
+- 偵測移動的程式碼區塊（在一個位置刪除 3 行以上連續行，並在另一處以相同方式新增），以藍色或紫色呈現，而非紅色或綠色
+- 近似匹配（移動加小幅編輯）會使用不同的紫色色調
 
-- Dark theme: `#1a1a1a` background, Inter body font, IBM Plex Mono for code
-- Use `var(--warning)` for orange, `var(--success)` for green, `var(--danger)` for red, `var(--accent)` for blue
-- Sticky file headers (`position: sticky; top: 0`) and notes (`top: 35px`) pin while scrolling
-- Core files expanded by default (`.file-body.open`), mechanical files collapsed
+<a id="style-notes"></a>
+
+### 樣式說明
+
+- 深色主題：`#1a1a1a` 背景、Inter 正文字型、程式碼使用 IBM Plex Mono
+- 使用 `var(--warning)` 代表橙色、`var(--success)` 代表綠色、`var(--danger)` 代表紅色、`var(--accent)` 代表藍色
+- 固定檔案頁首（`position: sticky; top: 0`）和註記（`top: 35px`）在捲動時保持固定
+- 核心檔案預設展開（`.file-body.open`），機械式檔案預設摺起

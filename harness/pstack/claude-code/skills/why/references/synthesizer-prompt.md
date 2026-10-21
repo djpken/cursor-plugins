@@ -1,129 +1,163 @@
-# Synthesizer Prompt Template
+<a id="synthesizer-prompt-template"></a>
 
-Fill in the placeholders.
+# 合成器提示模板
+
+填入佔位符。
 
 ---
 
-You are answering a "why" question about a piece of code by synthesizing findings from investigators who searched different historical sources (source control, issue / ticket tracker, long-form documents, real-time team chat, infrastructure observability, error / exception tracking, product analytics warehouse, and code comments). Produce a confidence-weighted, evidence-cited narrative that says honestly what the evidence supports, and just as honestly what it doesn't.
+你正在回答關於一段程式碼的「為什麼」問題，透過整合調查人員從不同歷史來源（版本控制、問題／票證追蹤系統、長篇檔案、即時團隊聊天、基礎設施可觀測性、錯誤／例外追蹤、產品分析資料倉儲，以及程式碼評論）搜尋所得的結果。產出一個具信心權重、有證據引用的敘述，誠實說明證據支援什麼，也同樣誠實說明證據不支援什麼。
 
-## The Question
+<a id="the-question"></a>
+
+## 問題
 
 > {QUESTION}
 
-## The Code Anchor
+<a id="the-code-anchor"></a>
 
-**Target files:** {FILES_WITH_LINE_RANGES}
+## 程式碼錨點
 
-**Key symbols:** {SYMBOLS}
+**目標檔案：** {FILES_WITH_LINE_RANGES}
 
-## Investigator Findings
+**關鍵符號：** {SYMBOLS}
+
+<a id="investigator-findings"></a>
+
+## 調查人員發現
 
 {ALL_INVESTIGATOR_FINDINGS}
 
-## Sources That Weren't Searched
+<a id="sources-that-werent-searched"></a>
+
+## 未搜尋的來源
 
 {SKIPPED_SOURCES_WITH_REASONS}
 
-## Epistemics Framework
+<a id="epistemics-framework"></a>
 
-You MUST follow `references/epistemics.md`. Read it in full before writing. The key rules:
+## 知識論框架
 
-1. Every claim must sit in one tier: **Direct**, **Supported**, **Inferred**, **Speculative**, **Unknown**. The tier sets its section and its phrasing.
-2. Every Direct/Supported claim must have a citation (PR #, ticket ID, doc URL, chat permalink, commit hash, or file:line).
-3. Inferred and Speculative claims must use hedged language ("appears to", "likely", "suggests", "one possibility is").
-4. Never cite code as evidence for its own intent.
-5. Document gaps. Don't fill them with plausible-sounding guesses.
-6. Treat a hypothesis embedded in the user's question as a candidate, not a conclusion. Check it independently.
+你必須遵循 `references/epistemics.md`。在寫作之前完整閱讀它。關鍵規則：
 
-## Instructions
+1. 每個主張必須歸入一個層級：**直接**、**支援**、**推斷**、**臆測**、**未知**。該層級決定其段落與措辭。
+2. 每個直接／支援主張必須有引用（PR #、票證 ID、檔案 URL、聊天永久連結、commit 雜湊，或檔案:行號）。
+3. 推斷與臆測主張必須使用緩和的語言（「似乎」、「可能」、「暗示」、「一種可能性是」）。
+4. 絕不要引用程式碼作為其自身意圖的證據。
+5. 記錄缺口。不要用看似合理的猜測填補它們。
+6. 將使用者問題中嵌入的假說視為候選，而非結論。獨立檢查它。
 
-1. **Read all investigator findings** and weigh the evidence yourself. Investigators gathered raw evidence, not conclusions.
-2. **Merge overlaps.** When several investigators cite the same PR, ticket, or doc, give it one authoritative reference.
-3. **Surface contradictions.** When two items disagree, show both. Don't pick one.
-4. **Calibrate each claim.** Find its evidence and tier. Direct: cite it and state it plainly. Inferred: hedge it and show the inference. Speculative: mark it. No evidence: put it in the gaps.
-5. **Verify citations by spot-checking.** If you're uncertain a cited item exists or says what the investigator claims, check it by reading the codebase or calling MCP tools. Don't propagate errors. Do not write files, commit, or modify external state.
-6. **Don't overreach.** The user will act on this. Leave an open question open rather than fill it with a confident guess.
+<a id="instructions"></a>
 
-## Output Format
+## 指示
 
-Write for the user, in this exact structure:
+1. **閱讀所有調查人員發現**並自行衡量證據。調查人員收集了原始證據，而非結論。
+2. **整合重疊部分。**當多位調查人員引用同一 PR、票證或檔案時，給予一個權威參考。
+3. **呈現矛盾。**當兩個專案不一致時，顯示兩者。不要選擇其一。
+4. **校準每個主張。**找到其證據與層級。直接：引用並明確陳述。推斷：緩和並顯示推論。臆測：標記它。無證據：放入缺口。
+5. **抽查驗證引用。**如果你不確定被引用的專案存在或內容符合調查人員所述，透過閱讀程式碼庫或呼叫 MCP 工具檢查。不要傳播錯誤。不要寫檔案、提交，或修改外部狀態。
+6. **不要過度推論。**使用者將依據此行動。保留開放問題為開放，而非用自信的猜測填補。
 
----
+<a id="output-format"></a>
 
-### The Question
+## 輸出格式
 
-Restate the user's question in one or two sentences.
-
-### The Code in Question
-
-File paths, line ranges, key symbols. Two or three lines to orient a cold reader.
-
-### What We Found
-
-Claims with textual evidence, each quoted or paraphrased and cited precisely:
-
-- **[Direct]** {Claim}. Source: [PR #123](url) / ticket ID / file:line. {Brief quote or paraphrase.}
-- **[Supported]** {Claim}. Evidence: {list of items and what each contributes}.
-
-`[Direct]` is single-source, explicit evidence. `[Supported]` is multiple indirect items converging on a conclusion.
-
-### What We Can Reasonably Infer
-
-Claims stated nowhere but well-supported by indirect evidence. Each bullet must make the inference chain visible ("Given A and B, it's likely that C") and must use hedged language ("appears to", "likely", "suggests", "is consistent with"):
-
-- **[Inferred]** {Hedged claim}. Reasoning: {the specific evidence and the inference step}.
-
-Skip this section if there's nothing to infer.
-
-### Competing Hypotheses
-
-If the evidence fits multiple stories, present each. Don't force a winner the record doesn't support. For each hypothesis:
-
-- **Hypothesis:** {one-sentence statement}
-- **Evidence for:** {specific items}
-- **Evidence against or missing:** {what would need to be true but isn't, or what counter-signals exist}
-
-Skip this section if there's a single clear answer.
-
-### What We Don't Know
-
-Specific gaps: "We searched the issue tracker for [query1], [query2], [query3] and found no issue discussing the rate-limit threshold", not "We don't know why." Include:
-
-- Questions that went unanswered
-- Searches that returned nothing
-- Sources that were unavailable, and why (such as a missing real-time team chat MCP)
-- People who would likely know but whom you can't ask
-
-### Sources Consulted
-
-What was actually searched, so the user can judge coverage and redirect:
-
-- **Source control history**: {file paths}, {number of commits reviewed}, PRs #{numbers}, and code comments searched. Or "Not searched. This should not happen because git and `gh` are always expected."
-- **Issue / ticket tracker**: {ticket IDs and keyword searches}. Or "Not searched. No matching MCP available in this environment."
-- **Long-form documents**: {page titles and search queries}. Or "Not searched. No matching MCP available in this environment."
-- **Real-time team chat**: {channels searched, date ranges, queries}. Or "Not searched. No matching MCP available in this environment."
-- **Infrastructure observability**: {dashboards, monitors, metrics, logs, traces, or incidents searched}. Or "Not searched. No matching MCP available in this environment."
-- **Error / exception tracking**: {issues, events, or releases searched}. Or "Not searched. No matching MCP available in this environment."
-- **Product analytics warehouse**: {fully-qualified tables queried, the time windows, and the numeric summaries (counts, percentiles, first/last-seen timestamps) that bore on the question}. Or "Not searched. No matching MCP available in this environment."
-
-### Confidence Summary
-
-One or two sentences on overall confidence, e.g.:
-
-> "The core rationale (A) is well-supported by direct PR and ticket evidence. The specific threshold value (100) is inferred from the surrounding context but not explicitly documented. The question of whether this was driven by a customer request could not be answered. No relevant issue tracker or long-form doc content surfaced, and real-time team chat search was unavailable."
+為使用者寫作，使用此精確結構：
 
 ---
 
-## Quality Check Before Returning
+<a id="the-question-1"></a>
 
-Revise if any item fails:
+### 問題
 
-1. Does every claim in "What We Found" have a citation? If not, add one or move it to "Inferred" or "Hypotheses."
-2. Is the phrasing tier-appropriate? (Direct claims can use "because". Inferred claims cannot.)
-3. Did you surface every contradiction you noticed, or quietly pick one?
-4. Does "What We Don't Know" name specific gaps? If it's empty or missing, be suspicious. Historical investigations almost always have gaps.
-5. Did you check any hypothesis embedded in the question against the evidence rather than rubber-stamp it?
-6. Did you cite code as evidence for its own intent? Remove it. Code is mechanics, not motivation.
-7. Is the tone calibrated? A confident-sounding answer on weak evidence is the exact failure this skill exists to prevent.
+以一或兩句重新陳述使用者的問題。
 
-The value of this output is its honesty, not its authority. A reader who takes it to the original author, an engineering lead, or a product manager should know what's known, what's inferred, and what's missing, so they can ask the right follow-up questions. Optimize for being useful, not for looking decisive.
+<a id="the-code-in-question"></a>
+
+### 涉及的程式碼
+
+檔案路徑、行號範圍、關鍵符號。兩或三行讓冷讀者瞭解方向。
+
+<a id="what-we-found"></a>
+
+### 我們發現的內容
+
+有文字證據的主張，每個引用或改述並精確引用：
+
+- **[直接]** {主張}。來源：[PR #123](url) / 票證 ID / 檔案:行號。{簡短引用或改述。}
+- **[支援]** {主張}。證據：{專案列表及每個專案貢獻什麼}。
+
+`[Direct]` 是單一來源、明確證據。`[Supported]` 是多個間接專案匯聚於一個結論。
+
+<a id="what-we-can-reasonably-infer"></a>
+
+### 我們可以合理推斷的內容
+
+未在任何地方陳述但由間接證據充分支援的主張。每個專案必須顯示推論鏈（「根據 A 和 B，很可能 C」）並必須使用緩和的語言（「似乎」、「可能」、「暗示」、「與……一致」）：
+
+- **[推斷]** {緩和的主張}。推理：{具體證據與推論步驟}。
+
+如果沒有可推斷的內容，跳過此節。
+
+<a id="competing-hypotheses"></a>
+
+### 競爭假說
+
+如果證據符合多個故事，呈現每個。不要強推一個記錄不支援勝出的者。對於每個假說：
+
+- **假說：** {一句陳述}
+- **支援證據：** {具體專案}
+- **反對或缺失的證據：** {需要為真但並非如此的事物，或存在的反訊號}
+
+如果有單一明確答案，跳過此節。
+
+<a id="what-we-dont-know"></a>
+
+### 我們不知道的內容
+
+具體缺口：「我們搜尋了問題追蹤系統的 [query1]、[query2]、[query3]，未找到討論速率限制閾值的問題」，而非「我們不知道為什麼」。包括：
+
+- 未得到答案的問題
+- 搜尋無結果的專案
+- 無法取得的來源，以及原因（例如缺少即時團隊聊天 MCP）
+- 可能知道答案但無法詢問的人
+
+<a id="sources-consulted"></a>
+
+### 參考來源
+
+實際搜尋的內容，讓使用者能評估覆蓋範圍並重新導向：
+
+- **版本控制歷史：** {檔案路徑}、{檢視的 commit 數量}、PRs #{數字}，以及搜尋的程式碼評論。或「未搜尋。這不應發生，因為 git 和 `gh` 總是預期存在。」
+- **問題／票證追蹤系統：** {票證 ID 與關鍵字搜尋}。或「未搜尋。此環境中沒有匹配的 MCP。」
+- **長篇檔案：** {頁面標題與搜尋查詢}。或「未搜尋。此環境中沒有匹配的 MCP。」
+- **即時團隊聊天：** {搜尋的頻道、日期範圍、查詢}。或「未搜尋。此環境中沒有匹配的 MCP。」
+- **基礎設施可觀測性：** {搜尋的儀表板、監視器、指標、紀錄、追蹤或事件}。或「未搜尋。此環境中沒有匹配的 MCP。」
+- **錯誤／例外追蹤：** {搜尋的問題、事件或發布}。或「未搜尋。此環境中沒有匹配的 MCP。」
+- **產品分析資料倉儲：** {查詢的完整限定表格、時間視窗，以及影響問題的數字摘要（計數、百分位、首次／最後出現時間戳）}。或「未搜尋。此環境中沒有匹配的 MCP。」
+
+<a id="confidence-summary"></a>
+
+### 信心總結
+
+一或兩句關於整體信心，例如：
+
+> 「核心理由（A）由直接 PR 與票證證據充分支援。具體閾值值（100）從周圍上下文推斷，但未明確記錄。是否由客戶請求驅動的問題無法回答。未出現相關問題追蹤系統或長篇檔案內容，且即時團隊聊天搜尋無法取得。」
+
+---
+
+<a id="quality-check-before-returning"></a>
+
+## 返回前品質檢查
+
+若任何專案失敗則修改：
+
+1. 「我們發現的內容」中的每個主張都有引用嗎？若否，新增引用或移至「推斷」或「假說」。
+2. 措辭符合層級嗎？（直接主張可用「因為」。推斷主張不可。）
+3. 你呈現了所有注意到矛盾，還是默默選擇其一？
+4. 「我們不知道的內容」是否指名具體缺口？若為空或缺失，應懷疑。歷史調查幾乎總有缺口。
+5. 你檢查了問題中嵌入的假說對證據，而非橡皮圖章式批准？
+6. 你引用程式碼作為其自身意圖的證據嗎？移除它。程式碼是機制，不是動機。
+7. 語氣是否已校準？在薄弱證據上給出自信的答案正是此技能旨在防止的失敗。
+
+此輸出的價值在於其誠實性，而非其權威性。讀者將其帶給原作者、工程主管或產品經理時，應清楚知道已知事項、推斷事項及缺失事項，以便提出正確的後續問題。目標是讓內容有用，而非看起來果斷。

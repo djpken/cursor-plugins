@@ -1,22 +1,24 @@
 ---
 name: principle-make-operations-idempotent
-description: "Apply when designing commands, lifecycle steps, or processing loops that run amid crashes, restarts, and retries. Converge to the same end state regardless of partial prior runs."
+description: "在設計命令、生命週期步驟或處理迴圈時，適用於發生崩潰、重啟和重試的環境。無論先前部分執行情況如何，都要達到相同的最終狀態。"
 disable-model-invocation: true
 ---
 
-# Make Operations Idempotent
+<a id="make-operations-idempotent"></a>
 
-Design operations so they converge to the correct state regardless of how many times they run or where the previous run stopped. Every state-mutating operation should answer: "What happens if this runs twice? What happens if the previous run crashed halfway?"
+# 讓操作具備冪等性
 
-**Why:** Commands, lifecycle operations, and processing loops run where crashes, restarts, and retries are normal. If partial state changes the next run's outcome, every restart becomes a debugging session.
+設計操作時，無論執行多少次或先前執行在哪裡停止，都要能達到正確狀態。每個改變狀態的操作應回答：「如果這個執行兩次會發生什麼？如果先前執行中途崩潰會發生什麼？」
 
-**The idea:** derive each step from the state that exists, not from what the previous run meant to do. Read the current state, compare it to the goal, and apply only the difference. A step written this way is safe to repeat, because a repeat finds nothing left to do.
+**原因：** 命令、生命週期操作和處理迴圈在崩潰、重啟和重試是正常現象的環境中執行。如果部分狀態改變了下一次執行結果，每次重啟都會變成一場除錯過程。
 
-Anything a run leaves behind, such as a lock, a temporary file, a half-written record, or a claimed job, must be recognizable as stale by the next run. Judge staleness by evidence that stays true wherever the previous run could have stopped, not only in the common case. A marker that the next run cannot judge turns every crash into manual cleanup. For example, write to a temporary path and rename it into place, or compare artifacts by content instead of by creation order.
+**概念：** 每個步驟應根據現存的狀態來推導，而不是根據先前執行打算做的事。讀取當前狀態，比較目標，只應用差異。這樣寫的步驟可以安全重複執行，因為重複執行會發現沒有剩餘事項要做。
 
-**The test:**
-1. What happens if this runs twice in a row?
-2. What happens if the previous run crashed at every possible point?
-3. Does re-execution converge to the same end state?
+執行留下的任何東西，例如鎖、暫存檔案、半寫入的記錄或已領取的任務，必須能被下一次執行識別為過期。判斷過期應依據在先前執行可能停止的任何位置都保持真實的證據，而不是隻在常見情況下。一個無法判斷的標記會讓每次崩潰變成手動清理。例如，寫入暫存路徑並重新命名到最終位置，或根據內容比較檔案而不是根據建立順序。
 
-If any answer is "it depends on what state was left behind," the operation needs a reconciliation step.
+**測試：**
+1. 如果這個連續執行兩次會發生什麼？
+2. 如果先前執行在每個可能點崩潰會發生什麼？
+3. 重新執行是否會達到相同的最終狀態？
+
+如果任何答案是「這取決於留下的狀態」，則操作需要一個調和步驟。

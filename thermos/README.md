@@ -1,14 +1,20 @@
-# Thermos plugin
+<a id="thermos-plugin"></a>
 
-Thermo-nuclear branch review for Cursor agents: deep correctness and security audits, harsh maintainability rubrics, and parallel subagent orchestration.
+# Thermos 外掛
 
-## Installation
+Thermos 分支審查，適用於 Cursor 代理：深度正確性與安全性稽核、嚴苛的可維護性評量標準，以及平行子代理協調。
+
+<a id="installation"></a>
+
+## 安裝
 
 ```bash
 /add-plugin thermos
 ```
 
-## Architecture
+<a id="architecture"></a>
+
+## 架構
 
 ```mermaid
 flowchart TB
@@ -36,35 +42,45 @@ flowchart TB
   SNCQ --> DIFF
 ```
 
-## Skills
+<a id="skills"></a>
 
-| Skill | Description |
+## 技能
+
+| 技能 | 描述 |
 |:------|:------------|
-| `thermo-nuclear-review` | Deep branch audit (bugs, breakages, security, devex, feature-gate leaks). |
-| `thermo-nuclear-code-quality-review` | Strict maintainability audit (code-judo, 1k-line rule, spaghetti, boundaries). |
-| `thermos` | Run both review subagents in parallel and synthesize findings. |
+| `thermo-nuclear-review` | 深度分支稽核（錯誤、破壞、安全性、開發體驗、功能閘門漏洞）。 |
+| `thermo-nuclear-code-quality-review` | 嚴格的可維護性稽核（程式碼柔術、千行規則、混亂結構、邊界）。 |
+| `thermos` | 平行執行兩個審查子代理並整合結果。 |
 
-## Agents
+<a id="agents"></a>
 
-| Agent | Description |
+## 代理
+
+| 代理 | 描述 |
 |:------|:------------|
-| `thermo-nuclear-review-subagent` | Task subagent for deep review rubric (diff-scoped). |
-| `thermo-nuclear-code-quality-review-subagent` | Task subagent for code-quality rubric (diff-scoped). |
+| `thermo-nuclear-review-subagent` | 深度審查評量標準的任務子代理（差異範圍）。 |
+| `thermo-nuclear-code-quality-review-subagent` | 程式碼品質評量標準的任務子代理（差異範圍）。 |
 
-## Typical usage
+<a id="typical-usage"></a>
 
-**Double review (thermos):**
+## 典型用法
 
-1. Gather `git diff main...HEAD` and full contents of changed files.
-2. Invoke both subagents in one message with `run_in_background: true`.
-3. Synthesize prioritized, deduped findings.
+**雙重審查（thermos）：**
 
-**Single skill:** invoke `thermo-nuclear-review` or `thermo-nuclear-code-quality-review` in the main agent, or the matching subagent after gathering diff context.
+1. 收集 `git diff main...HEAD` 以及變更檔案的完整內容。
+2. 在單一訊息中呼叫兩個子代理，並使用 `run_in_background: true`。
+3. 整合優先排序且去除重複的結果。
 
-## Migration from cursor-team-kit
+**單一技能：** 在主代理中呼叫 `thermo-nuclear-review` 或 `thermo-nuclear-code-quality-review`，或在收集差異上下文後呼叫對應的子代理。
 
-`cursor-team-kit` previously included only `thermo-nuclear-code-quality-review`. That skill and agent now live in **Thermos** alongside deep review and `thermos`. Remove the old thermo entries from team-kit when you install this plugin to avoid duplicates.
+<a id="migration-from-cursor-team-kit"></a>
 
-## License
+## 從 cursor-team-kit 遷移
+
+`cursor-team-kit` 先前僅包含 `thermo-nuclear-code-quality-review`。該技能與代理現在位於 **Thermos**，與深度審查及 `thermos` 一同。安裝此外掛時，請從 team-kit 移除舊的 thermo 專案以避免重複。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

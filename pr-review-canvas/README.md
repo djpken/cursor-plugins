@@ -1,34 +1,46 @@
-# PR Review Canvas
+<a id="pr-review-canvas"></a>
 
-Cursor plugin for rendering pull request diffs as an interactive Cursor Canvas organised for reviewer comprehension rather than file-tree order.
+# PR 審查畫布
 
-## What it includes
+Cursor 外掛程式，用於將 Pull Request 差異呈現為互動式 Cursor Canvas，其組織方式旨在協助審查者理解，而非依檔案樹順序排列。
 
-- `pr-review-canvas`: build a Canvas that presents a PR diff with core logic up top, wiring/integration condensed in the middle, and boilerplate summarised at the bottom; add pseudocode, example traces, and inline callouts for the parts that are genuinely tricky.
+<a id="what-it-includes"></a>
 
-## When to use
+## 包含內容
 
-- Reviewing a pull request and you want a walkthrough that surfaces the real risk, not a file-by-file diff.
-- Summarising a stack of PRs for a human reviewer.
-- Asking for a diff walkthrough, change-set overview, or "what actually changed here" view.
+- `pr-review-canvas`：建立一個 Canvas，將 PR 差異呈現為頂部顯示核心邏輯、中部簡化顯示接線與整合、底部摘要顯示樣板程式碼；針對真正複雜的部分，加入偽程式碼、範例追蹤與內嵌提示。
 
-Trigger it with phrases like "PR review canvas", "review this PR on a canvas", "walk me through this diff on a canvas", or by pointing the agent at a PR URL / branch ref.
+<a id="when-to-use"></a>
 
-## How it's organized
+## 使用時機
 
-The skill groups changes by reviewer value:
+- 審查 Pull Request 時，希望獲得能突顯真正風險的逐步說明，而非逐檔案的差異檢視。
+- 為人類審查者摘要一疊 PR。
+- 要求差異逐步說明、變更集總覽，或「這裡實際變更了什麼」的檢視。
 
-1. **Core logic** — new behaviour, algorithm changes, state transitions, API surface changes. Full diffs with context.
-2. **Wiring & integration** — route registration, DI, config plumbing. Condensed.
-3. **Boilerplate & mechanical** — imports, renames, generated code, formatting. Summarised as a list, no inline diffs unless directly relevant.
+使用類似「PR 審查畫布」、「在畫布上審查這個 PR」、「在畫布上帶我走過這個差異」等短語觸發，或將 agent 指向 PR URL / 分支參考。
 
-It then layers in pseudocode for dense logic, concrete before/after example traces for behaviour changes that are hard to predict from the diff, and inline callouts (`Subtle`, `Breaking`, `Race condition`, `Perf`) for genuinely surprising or risky hunks.
+<a id="how-its-organized"></a>
 
-## Requirements
+## 組織方式
 
-- Cursor with Canvas enabled.
-- Access to the diff source: a local branch/ref (`git diff`), a GitHub PR URL or number (`gh pr diff`), or a Graphite stack (`gt` CLI / `gh`).
+此 skill 依審查價值對變更進行分組：
 
-## License
+1. **核心邏輯**：新行為、演演算法變更、狀態轉換、API 介面變更。包含完整差異與上下文。
+2. **接線與整合**：路由註冊、DI、設定管線。簡化呈現。
+3. **樣板與機械性變更**：匯入、重新命名、產生的程式碼、格式調整。以清單形式摘要，除非直接相關，否則不顯示內嵌差異。
+
+接著，針對密集的邏輯加入偽程式碼，針對難以從差異預測的行為變更加入具體的前後範例追蹤，並針對真正令人驚訝或具風險的區塊加入內嵌提示（`Subtle`、`Breaking`、`Race condition`、`Perf`）。
+
+<a id="requirements"></a>
+
+## 需求
+
+- 已啟用 Canvas 的 Cursor。
+- 可存取差異來源：本地分支/參考（`git diff`）、GitHub PR URL 或編號（`gh pr diff`），或 Graphite 堆疊（`gt` CLI / `gh`）。
+
+<a id="license"></a>
+
+## 授權條款
 
 MIT

@@ -1,32 +1,42 @@
 ---
 name: weekly-review
-description: Produce a weekly synthesis of authored commits with highlights by bugfix, tech debt, and net-new work
+description: "產出每週已撰寫 commit 的綜合摘要，並依 bug 修復、技術債與全新功能進行重點標示"
 ---
 
-# Weekly review
+<a id="weekly-review"></a>
 
-## Trigger
+# 每週回顧
 
-Need a weekly recap of shipped work for status updates, retros, or planning.
+<a id="trigger"></a>
 
-## Workflow
+## 觸發條件
 
-1. Determine the current git user email from repo config.
-2. Collect authored commits from the last 7-10 days on the primary branch context.
-3. Exclude merge commits.
-4. Group meaningful changes into 2-5 concise bullets.
-5. Add a short classification paragraph covering:
-   - likely bug fixes
-   - likely tech debt work
-   - likely net-new functionality
+需要每週已交付工作的回顧摘要，用於狀態更新、回顧會議或規劃。
 
-## Guardrails
+<a id="workflow"></a>
 
-- Keep the recap short and executive-readable.
-- Base claims only on commit history and diffs.
-- If git email is missing, ask the user to set it before proceeding.
+## 工作流程
 
-## Output
+1. 從儲存庫設定中取得目前的 git 使用者電子郵件。
+2. 收集主要分支上下文中過去 7 至 10 天內已撰寫的 commit。
+3. 排除合併 commit。
+4. 將有意義的變更分組為 2 至 5 個簡潔的專案符號。
+5. 新增一段簡短的歸類段落，涵蓋以下內容：
+   - 可能的 bug 修復
+   - 可能的技術債工作
+   - 可能的全新功能
 
-- 2-5 bullet weekly summary
-- Brief classification paragraph (bugfix / tech debt / net-new)
+<a id="guardrails"></a>
+
+## 限制條件
+
+- 保持回顧摘要簡短且易於高層閱讀。
+- 僅基於 commit 歷史與 diff 提出主張。
+- 如果缺少 git 電子郵件，請要求使用者先設定再繼續。
+
+<a id="output"></a>
+
+## 輸出
+
+- 2 至 5 個專案符號的每週摘要
+- 簡短的歸類段落（bug 修復 / 技術債 / 全新功能）

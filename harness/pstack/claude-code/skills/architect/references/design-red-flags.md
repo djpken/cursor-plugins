@@ -1,57 +1,75 @@
-# Design red flags
+<a id="design-red-flags"></a>
 
-Screen every candidate before synthesis. A red flag is a reason to revise or reject the shape.
+# 設計上的警訊
 
-## Shallow module
+在綜合評估之前，先審查每一位候選人。警訊是修訂或拒絕該結構的理由。
 
-A shallow module exposes a large interface while hiding little complexity. Judge depth by the capability and policy hidden behind the public surface relative to the size of that surface. Prefer a simple interface backed by substantial behavior.
+<a id="shallow-module"></a>
 
-Do not confuse a deep module with a deep call chain. A deep call chain scatters understanding across layers. A deep module concentrates capability behind one interface.
+## 淺層模組
 
-Look for these signs:
+淺層模組暴露了龐大的介面，卻隱藏了很少的複雜度。請根據公開介面背後隱藏的能力與策略，相對於該介面規模的比例，來判斷其深度。優先選擇由實質行為支撐的簡單介面。
 
-- Callers coordinate several methods to complete one operation.
-- Public options expose internal stages or implementation choices.
-- Learning the interface does not save the caller from learning the implementation.
+不要將深層模組與深層呼叫鏈混淆。深層呼叫鏈將理解分散在各個層級。深層模組則將能力集中於單一介面之後。
 
-## Information leakage
+尋找以下跡象：
 
-Information leakage makes multiple modules depend on the same internal decision. A representation, policy, or protocol detail appears in more than one place, so changing it requires coordinated edits.
+- 呼叫者需要協調多個方法才能完成單一操作。
+- 公開選項暴露了內部階段或實作選擇。
+- 學習介面無法讓呼叫者免於學習實作細節。
 
-Public re-exports of transport or wire types are leakage. Parse external data into domain types behind the interface. Keep storage schemas, framework objects, and protocol details private.
+<a id="information-leakage"></a>
 
-## Temporal decomposition
+## 資訊洩漏
 
-Temporal decomposition organizes modules by execution order instead of the knowledge they own. Separate load, validate, transform, and save stages often repeat one representation and its invariants across several boundaries.
+資訊洩漏會導致多個模組依賴同一個內部決策。某個表示法、策略或協定細節出現在多個地方，因此變更它需要協調編輯。
 
-Group code around domain knowledge and ownership. Methods that run at different times can still belong to one module when they protect the same decisions.
+公開重新匯出傳輸或線路型別屬於洩漏。請在介面背後將外部資料解析為領域型別。保持儲存結構、框架物件和協定細節為私有。
 
-## Pass-through method
+<a id="temporal-decomposition"></a>
 
-A pass-through method forwards the same arguments to another method with the same shape. It adds a layer without hiding complexity.
+## 時間分解
 
-Remove it or move responsibility to the module that can complete the operation. Keep a forwarding boundary only when it adds policy, adaptation, or a distinct abstraction.
+時間分解是根據執行順序而非模組擁有的知識來組織模組。將載入、驗證、轉換和儲存階段分開，往往會在多個邊界重複同一個表示法及其不變數。
 
-## Split ownership
+圍繞領域知識和所有權來分組程式碼。在不同時間執行的方法，如果它們保護相同的決策，仍可以屬於同一個模組。
 
-More than one module writes the same state or keeps its own copy of it. An agent that edits one writer can't see the others, so their rules diverge.
+<a id="pass-through-method"></a>
 
-Give each piece of state one owner. Other modules read it or ask the owner to change it.
+## 透傳方法
 
-## Two ways to do one task
+透傳方法將相同的引數轉發給另一個具有相同結構的方法。它增加了一個層級，卻沒有隱藏複雜度。
 
-The design supports more than one way to do the same task. An agent copies whichever way it finds first, so every way keeps gaining callers.
+移除它，或將責任移至能夠完成該操作的模組。僅當轉發邊界增加了策略、適配或不同的抽象時，才保留它。
 
-Keep one way. Move callers off the others and delete them in the same change.
+<a id="split-ownership"></a>
 
-## Importable internals
+## 分裂所有權
 
-A caller can import a module's internals. An agent takes the shortest path that compiles, so it imports them directly and they become part of the interface.
+多個模組寫入相同的狀態，或各自保留其副本。一個編輯其中一個寫入者的 agent 無法看到其他寫入者，因此它們的規則會產生分歧。
 
-Make internals unreachable from outside the module, so an import from outside fails the build.
+讓每個狀態片段只有一個所有者。其他模組讀取它，或請求所有者變更它。
 
-## Hand-synced list
+<a id="two-ways-to-do-one-task"></a>
 
-Two or more places list the same items, and adding an item means editing every list. An agent that sees one list updates only that one.
+## 執行單一任務的兩種方式
 
-Keep one list and derive the others from it. If a list can't be derived, make the build fail when the lists disagree.
+設計支援多種方式來執行相同的任務。agent 會複製它首先找到的方式，因此每種方式都會持續獲得新的呼叫者。
+
+保留一種方式。將其他方式的呼叫者移走，並在相同的變更中刪除它們。
+
+<a id="importable-internals"></a>
+
+## 可匯入的內部元件
+
+呼叫者可以匯入模組的內部元件。agent 會選擇能編譯的最短路徑，因此直接匯入它們，使它們成為介面的一部分。
+
+讓內部元件在模組外部無法存取，這樣從外部匯入就會導致建置失敗。
+
+<a id="hand-synced-list"></a>
+
+## 手動同步清單
+
+兩個或多個地方列出了相同的專案，新增一個專案意味著要編輯每個清單。看到其中一個清單的 agent 只會更新那一個。
+
+保留一個清單，並從中推匯出其他清單。如果清單無法推導，請在清單不一致時讓建置失敗。

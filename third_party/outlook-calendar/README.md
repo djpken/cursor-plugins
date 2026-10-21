@@ -1,16 +1,20 @@
-# Outlook Calendar
+<a id="outlook-calendar"></a>
 
-Cursor plugin that connects agents to [Outlook Calendar](https://outlook.com/calendar) through Cursor's remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+# Outlook 行事曆
 
-List upcoming events, check schedules, and create, update, or cancel meetings in the signed-in Microsoft account.
+Cursor 外掛，透過 Cursor 的遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Outlook Calendar](https://outlook.com/calendar)。
 
-## Install
+列出即將到的事件、檢查日程，以及在已登入的 Microsoft 帳戶中建立、更新或取消會議。
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Outlook Calendar**.
-3. Click **Install**, then complete the Microsoft sign-in prompt.
+<a id="install"></a>
 
-Or run `/add-plugin outlook-calendar` in chat.
+## 安裝
+
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Outlook 行事曆**。
+3. 點選 **安裝**，然後完成 Microsoft 登入提示。
+
+或在聊天中執行 `/add-plugin outlook-calendar`。
 
 ## MCP
 
@@ -25,15 +29,19 @@ Or run `/add-plugin outlook-calendar` in chat.
 }
 ```
 
-Auth is OAuth 2.0 against Microsoft (Entra ID). Cursor prompts for Microsoft sign-in when the plugin connects.
+驗證是針對 Microsoft（Entra ID）的 OAuth 2.0。當外掛連線時，Cursor 會提示 Microsoft 登入。
 
-## Docs
+<a id="docs"></a>
 
-- Outlook calendar API (Microsoft Graph): https://learn.microsoft.com/en-us/graph/api/resources/calendar
-- Microsoft Graph overview: https://learn.microsoft.com/en-us/graph/overview
+## 檔案
 
-Logo is Microsoft's official Outlook Calendar product icon (`OutlookCalendar_24x`), placed on a white tile with padding so it reads well in the Cursor UI. Microsoft's Fluent brand icon CDN (`res-1.cdn.office.net/files/fabric-cdn-prod_*/assets/brand-icons/product/svg/`) does not ship a standalone calendar icon, so this uses the Outlook Calendar icon from Microsoft's product icon set.
+- Outlook 行事曆 API（Microsoft Graph）：https://learn.microsoft.com/en-us/graph/api/resources/calendar
+- Microsoft Graph 概覽：https://learn.microsoft.com/en-us/graph/overview
 
-## License
+標誌是 Microsoft 官方 Outlook 行事曆產品圖示（`OutlookCalendar_24x`），放置在白色底板上並留有邊距，以便在 Cursor 介面中清晰呈現。Microsoft 的 Fluent 品牌圖示 CDN（`res-1.cdn.office.net/files/fabric-cdn-prod_*/assets/brand-icons/product/svg/`）沒有提供獨立行事曆圖示，因此這裡使用 Microsoft 產品圖示集中的 Outlook 行事曆圖示。
+
+<a id="license"></a>
+
+## 授權
 
 MIT

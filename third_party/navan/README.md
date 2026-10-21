@@ -1,20 +1,24 @@
 # Navan
 
-Cursor plugin that connects agents to [Navan](https://navan.com) through Navan's official remote [Model Context Protocol](https://modelcontextprotocol.io/) server.
+Cursor 外掛，透過 Navan 官方遠端 [Model Context Protocol](https://modelcontextprotocol.io/) 伺服器將代理連線到 [Navan](https://navan.com)。
 
-Query expenses and spend trends, analyze travel bookings across flights, hotels, and ground transport, ask about policies, approval flows, and flag/decline reasons, and look up card details for the signed-in Navan user.
+查詢費用與支出趨勢，分析航班、飯店及地面交通的旅遊預訂，詢問政策、核准流程與標記/拒絕原因，並查詢登入 Navan 使用者之卡片詳細資訊。
 
-## Prerequisite
+<a id="prerequisite"></a>
 
-A Navan admin must enable MCP for your organization first: **Navan → Configuration → Integrations → MCP** and toggle it on. Until then, connections from any MCP client will fail.
+## 前置條件
 
-## Install
+Navan 管理員必須先為您的組織啟用 MCP：**Navan → 設定 → 整合 → MCP** 並開啟該功能。在此之前，任何 MCP 客戶端的連線都會失敗。
 
-1. Open **Cursor Settings → Plugins**.
-2. Search for **Navan**.
-3. Click **Install**, then complete the Navan SSO sign-in prompt.
+<a id="install"></a>
 
-Or run `/add-plugin navan` in chat.
+## 安裝
+
+1. 開啟 **Cursor 設定 → 外掛**。
+2. 搜尋 **Navan**。
+3. 點選 **安裝**，然後完成 Navan SSO 登入提示。
+
+或在聊天中執行 `/add-plugin navan`。
 
 ## MCP
 
@@ -29,26 +33,32 @@ Or run `/add-plugin navan` in chat.
 }
 ```
 
-Auth is OAuth 2.0 against Navan's standard SSO login. The first request opens a browser window to sign in and approve scopes — there is no API key or client ID to configure. Sessions refresh automatically while in use; sign in again after 100 days of inactivity or 365 days since authentication.
+驗證採用 OAuth 2.0，透過 Navan 標準 SSO 登入。第一個請求會開啟瀏覽器視窗以登入並核准許可權範圍。無需設定 API 金鑰或客戶端 ID。使用期間會自動更新會話。若超過 100 天未使用或距離驗證已超過 365 天，則需再次登入。
 
-## Notes
+<a id="notes"></a>
 
-- Tool calls run under the signed-in user's context and role (Employee, Manager, Approver, Finance Admin) and cannot exceed that user's Navan permissions.
-- Queries for data the user is not authorized to see return an empty result with a `403_BY_POLICY` annotation rather than leaking data.
-- The server cannot bypass approval workflows, policy rules, or duplicate detection, and cannot escalate privileges.
-- Every tool call is logged in Navan's audit trail with the user identity, client name/version, tool arguments, and response status.
-- Keep payloads lean: pass specific date ranges, filter to the fields you need, and prefer summary tools (e.g. `summarize_spend`) before drilling into raw rows.
-- Navan MCP is not intended for high-volume or scheduled workloads — use the [Navan REST API](https://developer.navan.com/) for those.
+## 注意事項
 
-## Verify
+- 工具呼叫會在登入使用者之上下文與角色（員工、經理、核准者、財務管理員）下執行，且無法超出該使用者之 Navan 許可權。
+- 對使用者無權檢視資料的查詢會返回空結果並附上 `403_BY_POLICY` 註記，而非洩漏資料。
+- 伺服器無法繞過核准流程、政策規則或重複偵測，且無法提升許可權。
+- 每個工具呼叫都會記錄在 Navan 稽核軌跡中，包含使用者身份、客戶端名稱/版本、工具引數及回應狀態。
+- 保持資料量精簡：傳遞特定日期範圍、僅篩選所需欄位，並優先使用摘要工具（例如 `summarize_spend`），再深入檢視原始資料行。
+- Navan MCP 不適用於高量或定期執行的工作負載。請使用 [Navan REST API](https://developer.navan.com/) 處理這些需求。
 
-Once connected, ask the agent:
+<a id="verify"></a>
 
-> "Use Navan to list my five most recent expenses."
+## 驗證
 
-A correctly connected client returns a structured table within a few seconds. If you see a permission prompt, approve it — that is Navan's scoped-consent flow.
+連線後，詢問代理：
 
-## Docs
+> "使用 Navan 列出我最近五筆費用。"
 
-- Navan MCP guide: https://developer.navan.com/mcp/
-- Server URL: https://mcp.navan.com/mcp
+正確連線的客戶端會在幾秒內返回結構化表格。若看到許可權提示，請核准。這是 Navan 的範圍同意流程。
+
+<a id="docs"></a>
+
+## 檔案
+
+- Navan MCP 指南：https://developer.navan.com/mcp/
+- 伺服器 URL：https://mcp.navan.com/mcp
