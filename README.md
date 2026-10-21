@@ -1,4 +1,4 @@
-> **[繁體中文 README](./README.zh-TW.md) · [中文文件索引](./TRANSLATIONS.zh-TW.md)**
+> **[繁體中文 README](./README.zh-TW.md) · [完整中文文件索引](./TRANSLATIONS.zh-TW.md)**
 
 # Cursor plugins
 

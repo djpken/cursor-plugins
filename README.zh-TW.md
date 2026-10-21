@@ -1,4 +1,4 @@
-> [English](./README.md) · [中文文件索引](./TRANSLATIONS.zh-TW.md)
+> [English](./README.md) · [完整中文文件索引](./TRANSLATIONS.zh-TW.md)
 
 <a id="cursor-plugins"></a>
 
